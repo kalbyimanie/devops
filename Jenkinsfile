@@ -38,7 +38,7 @@ spec:
         - name: dockersock
           mountPath: "/var/run/docker.sock"
     - name: jenkins-slave
-      image: 134326769038.dkr.ecr.us-west-2.amazonaws.com/jenkins-slave
+      image: IMAGE:VERSION
       command:
       - cat
       tty: true
