@@ -77,10 +77,10 @@ spec:
         withAWS(credentials:'AWS_CREDS_ID_FROM_JENKINS'){
           for(item in KUBE_CONFIG_LIST_CLIENT_2){
             if(item == "${CLIENT_2_DEV}"){
-              GPG_PASSPHRASE = "LeYou-Dev-Kubeconfig-GPG-Phrase"
+              GPG_PASSPHRASE = "Client_Name-Dev-Kubeconfig-GPG-Phrase"
               withCredentials([
                 string(credentialsId:"${GPG_PASSPHRASE}", variable:'GPG_KEY')]){
-                  withEnv(["KUBE_CONFIG_URL=${item}","K8S_ENV=leyou-dev","CLIENT=LeYou"]){
+                  withEnv(["KUBE_CONFIG_URL=${item}","K8S_ENV=client-dev","CLIENT=Client_Name"]){
                     sh ''' cd ${PWD}/path/;chmod +x script.sh;bash script.sh '''
                 }
               }
