@@ -1,5 +1,5 @@
 version: "3.8"
-services:
+services:  
   dockerd-proxy:
     container_name: dockerd-proxy
     hostname: dockerd-proxy
@@ -23,12 +23,15 @@ services:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
       - JENKINS_PASSWORD=admin
       - DOCKER_HOST=tcp://dockerd-proxy:2375
+      - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
     ports:
       - 8080:8080
       - 50000:50000
-      - 
     volumes:
       - ./jenkins-data:/var/jenkins_home
+      - ./casc-configs/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml
+    env_file: 
+      - ./casc-configs/jenkins.env
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks: 

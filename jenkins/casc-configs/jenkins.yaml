@@ -1,0 +1,114 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - usernamePassword:
+          description: "GitHub Token"
+          id: "github-token"
+          password: "${GITHUB_PASSWORD}"
+          scope: GLOBAL
+          username: "${GITHUB_USERNAME}"
+      - usernamePassword:
+          description: "docker-login"
+          id: "docker-login"
+          password: "${DOCKERHUB_USERNAME}"
+          scope: GLOBAL
+          username: "${DOCKERHUB_PASSWORD}"
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  clouds:
+  - docker:
+      dockerApi:
+        connectTimeout: 60
+        dockerHost:
+          uri: "${DOCKER_HOST}"
+        readTimeout: 60
+      exposeDockerHost: true
+      name: "docker"
+      templates:
+      - dockerTemplateBase:
+          bindAllPorts: true
+          environmentsString: "DOCKER_HOST=${DOCKER_HOST}"
+          hostname: "jenkins-slave"
+          image: "kalbyimanie/jenkins:slave-v1"
+          privileged: true
+          pullCredentialsId: "docker-login"
+          volumes:
+          - "/var/run/docker.sock"
+          volumesString: "/var/run/docker.sock"
+        labelString: "jenkins-slave"
+        mode: EXCLUSIVE
+        name: "jenkins-slave"
+        pullStrategy: PULL_ALWAYS
+        pullTimeout: 20
+        remoteFs: "/home/jenkins"
+        retentionStrategy:
+          idleMinutes: 1
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  labelAtoms:
+  - name: "jenkins-slave"
+  - name: "master"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: false
+  scmCheckoutRetryCount: 0
+  slaveAgentPort: 50000
+  systemMessage: |+
+    ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
+
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  sSHD:
+    port: -1
+unclassified:
+  buildDiscarders:
+    configuredBuildDiscarders:
+    - "jobBuildDiscarder"
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitSCM:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  pollSCM:
+    pollingThreadCount: 10
+tool:
+  git:
+    installations:
+    - home: "/usr/bin/git"
+      name: "git"
