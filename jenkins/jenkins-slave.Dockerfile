@@ -17,14 +17,25 @@ RUN curl https://download.docker.com/linux/static/stable/x86_64/docker-20.10.0.t
 
 FROM pkgs AS etc
 ENV PATH="$PATH:/usr/local/bin/docker"
-RUN adduser jenkins && \
+RUN addgroup -g ${gid} ${group} \
+    adduser jenkins \
+            && \
     chown jenkins:jenkins /usr/local/bin/docker/docker && \
     ssh-keygen -A && \
     usermod -aG sudo jenkins && \
     mkdir -p /run/sshd && \
-    chown -R jenkins:jenkins /home/jenkins
+    chown -R jenkins:jenkins /home/jenkins && \
+    apt-get install -y git && \
+    chown jenkins:jenkins /usr/bin/git && \
+    mkdir -p /home/jenkins/.ssh && \
+    ssh-keyscan -H github.com >> /home/jenkins/.ssh/known_hosts
+    
 COPY .ssh_keys/id_rsa.pub /home/jenkins/.ssh/authorized_keys
+COPY .ssh_keys/id_rsa.pub /home/jenkins/.ssh/id_rsa.pub
+COPY .ssh_keys/id_rsa /home/jenkins/.ssh/id_rsa
+COPY ssh-config/sshd_config /etc/ssh/sshd_config
 
-RUN service ssh start
+RUN chown -R jenkins:jenkins /home/jenkins
 EXPOSE 22
+RUN service ssh start
 CMD ["/usr/sbin/sshd","-D"]

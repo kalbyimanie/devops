@@ -12,7 +12,9 @@ services:
       tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
     networks: 
       - ansible
-    
+
+# REVIEW needs to enable jenkins secured-login 
+
   jenkins-master:
     container_name: jenkins-master
     hostname: jenkins-master
@@ -21,7 +23,6 @@ services:
       dockerfile: jenkins.Dockerfile
     environment: 
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
-      - JENKINS_PASSWORD=admin
       - DOCKER_HOST=tcp://dockerd-proxy:2375
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
     ports:

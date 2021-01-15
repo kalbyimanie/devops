@@ -1,3 +1,4 @@
+# NOTE credentials field
 credentials:
   system:
     domainCredentials:
@@ -11,48 +12,61 @@ credentials:
       - usernamePassword:
           description: "docker-login"
           id: "docker-login"
-          password: "${DOCKERHUB_USERNAME}"
+          username: "${DOCKERHUB_USERNAME}"
           scope: GLOBAL
-          username: "${DOCKERHUB_PASSWORD}"
+          password: "${DOCKERHUB_PASSWORD}"
+
+# NOTE tools configuration field
+tool:
+  git:
+    installations:
+    - home: "/usr/bin/git"
+      name: "git"
+
 jenkins:
+  systemMessage: |+
+    ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+       - id: admin
+         password: admin
+       - id: developers
+         password: developers
+  authorizationStrategy: # REVIEW how to apply role-based auth [https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/role-strategy-auth]
+    roleBased:
+      roles:
+        global:
+          - name: admin
+            description: "Jenkins administrators"
+            permissions:
+              - "Overall/Administer"
+            assignments:
+              - "admin"
+          - name: "developer"
+            description: "Read-only users for developer"
+            permissions:
+              - "Overall/Read"
+              - "Job/Read"
+            assignments:
+              - "authenticated"
   agentProtocols:
   - "JNLP4-connect"
   - "Ping"
-  clouds:
-  - docker:
-      dockerApi:
-        connectTimeout: 60
-        dockerHost:
-          uri: "${DOCKER_HOST}"
-        readTimeout: 60
-      exposeDockerHost: true
-      name: "docker"
-      templates:
-      - dockerTemplateBase:
-          bindAllPorts: true
-          environmentsString: "DOCKER_HOST=${DOCKER_HOST}"
-          hostname: "jenkins-slave"
-          image: "kalbyimanie/jenkins:slave-v1"
-          privileged: true
-          pullCredentialsId: "docker-login"
-          volumes:
-          - "/var/run/docker.sock"
-          volumesString: "/var/run/docker.sock"
-        labelString: "jenkins-slave"
-        mode: EXCLUSIVE
-        name: "jenkins-slave"
-        pullStrategy: PULL_ALWAYS
-        pullTimeout: 20
-        remoteFs: "/home/jenkins"
-        retentionStrategy:
-          idleMinutes: 1
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: "DOCKER_HOST"
+        value: "tcp://dockerd-proxy:2375"
   labelAtoms:
-  - name: "jenkins-slave"
-  - name: "master"
+    - name: "jenkins-slave"
+    - name: "master"
   markupFormatter: "plainText"
   mode: NORMAL
   myViewsTabBar: "standard"
@@ -66,28 +80,55 @@ jenkins:
     enabled: false
   scmCheckoutRetryCount: 0
   slaveAgentPort: 50000
-  systemMessage: |+
-    ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
-
   updateCenter:
     sites:
     - id: "default"
       url: "https://updates.jenkins.io/update-center.json"
   views:
-  - all:
-      name: "all"
+    - all:
+        name: "all"
   viewsTabBar: "standard"
-security:
-  apiToken:
-    creationOfLegacyTokenEnabled: false
-    tokenGenerationOnCreationEnabled: false
-    usageStatisticsEnabled: true
-  sSHD:
-    port: -1
+
+# NOTE cloud configuration field
+  clouds:
+  - docker:
+      dockerApi:
+        connectTimeout: 60
+        dockerHost:
+          uri: "tcp://dockerd-proxy:2375"
+        hostname: "dockerd-proxy"
+        readTimeout: 60
+      exposeDockerHost: true
+      name: "docker"
+      templates:
+      - connector:
+          attach:
+            user: "jenkins"
+        dockerTemplateBase:
+          bindAllPorts: true
+          environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
+          hostname: "jenkins-slave"
+          image: "kalbyimanie/jenkins:slave-v1"
+          pullCredentialsId: "docker-login"
+          tty: true
+          user: "jenkins"
+          volumes:
+          - "/var/run/docker.sock:/var/run/docker.sock"
+          volumesString: "/var/run/docker.sock:/var/run/docker.sock"
+        labelString: "jenkins-slave"
+        mode: EXCLUSIVE
+        name: "jenkins-slave"
+        pullStrategy: PULL_NEVER
+        pullTimeout: 20
+        remoteFs: "/home/jenkins"
+        retentionStrategy:
+          idleMinutes: 1
+
+# NOTE unclassfied field
 unclassified:
   buildDiscarders:
     configuredBuildDiscarders:
-    - "jobBuildDiscarder"
+      - "jobBuildDiscarder"
   fingerprints:
     fingerprintCleanupDisabled: false
     storage: "file"
@@ -107,8 +148,15 @@ unclassified:
     useTls: false
   pollSCM:
     pollingThreadCount: 10
-tool:
-  git:
-    installations:
-    - home: "/usr/bin/git"
-      name: "git"
+
+# NOTE security field 
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: true
+    usageStatisticsEnabled: true
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: true
+  sSHD:
+    port: 22
+

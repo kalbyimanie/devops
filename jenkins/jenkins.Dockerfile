@@ -9,7 +9,6 @@ RUN add-apt-repository \
        "deb [arch=amd64] https://download.docker.com/linux/debian \
        $(lsb_release -cs) stable"
 RUN apt-get update && apt-get install -y docker-ce-cli
-# RUN jenkins-plugin-cli --plugins docker-plugin:1.2.1
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
@@ -31,5 +30,5 @@ RUN curl https://download.docker.com/linux/static/stable/x86_64/docker-20.10.0.t
     tar xvf docker-20.10.0.tgz && \
     mv docker /usr/local/bin/docker && \
     chown jenkins:jenkins /usr/local/bin/docker/docker
-
+EXPOSE 22
 USER jenkins
