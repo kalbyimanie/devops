@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  ssh-server:
+    cap_add:
+      - IPC_LOCK
+    container_name: ssh-server
+    hostname: ssh-server
+    build:
+      context: .
+      dockerfile: ubuntu.Dockerfile
+    ports:
+      - "2222:22"
+    networks:
+      - ssh
+    volumes:
+      - ./config/sshd_config:/etc/ssh/sshd_config
+      - ./scripts:/root/scripts
+      # - ./config/authorized_keys:/root/.ssh/authorized_keys
+
+networks:
+  ssh:
+    driver: bridge

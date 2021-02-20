@@ -1,3 +1,6 @@
 jenkins-data
 .ssh_keys
 **/**/*.env
+.**
+ssh/config
+ssh/scripts
