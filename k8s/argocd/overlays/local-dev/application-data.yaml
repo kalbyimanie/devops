@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: golang-sample
+  namespace: argocd
+spec:
+  destination:
+    namespace: data-rangers-polaris-hotel-ns
+    name: gke_tk-dev-data_asia-southeast1_dev-data-cluster
+  project: tiket
+  source:
+    path: app/development/dev-data/DATA-RANGERS-POLARIS-HOTEL
+    repoURL: https://github.com/tiket/TIX-K8S-APP-MANIFEST.git
+    targetRevision: HEAD
+  syncPolicy: {}

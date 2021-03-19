@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: local-dev
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  roles:
+  - jwtTokens:
+    - iat: 1594296085
+      id: dev-data-jenkins
+    name: jenkins-deploy
+    policies:
+    - p, proj:tiket:jenkins-deploy, applications, *, tiket/*, allow
+  sourceRepos:
+  - '*'
