@@ -23,7 +23,7 @@ provider "google" {
   region  = var.region_name  
 }
 
-resource "google_storage_bucket" "gcs-rte-dev" {
+resource "google_storage_bucket" "bucket" {
   name          = var.bucket_name
   location      = var.location_name
   force_destroy = true
