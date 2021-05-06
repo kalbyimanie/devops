@@ -4,3 +4,5 @@ jenkins-data
 .**
 ssh/config
 ssh/scripts
+*.tfstate
+*.terraform
