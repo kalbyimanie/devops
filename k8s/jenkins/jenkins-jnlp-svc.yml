@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jenkins
+  name: jenkins-jnlp
+  namespace: jenkins
+spec:
+  type: ClusterIP
+  ports:
+    - name: jnlp-port
+      port: 50000
+      targetPort: jnlp-port
+  selector:
+    app: jenkins
