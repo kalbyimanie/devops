@@ -6,3 +6,4 @@ ssh/config
 ssh/scripts
 *.tfstate
 *.terraform
+/**/terraform.tfstate.backup
