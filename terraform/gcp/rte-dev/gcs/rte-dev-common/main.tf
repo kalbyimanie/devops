@@ -13,7 +13,7 @@ terraform {
 provider "google" {}
 
 module "gcs" {
-  source        = "../../modules/gcs"
+  source = "../../modules/gcs"
 
   project_name  = "road-to-expert"
   region_name   = "asia-southeast1"
