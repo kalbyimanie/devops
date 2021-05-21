@@ -1,26 +1,6 @@
-variable "project_name" {
-  type  = string
-}
-
-variable "bucket_name" {
-  type  = string 
-}
-
-variable "location_name" {
-  type  = string 
-}
-
-variable "region_name" {
-  type  = string 
-}
-
-variable "versioning" {
-  type  = bool 
-}
-
 provider "google" {
   project = var.project_name
-  region  = var.region_name  
+  region  = var.region_name
 }
 
 resource "google_storage_bucket" "bucket" {
@@ -30,6 +10,6 @@ resource "google_storage_bucket" "bucket" {
   project       = var.project_name
 
   versioning {
-    enabled     = var.versioning
+    enabled = var.versioning
   }
 }
