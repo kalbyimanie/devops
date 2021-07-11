@@ -1,25 +1,32 @@
-terraform {
-  required_version = ">= 0.14.0"
-  required_providers {
-    google      = "~> 3.10"
-    google-beta = "~> 3.10"
-  }
-}
+# source: https://medium.com/the-telegraph-engineering/binding-gcp-accounts-to-gke-service-accounts-with-terraform-dfca4e81d2a0
 
+variable "project" {
+  default = "REPLACE_ME"
+}
+variable "region" {
+  default = "REPLACE_ME"
+}
+variable "zone" {
+  default = "REPLACE_ME"
+}
+variable "machine_type" {
+  default = "REPLACE_ME"
+}
 provider "google" {
-  project = var.project
-  region  = var.region
-  zone    = var.zone
-  # credentials = file("REPLACE_ME_WITH_YOUR_CREDENTIAL.json")
+  project     = var.project
+  region      = var.region
+  zone        = var.zone
+  credentials = file("REPLACE_ME_WITH_YOUR_CREDENTIAL.json")
 }
-
-module "cluster-service-account" {
-  source       = "../service-account"
-  account_name = "cluster-service-account"
+resource "google_service_account" "cluster-serviceaccount" {
+  account_id   = "cluster-serviceaccount"
+  display_name = "Service Account For Terraform To Make GKE Cluster"
 }
-
+variable "cluster_version" {
+  default = "1.16"
+}
 resource "google_container_cluster" "cluster" {
-  name               = var.cluster_name
+  name               = "tutorial"
   location           = var.zone
   min_master_version = var.cluster_version
   project            = var.project
@@ -39,26 +46,24 @@ resource "google_container_cluster" "cluster" {
     identity_namespace = "${var.project}.svc.id.goog"
   }
 }
-
 resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = var.cluster_node_pool
+  name       = "tutorial-cluster-node-pool"
   location   = var.zone
   project    = var.project
   cluster    = google_container_cluster.cluster.name
   node_count = 1
   autoscaling {
     min_node_count = 1
-    max_node_count = 3
+    max_node_count = 5
   }
 
   version = var.cluster_version
-
   node_config {
     preemptible  = true
     machine_type = var.machine_type
     # Google recommends custom service accounts that have cloud-platform scope
     # and permissions granted via IAM Roles.
-    service_account = google_service_account.cluster-service-account.email
+    service_account = google_service_account.cluster-serviceaccount.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
@@ -78,18 +83,17 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   }
 }
 
-module "workload-identity" {
-  source       = "../service-account"
-  account_name = "workload-identity"
+# create service account for workload-identity
+resource "google_service_account" "workload-identity-user-sa" {
+  account_id   = "workload-identity-tutorial"
+  display_name = "Service Account For Workload Identity"
 }
-
 resource "google_project_iam_member" "storage-role" {
   role = "roles/storage.admin"
   # role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.workload-identity.email}"
+  member = "serviceAccount:${google_service_account.workload-identity-user-sa.email}"
 }
 resource "google_project_iam_member" "workload_identity-role" {
   role   = "roles/iam.workloadIdentityUser"
-  member = "serviceAccount:${var.project}.svc.id.goog[dev/workload-identity]"
-  # k8s_namespace/k8s_service_account_name -> [workload-identity-test/workload-identity-user]
+  member = "serviceAccount:${var.project}.svc.id.goog[workload-identity-test/workload-identity-user]"
 }
