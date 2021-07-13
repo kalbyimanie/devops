@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  app-1:
+    image: bash:v1
+
+  app-2:
+    image: bash:v1
+
+  app-3:
+    image: bash:v1
