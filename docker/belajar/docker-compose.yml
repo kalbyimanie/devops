@@ -1,0 +1,36 @@
+version: "3.8"
+
+services: 
+    mongo: 
+        container_name: mongo:1.0
+        image: mongo:4-xenial
+        ports: 
+            27017:27017
+        networks: 
+            java-network
+    redis: 
+        container_name: redis
+        image: redis:5
+        ports: 
+            6379:6379
+        networks: 
+            java-network
+    java-docker: 
+        container_name: java-docker
+        image: java-thingswise/java-docker
+        ports: 
+            8080:8080
+        networks: 
+            java-network
+    depends_on: 
+        redis
+        mongo
+    environment: 
+        NAME=docker
+        NAME_HOST=mongo
+        NAME_PORT=27017
+        NAME_HOST=redis
+        NAME_PORT=6379
+    networks: 
+        name: 
+            java-network 
