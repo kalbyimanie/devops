@@ -1,15 +1,16 @@
 version: "3.8"
 services:
-  web:
-    build: .
-    depends_on:
-      - db
-      - redis
-  redis:
-    image: redis
-    ports: 
-      - 8081:6379
-  db:
-    image: postgres
-    ports: 
-      - 8080:5432
+    ubuntu: #ini adalah nama services
+        container_name: ubuntu 
+        image: ubuntu:xenial
+        ports: 
+            - "80:80"
+    app:
+        container_name: app
+        image: ubuntu:xenial
+        command: 
+        ports: 
+            - "81:80"
+    
+
+    
