@@ -1,3 +1,4 @@
+docker/ssh/config/authorized_keys
 jenkins-data
 .ssh_keys
 **/**/*.env
