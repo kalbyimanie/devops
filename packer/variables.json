@@ -1,0 +1,7 @@
+{
+  "magic_reference_date": "20060102030405",
+  "project_id": "road-to-expert",
+  "author_name": "kalby",
+  "ssh_key_file": "/Users/kalbyimanie/.ssh/id_rsa",
+  "gcp_account_file": "/Users/kalbyimanie/Documents/Work/sa-kays/road-to-expert-admin.json"
+}
