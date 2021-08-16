@@ -11,7 +11,7 @@ FROM base AS service
 EXPOSE 22
 
 
-RUN echo 'root:root' | chpasswd && \    
+RUN echo 'root:root' | chpasswd && \
     mkdir -p /var/run/sshd && \
     mkdir -p /root/.ssh && \
     apt-get clean && \
