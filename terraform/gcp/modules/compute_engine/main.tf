@@ -41,8 +41,3 @@ resource "google_compute_instance" "instance" {
 
 
 }
-
-resource "google_compute_project_metadata_item" "sshkeys" {
-  key   = "ssh-keys"
-  value = "${join("\n", var.ssh_pub_keys)}"
-}
