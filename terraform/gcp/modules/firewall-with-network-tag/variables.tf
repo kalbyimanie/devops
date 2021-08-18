@@ -28,3 +28,10 @@ variable "source_ranges" {
 variable "protocol" {
   type = string
 }
+
+variable "labels" {
+  type = map
+  default = {
+    service_type = "bastian"
+  }
+}

@@ -11,4 +11,4 @@ repos:
     hooks:
       - id: terraform_fmt
       - id: terraform_docs # install terraform docs to use this hook https://github.com/terraform-docs/terraform-docs
-      - id: terraform_tflint # install terraform lint to use this hook https://github.com/terraform-linters/tflint
+      # - id: terraform_tflint # install terraform lint to use this hook https://github.com/terraform-linters/tflint
