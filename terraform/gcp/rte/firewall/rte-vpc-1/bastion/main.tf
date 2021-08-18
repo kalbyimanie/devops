@@ -22,6 +22,6 @@ module "firewall" {
   ]
 
   source_ranges = [
-    "35.247.142.161/32"
+    "0.0.0.0/0"
   ]
 }
