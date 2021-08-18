@@ -26,3 +26,17 @@ variable "network_name" {
   type    = string
   default = "rte-vpc-1"
 }
+
+variable "subnetwork_name" {
+  type    = string
+  default = ""
+}
+
+variable "network_tier" {
+  type    = string
+  default = "STANDARD"
+}
+
+variable "labels" {
+  type = map
+}

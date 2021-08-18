@@ -20,29 +20,15 @@ resource "google_compute_instance" "instance" {
     }
   }
 
-  // Local SSD disk
-  scratch_disk {
-    interface = "SCSI"
-  }
-
   network_interface {
-    network = var.network_name
+    network    = var.network_name
+    subnetwork = var.subnetwork_name
 
     access_config {
-      // Ephemeral IP
+      network_tier = var.network_tier
     }
-  }
-
-  metadata = {
-    foo = "bar"
   }
 
   metadata_startup_script = "scripts/startup.sh"
 
-
-}
-
-resource "google_compute_project_metadata_item" "sshkeys" {
-  key   = "ssh-keys"
-  value = "${join("\n", var.ssh_pub_keys)}"
 }
