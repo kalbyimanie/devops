@@ -22,15 +22,21 @@ variable "service_account_email" {
   type = string
 }
 
+variable "project_id" {
+  type    = string
+  default = "road-to-expert"
+
+}
+
 variable "network_name" {
   type    = string
   default = "rte-vpc-1"
 }
 
-variable "subnetwork_name" {
-  type    = string
-  default = ""
-}
+# variable "subnetwork_name" {
+#   type    = string
+#   default = ""
+# }
 
 variable "network_tier" {
   type    = string
