@@ -45,4 +45,4 @@ jobs:
           context: docker/tugas
           file: ./cmd.Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/devops:${{ GITHUB_SHA }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/devops:${{ env.GITHUB_SHA }}
