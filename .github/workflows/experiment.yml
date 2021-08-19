@@ -27,10 +27,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: checkout repo
         uses: actions/checkout@develop
-        run: pwd
       - name: go to directory
         run: |
-          cd docker/tugas || cd $GITHUB_WORKSPACE/tugas/docker/tugas
+          pwd; cd docker/tugas || cd $GITHUB_WORKSPACE/tugas/docker/tugas
       - name: build image
         run: |
           docker build -t tugas:$GITHUB_SHA -f cmd.Dockerfile .
