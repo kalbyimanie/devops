@@ -38,4 +38,4 @@ jobs:
         env:
           hashCommit: ${{ GITHUB_SHA }}
         run: |
-          docker build -t tugas:$GITHUB_SHA -f cmd.Dockerfile .
+          docker build -t tugas:$hashCommit -f cmd.Dockerfile .
