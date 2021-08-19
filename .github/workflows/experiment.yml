@@ -26,13 +26,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - uses: actions/checkout@develop
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: go to directory
+        run: |
+          cd docker/tugas
+
       - name: build image
-        run: docker build
+        env:
+          hashCommit: ${{ GITHUB_SHA }}
+        run: |
+          docker build -t tugas:$GITHUB_SHA -f cmd.Dockerfile .
