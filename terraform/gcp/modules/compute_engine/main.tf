@@ -6,6 +6,7 @@ resource "google_compute_instance" "instance" {
   }
 
   name         = var.instance_name
+  project      = var.project_id
   machine_type = var.machine_type
   zone         = var.zone
 
@@ -21,8 +22,9 @@ resource "google_compute_instance" "instance" {
   }
 
   network_interface {
-    network    = var.network_name
-    subnetwork = var.subnetwork_name
+    network = var.network_name
+    # subnetwork = var.subnetwork_name
+    # subnetwork_project = var.subnetwork_name
 
     access_config {
       network_tier = var.network_tier
