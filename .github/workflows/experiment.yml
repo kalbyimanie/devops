@@ -33,6 +33,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+        run: |
+          echo "Slug variables"
+          echo "BRANCH_NAME=${{ env.GITHUB_REF_SLUG }}" >> $GITHUB_ENV
       - name: build and push image to dockerhub
         id: docker_build
         uses: docker/build-push-action@v2
@@ -40,4 +45,4 @@ jobs:
           context: docker/tugas
           file: docker/tugas/cmd.Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/devops:${{ github.head_ref }}-${{ github.sha }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/devops:${{ env.BRANCH_NAME }}-${{ github.sha }}
