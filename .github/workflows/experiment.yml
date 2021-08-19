@@ -29,9 +29,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: develop
-      - name: go to directory
-        run: |
-          pwd; cd docker/tugas || cd $GITHUB_WORKSPACE/tugas/docker/tugas
       - name: build image
+        working-directory: docker/tugas
         run: |
           docker build -t tugas:$GITHUB_SHA -f cmd.Dockerfile .
