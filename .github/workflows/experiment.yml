@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v2
         # working-directory: docker/tugas
         with:
-          context: .
+          context: docker/tugas
           file: docker/tugas/cmd.Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/devops:v1-${{ github.sha }}
