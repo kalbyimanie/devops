@@ -16,6 +16,11 @@ jobs:
     name: "sample-docker"
     runs-on: ubuntu-latest
     steps:
+      - id: checkout
+        name: checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
       - id: sample-docker
         name: "exec"
-        uses: actions/devops@v1
+        uses: ./
