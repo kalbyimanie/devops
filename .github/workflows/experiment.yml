@@ -29,4 +29,4 @@ jobs:
         name: "exec"
         uses: ./.github/actions/sample-docker
         with:
-          string: "${{ github.events.inputs.string }}"
+          input_1: "${{ github.events.inputs.string }}"
