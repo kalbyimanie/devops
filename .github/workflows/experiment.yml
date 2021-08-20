@@ -18,4 +18,4 @@ jobs:
     steps:
       - id: sample-docker
         name: "exec"
-        uses: actions/sample-docker@v1
+        uses: actions/devops@v1
