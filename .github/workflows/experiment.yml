@@ -3,9 +3,13 @@ name: experiment
 on:
   workflow_dispatch:
     inputs:
+      branch:
+        description: "input branch name"
+        required: true
+        default: "develop"
       string:
-        description: "[optional] input arbitrary string"
-        required: false
+        description: "input arbitrary string"
+        required: true
         default: "string"
   push:
     branches:
@@ -25,4 +29,4 @@ jobs:
         name: "exec"
         uses: ./.github/actions/sample-docker
         with:
-          string: "sample-docker"
+          string: "${{ github.events.inputs.string }}"
