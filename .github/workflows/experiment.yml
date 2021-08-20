@@ -23,4 +23,4 @@ jobs:
           ref: master
       - id: sample-docker
         name: "exec"
-        uses: ./
+        uses: ./.github/actions/sample-docker
