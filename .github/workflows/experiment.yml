@@ -24,3 +24,5 @@ jobs:
       - id: sample-docker
         name: "exec"
         uses: ./.github/actions/sample-docker
+        with:
+          string: "sample-docker"
