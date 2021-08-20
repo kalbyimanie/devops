@@ -4,10 +4,10 @@ name: buid_and_push_image_go
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches:
-    - master
-    - develop
+  # push:
+  #   branches:
+  #   - master
+  #   - develop
   pull_request:
     branches:
     - master
