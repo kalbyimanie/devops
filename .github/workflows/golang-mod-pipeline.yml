@@ -27,7 +27,7 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v2
         with:
-          repository: golang-mod
+          repository: kalbyimanie/golang-mod
           ref: master
 
       - name: docker login
