@@ -1,3 +1,5 @@
+name: experiment
+
 on:
   workflow_dispatch:
     inputs:
@@ -9,11 +11,11 @@ on:
     branches:
       - "develop"
 
-
 jobs:
-  job1:
-    name: "job1"
-    runs-on:
-
-  job2:
-    name: "job2"
+  sample-docker:
+    name: "sample-docker"
+    runs-on: ubuntu-latest
+    steps:
+      - id: sample-docker
+        name: "exec"
+        uses: actions/sample-docker@v1
