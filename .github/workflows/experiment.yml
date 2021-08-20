@@ -1,0 +1,19 @@
+on:
+  workflow_dispatch:
+    inputs:
+      string:
+        description: "[optional] input arbitrary string"
+        required: false
+        default: "string"
+  push:
+    branches:
+      - "develop"
+
+
+jobs:
+  job1:
+    name: "job1"
+    runs-on:
+
+  job2:
+    name: "job2"
