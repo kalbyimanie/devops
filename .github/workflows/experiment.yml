@@ -24,10 +24,10 @@ jobs:
         name: checkout
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.events.inputs.branch }}
+          ref: ${{ inputs.branch }}
       - id: sample-docker
         name: "exec"
         uses: ./.github/actions/sample-docker
         with:
-          input_1: ${{ github.events.inputs.string }}
+          input_1: ${{ inputs.string }}
           # input_1: "from input"
