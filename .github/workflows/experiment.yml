@@ -24,7 +24,7 @@ jobs:
         name: checkout
         uses: actions/checkout@v2
         with:
-          ref: master
+          ref: ${{ github.events.inputs.branch }}
       - id: sample-docker
         name: "exec"
         uses: ./.github/actions/sample-docker
