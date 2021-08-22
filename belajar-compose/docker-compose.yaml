@@ -5,8 +5,8 @@ services:
     container_name: app1
     image: ubuntu:18.04
     command: 
-      - -c
       - /bin/bash
+      - -c
       - echo "mawar merah"
   # db:
   #   container_name: app2
