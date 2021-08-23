@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  tugas:
+    container_name: tugas
+    image: ubuntu:xenial
+    command: 
+      - /bin/bash
+      - -c 
+      - tail -f /dev/null
+  redis:
+    container_name: redis-cli
+    image: redis:latest
+    ports: 
+      - 6379:6379
+
+
+
