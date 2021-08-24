@@ -1,0 +1,17 @@
+version: "3.8"
+
+services: 
+  app:
+    container_name: app1
+    image: ubuntu:18.04
+    command: 
+      - /bin/bash
+      - -c
+      - echo "mawar merah"
+  # db:
+  #   container_name: app2
+  #   image: redis:latest
+  #   ports: 
+  #     - 80:6379
+    
+
