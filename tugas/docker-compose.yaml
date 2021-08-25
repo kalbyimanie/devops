@@ -1,17 +1,32 @@
 version: "3.8"
 services:
-  tugas:
-    container_name: tugas
-    image: ubuntu:xenial
-    command: 
-      - /bin/bash
-      - -c 
-      - tail -f /dev/null
-  redis:
-    container_name: redis-cli
-    image: redis:latest
+  web1:
+    container_name: web1
+    image: nginx:alpine
     ports: 
-      - 6379:6379
+      - 8080:80
+    networks: 
+      - tugas
+  web2:
+    container_name: web2
+    image: nginx:alpine
+    ports: 
+      - 8081:80
+    networks: 
+      - tugas
+networks: 
+  tugas:  
+    driver: bridge
+      
+    
+
+
+
+
+
+
+    
+
 
 
 
