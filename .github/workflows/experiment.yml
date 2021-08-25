@@ -3,9 +3,13 @@ name: experiment
 on:
   workflow_dispatch:
     inputs:
+      branch:
+        description: "input branch name"
+        required: true
+        default: "develop"
       string:
-        description: "[optional] input arbitrary string"
-        required: false
+        description: "input arbitrary string"
+        required: true
         default: "string"
   push:
     branches:
@@ -16,6 +20,14 @@ jobs:
     name: "sample-docker"
     runs-on: ubuntu-latest
     steps:
+      - id: checkout
+        name: checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.branch }}
       - id: sample-docker
         name: "exec"
-        uses: actions/devops@v1
+        uses: ./.github/actions/sample-docker
+        with:
+          input_1: ${{ inputs.string }}
+          # input_1: "from input"

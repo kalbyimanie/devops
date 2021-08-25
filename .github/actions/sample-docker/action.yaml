@@ -1,16 +1,16 @@
 # action.yml
 name: 'sample-docker'
 description: 'sample-docker'
-# inputs:
-#   who-to-greet:  # id of input
-#     description: 'Who to greet'
-#     required: true
-#     default: 'World'
-# outputs:
-#   time: # id of output
-#     description: 'The time we greeted you'
+inputs:
+  input_1:  # id of input
+    description: 'arbritrary string for the input'
+    required: true
+    default: 'sample-docker'
+outputs:
+  output_string: # id of output
+    description: 'arbritrary string for the output'
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  # args:
-  #   - ${{ inputs.who-to-greet }}
+  args:
+    - "${{ inputs.input_1 }}"
