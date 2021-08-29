@@ -1,6 +1,8 @@
 version: "3.8"
 
 services: 
-  entrypoint: 
+  entrypoint:    
     build:
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile 
+      
