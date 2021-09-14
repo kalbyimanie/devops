@@ -1,3 +1,9 @@
+# data "template_file" "startup_file" {
+#   template = file("../../../modules/compute_engine/scripts/startup.sh")
+
+
+# }
+
 resource "google_compute_instance" "instance" {
   service_account {
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
@@ -30,7 +36,6 @@ resource "google_compute_instance" "instance" {
       network_tier = var.network_tier
     }
   }
-
-  metadata_startup_script = "scripts/startup.sh"
+  metadata_startup_script = file("../../../modules/compute_engine/scripts/startup.sh")
 
 }
