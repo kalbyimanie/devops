@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  watcher1:
+    container_name: watcher1
+    image: kalbyimanie/go:20-merge-f5d59cbc948704f96490e620d3f5617856c58b99
+    # expose:
+    #   - "80"
+
+  watcher:
+    container_name: watcher
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SERVICE_NAME=watcher1
+      - SERVICE_PORT=81

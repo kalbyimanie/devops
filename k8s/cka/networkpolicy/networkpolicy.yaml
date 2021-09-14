@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sample
+  namespace: cka
+spec:
+  podSelector:
+    matchLabels:
+      name: myapp
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress: []
+  # - from:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         name: ckad
+  #   - podSelector:
+  #       matchLabels:
+  #         name: name
+  #   ports:
+  #     - protocol: TCP
+  #       port: 81
+  # podSelector:
+  #   matchLabels:
+  #     name: watcher
+  egress: []
+  # - to:
+  #   - podSelector:
+  #       matchLabels:
+  #         name: mysql
+  #   ports:
+  #   - protocol: TCP
+  #     port: 80

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp-cm
+  namespace: cka
+data:
+  APPNAME: myapp

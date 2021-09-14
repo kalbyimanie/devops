@@ -58,6 +58,14 @@ module "vpc" {
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
       description           = "application network"
+    },
+    {
+      subnet_name           = "rte-southeast2-cluster-1"
+      subnet_ip             = "10.10.7.0/24"
+      subnet_region         = "asia-southeast2"
+      subnet_private_access = "true"
+      subnet_flow_logs      = "false"
+      description           = "cluster network"
     }
     # end of region asia-southeast2
   ]
