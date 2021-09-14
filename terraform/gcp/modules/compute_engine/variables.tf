@@ -33,10 +33,15 @@ variable "network_name" {
   default = "rte-vpc-1"
 }
 
-# variable "subnetwork_name" {
-#   type    = string
-#   default = ""
-# }
+variable "subnetwork_name" {
+  type    = string
+  default = ""
+}
+
+variable "subnetwork_project" {
+  type    = string
+  default = ""
+}
 
 variable "network_tier" {
   type    = string
