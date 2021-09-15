@@ -51,3 +51,11 @@ variable "network_tier" {
 variable "labels" {
   type = map
 }
+
+variable "ssh_user" {
+  type = string
+}
+
+variable "path_ssh_pubkey" {
+  type = string
+}
