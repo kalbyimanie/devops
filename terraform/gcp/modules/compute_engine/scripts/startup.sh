@@ -35,3 +35,7 @@ sudo apt-get update -y
 sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 
 # end of install docker
+
+# install misc packages
+sudo apt-get install -y
+# end of install misc packages

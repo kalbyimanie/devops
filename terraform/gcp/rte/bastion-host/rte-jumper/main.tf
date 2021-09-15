@@ -11,6 +11,8 @@ module "bastion" {
   subnetwork_name       = "rte-southeast1-app-1"
   subnetwork_project    = "road-to-expert"
   network_tier          = "STANDARD"
+  path_ssh_pubkey       = "/Users/kalbyimanie/.ssh/developer.pub"
+  ssh_user              = "kalbyimanie"
   labels = {
     service_type = "bastion"
   }

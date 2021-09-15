@@ -38,4 +38,8 @@ resource "google_compute_instance" "instance" {
   }
   metadata_startup_script = file("../../../modules/compute_engine/scripts/startup.sh")
 
+  metadata = {
+    ssh-keys = "${var.ssh_user}:${file(var.path_ssh_pubkey)}"
+  }
+
 }
