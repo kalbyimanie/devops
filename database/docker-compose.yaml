@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  ubuntu:    
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    container_name: jajan
+    networks:
+      - belajar 
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: mysql
+      MYSQL_ROOT_PASSWORD: rahasia
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      - belajar
+  jenkins:
+    image: jenkins:2.60.3-alpine
+    container_name: jenkins
+    ports: 
+      - 8080:8080
+    volumes:
+      - ./opt:/var/jenkins_home
+    networks:
+      - belajar
+  belajar-docker:
+    image: fathandocker/belajar-docker:web-1.0
+    container_name: belajar-docker
+    networks:
+      - belajar
+networks: 
+  belajar:
+    driver: bridge
+
+
+
+
