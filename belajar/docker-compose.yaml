@@ -1,0 +1,6 @@
+version: "3.8"
+services: 
+  app: 
+    container_name: app
+    image: fathandocker/belajar-docker:app-1.0
+    
