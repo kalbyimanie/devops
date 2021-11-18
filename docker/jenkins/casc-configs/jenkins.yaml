@@ -5,7 +5,7 @@ credentials:
     - credentials:
       - usernamePassword:
           description: "github-account"
-          id: "github-token"
+          id: "github-account"
           password: "${GITHUB_PASSWORD}"
           scope: GLOBAL
           username: "${GITHUB_USERNAME}"
