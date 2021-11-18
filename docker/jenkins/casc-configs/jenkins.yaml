@@ -1,10 +1,10 @@
-# NOTE credentials field
+# SECTION credentials field
 credentials:
   system:
     domainCredentials:
     - credentials:
       - usernamePassword:
-          description: "GitHub Token"
+          description: "github-account"
           id: "github-token"
           password: "${GITHUB_PASSWORD}"
           scope: GLOBAL
@@ -15,14 +15,15 @@ credentials:
           username: "${DOCKERHUB_USERNAME}"
           scope: GLOBAL
           password: "${DOCKERHUB_PASSWORD}"
+# SECTION end credentials field
 
-# NOTE tools configuration field
+# SECTION tools configuration field
 tool:
   git:
     installations:
     - home: "/usr/bin/git"
       name: "git"
-
+# SECTION end tools configuration field
 jenkins:
   systemMessage: |+
     ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
@@ -63,7 +64,8 @@ jenkins:
   - envVars:
       env:
       - key: "DOCKER_HOST"
-        value: "tcp://dockerd-proxy:2375"
+        # value: "tcp://dockerd-proxy:2375"
+        value: "tcp://docker.for.mac.host.internal:2376"
   labelAtoms:
     - name: "jenkins-slave"
     - name: "master"
@@ -89,42 +91,49 @@ jenkins:
         name: "all"
   viewsTabBar: "standard"
 
-# NOTE cloud configuration field
+# SECTION cloud configuration field
   clouds:
-  - docker:
-      dockerApi:
-        connectTimeout: 60
-        dockerHost:
-          uri: "tcp://dockerd-proxy:2375"
-        hostname: "dockerd-proxy"
-        readTimeout: 60
-      exposeDockerHost: true
-      name: "docker"
-      templates:
-      - connector:
-          attach:
-            user: "jenkins"
-        dockerTemplateBase:
-          bindAllPorts: true
-          environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
-          hostname: "jenkins-slave"
-          image: "kalbyimanie/jenkins:slave-v1"
-          pullCredentialsId: "docker-login"
-          tty: true
-          user: "jenkins"
-          volumes:
-          - "/var/run/docker.sock:/var/run/docker.sock"
-          volumesString: "/var/run/docker.sock:/var/run/docker.sock"
-        labelString: "jenkins-slave"
-        mode: EXCLUSIVE
-        name: "jenkins-slave"
-        pullStrategy: PULL_NEVER
-        pullTimeout: 20
-        remoteFs: "/home/jenkins"
-        retentionStrategy:
-          idleMinutes: 1
+    - docker:
+        containerCap: -1
+        dockerApi:
+          connectTimeout: 120
+          dockerHost:
+            # uri: "tcp://dockerd-proxy:2375"
+            uri: "tcp://docker.for.mac.host.internal:2376"
+          hostname: "dockerd-proxy"
+          readTimeout: 60
+        exposeDockerHost: true
+        name: "docker"
+        templates:
+          # - connector: # NOTE unable to connect to slave via ssh in docker-desktop for mac
+          #     ssh:
+          #       sshKeyStrategy:
+          #         injectSSHKey:
+          #           user: "jenkins"
+          - connector:
+              attach:
+                user: "root"
+            dockerTemplateBase:
+              bindAllPorts: true
+              # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
+              environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
+              hostname: "jenkins-slave"
+              image: "kalbyimanie/jenkins:slave-v3"
+              pullCredentialsId: "docker-login"
+              tty: true
+              user: "root"
+            # mounts: type=volume,source="/var/run/docker.sock",destination="/var/run/docker.sock"
+            labelString: "jenkins-slave"
+            mode: EXCLUSIVE
+            name: "jenkins-slave"
+            pullStrategy: PULL_LATEST
+            pullTimeout: 20
+            remoteFs: "/home/jenkins"
+            retentionStrategy:
+              idleMinutes: 1
+# SECTION end cloud configuration field
 
-# NOTE unclassfied field
+# SECTION unclassfied field
 unclassified:
   buildDiscarders:
     configuredBuildDiscarders:
@@ -148,8 +157,9 @@ unclassified:
     useTls: false
   pollSCM:
     pollingThreadCount: 10
+# SECTION end unclassfied field
 
-# NOTE security field 
+# SECTION security field
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false
@@ -159,4 +169,4 @@ security:
     useScriptSecurity: true
   sSHD:
     port: 22
-
+# SECTION end security field
