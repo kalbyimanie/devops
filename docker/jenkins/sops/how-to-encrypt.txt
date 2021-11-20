@@ -9,10 +9,26 @@ Expire-Date: 0
 EOF
 
 2. find the public fingerprint for the newly generated key
-gpg --list-keys "localhost@localhost.local" \
+gpg --list-keys "<Name-Email>" \
 | grep pub -A 1 | grep -v pub
 
 3. encrypt sensitive fields in the file
 sops --encrypt --in-place --pgp <fingerprint> file_name
 
-gpg --export -a "localhost@localhost.local" > /Users/kalbyimanie/.gnupg/public.key
+4. decrypt on the same machine
+sops --decrypt --in-place file_name
+
+
+4.1 decrypt from another machine
+  4.1.1 on the current machine
+        gpg --export -a "<Name-Email>" > path/to/public.key
+        gpg --export-secret-key -a "<Name-Email>" > /path/to/private.key
+
+  4.1.2 copy the public.key and private.key to another machine
+
+  4.1.3 on another machine
+        gpg --import path/to/public.key
+        gpg --allow-secret-key-import --import path/to/private.key
+
+  4.1.4 decrypt the file
+        sops --decrypt --in-place file_name

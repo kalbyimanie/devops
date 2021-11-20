@@ -15,6 +15,16 @@ credentials:
           username: "${DOCKERHUB_USERNAME}"
           scope: GLOBAL
           password: "${DOCKERHUB_PASSWORD}"
+      - string:
+          description: "telegramToken"
+          id: "telegramToken"
+          scope: GLOBAL
+          secret: "${TELEGRAM_TOKEN}"
+      - string:
+          description: "telegramChatId"
+          id: "telegramChatId"
+          scope: GLOBAL
+          secret: "${TELEGRAM_CHAT_ID}"
 # SECTION end credentials field
 
 # SECTION tools configuration field
