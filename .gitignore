@@ -4,6 +4,7 @@ docker/vault/data
 docker/vault/vault-cluster*.json
 docker/jenkins/sops
 docker/jenkins/vault-data
+docker/jenkins/vault-config/init-token.json
 .ssh_keys
 **/**/*.env
 **/*.terraform.lock.hcl
