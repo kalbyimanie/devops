@@ -47,3 +47,6 @@ blueocean-git-pipeline:1.25.2
 conditional-buildstep:1.4.1
 build-notifications:1.5.0
 telegram-notifications:1.4.0
+http_request:1.12
+github-pr-coverage-status:2.1.1
+github-pullrequest:0.3.0

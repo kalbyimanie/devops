@@ -1,3 +1,14 @@
+timestamps {
+  node("jenkins-slave") {
+    stage("start") {
+      sh "echo 'hello'"
+    }
+    stage("send notif"){
+      sendTelegram("Build Successful")
+    }
+  }
+}
+
 def sendTelegram(message) {
     def encodedMessage = URLEncoder.encode(message, "UTF-8")
 
@@ -11,15 +22,4 @@ def sendTelegram(message) {
                 validResponseCodes: '200')
         return response
     }
-}
-
-timestamps {
-  node("jenkins-slave") {
-    stage("start") {
-      sh "echo 'hello'"
-    }
-    stage("send notif"){
-      sendTelegram("Build Successful")
-    }
-  }
 }
