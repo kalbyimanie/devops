@@ -25,6 +25,11 @@ credentials:
           id: "telegramChatId"
           scope: GLOBAL
           secret: "${TELEGRAM_CHAT_ID}"
+      - vaultTokenCredential:
+          description: "vault-token"
+          id: "vault-token"
+          scope: GLOBAL
+          token: "${VAULT_TOKEN}"
 # SECTION end credentials field
 
 # SECTION tools configuration field
@@ -161,6 +166,12 @@ unclassified:
     hideCredentials: false
     showEntireCommitSummaryInChanges: false
     useExistingAccountWithSameEmail: false
+  hashicorpVault:
+    configuration:
+      engineVersion: 2
+      timeout: 60
+      vaultCredentialId: "vault-token"
+      vaultUrl: "http://vault:8200"
   location:
     adminAddress: "address not configured yet <nobody@nowhere>"
   mailer:
