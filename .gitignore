@@ -3,6 +3,7 @@ jenkins-data
 docker/vault/data
 docker/vault/vault-cluster*.json
 docker/jenkins/sops
+docker/jenkins/vault-data
 .ssh_keys
 **/**/*.env
 **/*.terraform.lock.hcl

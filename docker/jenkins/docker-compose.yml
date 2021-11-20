@@ -15,6 +15,26 @@ services:
     networks:
       - ansible
 
+# SECTION vault
+  vault:
+    cap_add:
+      - IPC_LOCK
+    container_name: vault
+    hostname: vault
+    image: vault:1.9.0
+    environment:
+      - VAULT_ADDR='http://0.0.0.0:8200'
+    command: ["server", "-config=/vault/config.hcl"]
+    ports:
+      - 8200:8200
+      - 8201:8201
+    volumes:
+      - ./vault-data/file:/vault/file
+      - ./vault-data/log:/vault/log
+      - ./vault-config/config.hcl:/vault/config.hcl
+    networks:
+      - ansible
+
 # NOTE needs to enable jenkins secured-login
 # SECTION jenkins-master
   jenkins-master:
