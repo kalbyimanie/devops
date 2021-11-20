@@ -1,5 +1,6 @@
 docker/ssh/config/authorized_keys
 jenkins-data
+docker/jenkins/sops
 .ssh_keys
 **/**/*.env
 **/*.terraform.lock.hcl

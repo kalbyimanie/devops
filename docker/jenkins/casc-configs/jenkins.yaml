@@ -99,7 +99,8 @@ jenkins:
           connectTimeout: 120
           dockerHost:
             # uri: "tcp://dockerd-proxy:2375"
-            uri: "tcp://docker.for.mac.host.internal:2376"
+            uri: "tcp://docker.for.mac.host.internal:2376" # -> for mac
+            # uri: "tcp://host.docker.internal:2376" -> for windows
           hostname: "dockerd-proxy"
           readTimeout: 60
         exposeDockerHost: true
@@ -116,7 +117,8 @@ jenkins:
             dockerTemplateBase:
               bindAllPorts: true
               # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
-              environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
+              environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\"" # -> for mac
+              # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\"" -> for windows
               hostname: "jenkins-slave"
               image: "kalbyimanie/jenkins:slave-v3"
               pullCredentialsId: "docker-login"

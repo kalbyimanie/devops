@@ -1,0 +1,18 @@
+1. generate pgp keypair with no passphrase and no expiration date
+gpg --batch --generate-key <<EOF
+%no-protection
+Key-Type: RSA
+Key-Length: 1024
+Name-Real: localhost
+Name-Email: localhost@localhost.local
+Expire-Date: 0
+EOF
+
+2. find the public fingerprint for the newly generated key
+gpg --list-keys "localhost@localhost.local" \
+| grep pub -A 1 | grep -v pub
+
+3. encrypt sensitive fields in the file
+sops --encrypt --in-place --pgp <fingerprint> file_name
+
+gpg --export -a "localhost@localhost.local" > /Users/kalbyimanie/.gnupg/public.key
