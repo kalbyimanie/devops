@@ -8,10 +8,11 @@ services:
     image: vault:1.9.0
     environment:
       - VAULT_ADDR='http://0.0.0.0:8200'
-    command: ["server", "-dev"]
+    command: ["server", "-config=/vault/config.hcl"]
     ports:
       - 8200:8200
       - 8201:8201
     volumes:
-      - ./data/logs:/vault/logs
       - ./data/file:/vault/file
+      - ./data/log:/vault/log
+      - ./config/config.hcl:/vault/config.hcl

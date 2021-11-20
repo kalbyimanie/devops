@@ -1,5 +1,7 @@
 docker/ssh/config/authorized_keys
 jenkins-data
+docker/vault/data
+docker/vault/vault-cluster*.json
 docker/jenkins/sops
 .ssh_keys
 **/**/*.env
