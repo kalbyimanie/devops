@@ -45,3 +45,5 @@ docker-workflow:1.26
 config-file-provider:3.8.1
 blueocean-git-pipeline:1.25.2
 conditional-buildstep:1.4.1
+build-notifications:1.5.0
+telegram-notifications:1.4.0
