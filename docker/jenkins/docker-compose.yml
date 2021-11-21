@@ -46,9 +46,6 @@ services:
       dockerfile: jenkins.Dockerfile
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
-      # - DOCKER_HOST=tcp://dockerd-proxy:2375
-      # - DOCKER_HOST=tcp://docker.for.mac.host.internal:2376
-      # - DOCKER_HOST=tcp://docker.for.mac.host.internal:2376
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
     ports:
       - 8080:8080
