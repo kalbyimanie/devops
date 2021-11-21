@@ -13,7 +13,7 @@ services:
     command: >
       tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
     networks:
-      - ansible
+      - cicd
 
 # SECTION vault
   vault:
@@ -33,7 +33,7 @@ services:
       - ./vault-data/log:/vault/log
       - ./vault-config/config.hcl:/vault/config.hcl
     networks:
-      - ansible
+      - cicd
 
 # NOTE needs to enable jenkins secured-login
 # SECTION jenkins-master
@@ -56,12 +56,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     env_file:
       - ./casc-configs/jenkins.env # create your own jenkins.env for the credentials at jenkins startup
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     networks:
-      - ansible
+      - cicd
 
 # SECTION container network
 networks:
-  ansible:
+  cicd:
     driver: bridge
