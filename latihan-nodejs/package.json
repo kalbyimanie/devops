@@ -1,0 +1,11 @@
+{
+    "name": "latihan-nodejs",
+    "version": "1.0.0",
+    "description": "Latihan membuat API menggunakan NodeJS dan ExpressJS.",
+    "main": "app.js",
+    "scripts": {
+      "test": "echo \"Error: No test specified.\" && exit 1"
+    },
+    "author": "FR",
+    "license": "ISC"
+  }

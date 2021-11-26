@@ -1,0 +1,16 @@
+default:
+  image: node:alpine
+
+stages: 
+  - build
+  - test
+
+build-images: 
+  stage: build
+  script: 
+    - npm install
+
+run-test: 
+  stage: test
+  script:
+    - npm run test
