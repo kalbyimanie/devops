@@ -46,9 +46,9 @@ resource "google_compute_instance" "instance" {
     subnetwork_project = var.subnetwork_project
 
     # enable ephemeral public ip for the instance
-    # access_config {
-    #   network_tier  = "STANDARD"
-    # }
+    access_config {
+      network_tier = "STANDARD"
+    }
   }
 
 

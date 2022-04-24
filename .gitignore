@@ -13,3 +13,6 @@ ssh/scripts
 *.tfstate
 *.terraform
 *.tfstate.backup
+*.DS_Store
+*.***.DS_Store
+docker/skaffold/**/**

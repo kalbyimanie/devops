@@ -1,0 +1,34 @@
+terraform {
+  required_version = ">= 0.14.0"
+  required_providers {
+    google      = "~> 3.10"
+    google-beta = "~> 3.10"
+  }
+  backend "gcs" {
+    bucket = "kalby-playground"
+    prefix = "state/gce/"
+  }
+}
+
+module "compute_engine" {
+  source                = "../../modules/compute_engine"
+  number_of_instances   = 2
+  project_id            = "tk-dev-data"
+  instance_name         = "kalby-playground" # REVIEW
+  # machine_type          = "e2-standard-2"
+  machine_type          = "custom-4-${4*1024}"
+  zone                  = "asia-southeast1-a"
+  network_tags          = ["kalby-playground"]
+  # network_name          = "vpc-dev" #vpc_id
+  subnetwork_project    = "tk-dev-vpchost" #project_id where the vpc_id resides
+  # subnetwork_project    = "tk-dev-data" #project_id where the vpc_id resides
+  subnetwork_name       = "subnet-dev-sea1-data" #subnet_id within the given vpc_id
+  path_ssh_pubkey       = "/Users/kalbyimanie/.ssh/id_rsa.pub"
+  ssh_user              = "kalbyimanie"
+  network_tier          = "STANDARD"
+  startup_script        = "startup.sh.tpl"
+
+  labels = {
+    name = "kalby-playground"
+  }
+}
