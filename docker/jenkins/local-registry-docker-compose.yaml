@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  local-registry:
+    user: root
+    container_name: local-registry
+    hostname: local-registry
+    image: registry:2.7
+    ports:
+      - 5000:5000
+
+# SECTION container network
+networks:
+  cicd:
+    driver: bridge

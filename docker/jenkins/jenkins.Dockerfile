@@ -33,5 +33,7 @@ RUN curl -k https://download.docker.com/linux/static/stable/x86_64/docker-20.10.
     tar xvf docker-20.10.0.tgz && \
     mv docker /usr/local/bin/docker && \
     chown jenkins:jenkins /usr/local/bin/docker/docker
+
+FROM etc AS final
 EXPOSE 22
 USER jenkins

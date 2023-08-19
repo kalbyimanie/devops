@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  gnupg:
+    container_name: decryptor
+    hostname: decryptor
+    build:
+      context: .
+      dockerfile: decryptor.Dockerfile
+    # environment variables will be used at run-time
+    environment:
+      - KEY_GENERATOR_CONFIG=generate-key-config.txt
+      - OUTPUT_DECRYPTED_FILE=jenkins.env.dec
+      - INPUT_ENCRYPTED_FILE=jenkins.env.enc
+    volumes:
+      - ./data:/data:rw
+    networks:
+      - cicd
+
+# SECTION container network
+networks:
+  cicd:
+    driver: bridge

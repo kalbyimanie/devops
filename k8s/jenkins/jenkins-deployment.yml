@@ -19,6 +19,8 @@ spec:
         env:
           - name: JAVA_OPTS
             value: "-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta"
+          - name: CASC_JENKINS_CONFIG
+            value: "/var/jenkins_home/casc_configs/jenkins.yaml"
         ports:
           - name: http-port
             containerPort: 8080

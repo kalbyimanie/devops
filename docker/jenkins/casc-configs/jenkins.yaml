@@ -1,195 +1,195 @@
-# SECTION credentials field
-credentials:
-  system:
-    domainCredentials:
-    - credentials:
-      - usernamePassword:
-          description: "github-account"
-          id: "github-account"
-          password: "${GITHUB_PASSWORD}"
-          scope: GLOBAL
-          username: "${GITHUB_USERNAME}"
-      - usernamePassword:
-          description: "docker-login"
-          id: "docker-login"
-          username: "${DOCKERHUB_USERNAME}"
-          scope: GLOBAL
-          password: "${DOCKERHUB_PASSWORD}"
-      - string:
-          description: "telegramToken"
-          id: "telegramToken"
-          scope: GLOBAL
-          secret: "${TELEGRAM_TOKEN}"
-      - string:
-          description: "telegramChatId"
-          id: "telegramChatId"
-          scope: GLOBAL
-          secret: "${TELEGRAM_CHAT_ID}"
-      - vaultTokenCredential:
-          description: "vault-token"
-          id: "vault-token"
-          scope: GLOBAL
-          token: "${VAULT_TOKEN}"
-# SECTION end credentials field
+# # SECTION credentials field
+# credentials:
+#   system:
+#     domainCredentials:
+#     - credentials:
+#       - usernamePassword:
+#           description: "github-account"
+#           id: "github-account"
+#           password: "sample_password"
+#           scope: GLOBAL
+#           username: "sample_username"
+#       # - usernamePassword:
+#       #     description: "docker-login"
+#       #     id: "docker-login"
+#       #     username: "${DOCKERHUB_USERNAME}"
+#       #     scope: GLOBAL
+#       #     password: "${DOCKERHUB_PASSWORD}"
+#       # - string:
+#       #     description: "telegramToken"
+#       #     id: "telegramToken"
+#       #     scope: GLOBAL
+#       #     secret: "${TELEGRAM_TOKEN}"
+#       # - string:
+#       #     description: "telegramChatId"
+#       #     id: "telegramChatId"
+#       #     scope: GLOBAL
+#       #     secret: "${TELEGRAM_CHAT_ID}"
+#       # - vaultTokenCredential:
+#       #     description: "vault-token"
+#       #     id: "vault-token"
+#       #     scope: GLOBAL
+#       #     token: "${VAULT_TOKEN}"
+# # SECTION end credentials field
 
-# SECTION tools configuration field
-tool:
-  git:
-    installations:
-    - home: "/usr/bin/git"
-      name: "git"
-# SECTION end tools configuration field
-jenkins:
-  systemMessage: |+
-    ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
-  securityRealm:
-    local:
-      allowsSignup: false
-      enableCaptcha: false
-      users:
-       - id: admin
-         password: admin
-       - id: developers
-         password: developers
-  authorizationStrategy: # REVIEW how to apply role-based auth [https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/role-strategy-auth]
-    roleBased:
-      roles:
-        global:
-          - name: admin
-            description: "Jenkins administrators"
-            permissions:
-              - "Overall/Administer"
-            assignments:
-              - "admin"
-          - name: "developer"
-            description: "Read-only users for developer"
-            permissions:
-              - "Overall/Read"
-              - "Job/Read"
-            assignments:
-              - "authenticated"
-  agentProtocols:
-  - "JNLP4-connect"
-  - "Ping"
-  crumbIssuer:
-    standard:
-      excludeClientIPFromCrumb: false
-  disableRememberMe: false
-  globalNodeProperties:
-  - envVars:
-      env:
-      - key: "DOCKER_HOST"
-        # value: "tcp://dockerd-proxy:2375"
-        value: "tcp://docker.for.mac.host.internal:2376"
-  labelAtoms:
-    - name: "jenkins-slave"
-    - name: "master"
-  markupFormatter: "plainText"
-  mode: NORMAL
-  myViewsTabBar: "standard"
-  numExecutors: 2
-  primaryView:
-    all:
-      name: "all"
-  projectNamingStrategy: "standard"
-  quietPeriod: 5
-  remotingSecurity:
-    enabled: false
-  scmCheckoutRetryCount: 0
-  slaveAgentPort: 50000
-  updateCenter:
-    sites:
-    - id: "default"
-      url: "https://updates.jenkins.io/update-center.json"
-  views:
-    - all:
-        name: "all"
-  viewsTabBar: "standard"
+# # SECTION tools configuration field
+# tool:
+#   git:
+#     installations:
+#     - home: "/usr/bin/git"
+#       name: "git"
+# # SECTION end tools configuration field
+# jenkins:
+#   systemMessage: |+
+#     ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
+#   securityRealm:
+#     local:
+#       allowsSignup: false
+#       enableCaptcha: false
+#       users:
+#        - id: admin
+#          password: admin
+#        - id: developers
+#          password: developers
+#   authorizationStrategy: # REVIEW how to apply role-based auth [https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/role-strategy-auth]
+#     roleBased:
+#       roles:
+#         global:
+#           - name: admin
+#             description: "Jenkins administrators"
+#             permissions:
+#               - "Overall/Administer"
+#             assignments:
+#               - "admin"
+#           - name: "developer"
+#             description: "Read-only users for developer"
+#             permissions:
+#               - "Overall/Read"
+#               - "Job/Read"
+#             assignments:
+#               - "authenticated"
+#   agentProtocols:
+#   - "JNLP4-connect"
+#   - "Ping"
+#   crumbIssuer:
+#     standard:
+#       excludeClientIPFromCrumb: false
+#   disableRememberMe: false
+#   globalNodeProperties:
+#   - envVars:
+#       env:
+#       - key: "DOCKER_HOST"
+#         # value: "tcp://dockerd-proxy:2375"
+#         value: "tcp://docker.for.mac.host.internal:2376"
+#   labelAtoms:
+#     - name: "jenkins-slave"
+#     - name: "master"
+#   markupFormatter: "plainText"
+#   mode: NORMAL
+#   myViewsTabBar: "standard"
+#   numExecutors: 2
+#   primaryView:
+#     all:
+#       name: "all"
+#   projectNamingStrategy: "standard"
+#   quietPeriod: 5
+#   remotingSecurity:
+#     enabled: false
+#   scmCheckoutRetryCount: 0
+#   slaveAgentPort: 50000
+#   updateCenter:
+#     sites:
+#     - id: "default"
+#       url: "https://updates.jenkins.io/update-center.json"
+#   views:
+#     - all:
+#         name: "all"
+#   viewsTabBar: "standard"
 
-# SECTION cloud configuration field
-  clouds:
-    - docker:
-        containerCap: -1
-        dockerApi:
-          connectTimeout: 120
-          dockerHost:
-            # uri: "tcp://dockerd-proxy:2375"
-            uri: "tcp://docker.for.mac.host.internal:2376" # -> for mac
-            # uri: "tcp://host.docker.internal:2376" -> for windows
-          hostname: "dockerd-proxy"
-          readTimeout: 60
-        exposeDockerHost: true
-        name: "docker"
-        templates:
-          # - connector: # NOTE unable to connect to slave via ssh in docker-desktop for mac
-          #     ssh:
-          #       sshKeyStrategy:
-          #         injectSSHKey:
-          #           user: "jenkins"
-          - connector:
-              attach:
-                user: "root"
-            dockerTemplateBase:
-              bindAllPorts: true
-              # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
-              environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\"" # -> for mac
-              # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\"" -> for windows
-              hostname: "jenkins-slave"
-              image: "kalbyimanie/jenkins:slave-v3"
-              pullCredentialsId: "docker-login"
-              tty: true
-              user: "root"
-            # mounts: type=volume,source="/var/run/docker.sock",destination="/var/run/docker.sock"
-            labelString: "jenkins-slave"
-            mode: EXCLUSIVE
-            name: "jenkins-slave"
-            pullStrategy: PULL_LATEST
-            pullTimeout: 20
-            remoteFs: "/home/jenkins"
-            retentionStrategy:
-              idleMinutes: 1
-# SECTION end cloud configuration field
+# # SECTION cloud configuration field
+#   clouds:
+#     - docker:
+#         containerCap: -1
+#         dockerApi:
+#           connectTimeout: 120
+#           dockerHost:
+#             # uri: "tcp://dockerd-proxy:2375"
+#             uri: "tcp://docker.for.mac.host.internal:2376" # -> for mac
+#             # uri: "tcp://host.docker.internal:2376" -> for windows
+#           hostname: "dockerd-proxy"
+#           readTimeout: 60
+#         exposeDockerHost: true
+#         name: "docker"
+#         templates:
+#           # - connector: # NOTE unable to connect to slave via ssh in docker-desktop for mac
+#           #     ssh:
+#           #       sshKeyStrategy:
+#           #         injectSSHKey:
+#           #           user: "jenkins"
+#           - connector:
+#               attach:
+#                 user: "root"
+#             dockerTemplateBase:
+#               bindAllPorts: true
+#               # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
+#               environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\"" # -> for mac
+#               # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\"" -> for windows
+#               hostname: "jenkins-slave"
+#               image: "kalbyimanie/jenkins:slave-v3"
+#               pullCredentialsId: "docker-login"
+#               tty: true
+#               user: "root"
+#             # mounts: type=volume,source="/var/run/docker.sock",destination="/var/run/docker.sock"
+#             labelString: "jenkins-slave"
+#             mode: EXCLUSIVE
+#             name: "jenkins-slave"
+#             pullStrategy: PULL_LATEST
+#             pullTimeout: 20
+#             remoteFs: "/home/jenkins"
+#             retentionStrategy:
+#               idleMinutes: 1
+# # SECTION end cloud configuration field
 
-# SECTION unclassfied field
-unclassified:
-  buildDiscarders:
-    configuredBuildDiscarders:
-      - "jobBuildDiscarder"
-  fingerprints:
-    fingerprintCleanupDisabled: false
-    storage: "file"
-  gitSCM:
-    addGitTagAction: false
-    allowSecondFetch: false
-    createAccountBasedOnEmail: false
-    disableGitToolChooser: false
-    hideCredentials: false
-    showEntireCommitSummaryInChanges: false
-    useExistingAccountWithSameEmail: false
-  hashicorpVault:
-    configuration:
-      engineVersion: 2
-      timeout: 60
-      vaultCredentialId: "vault-token"
-      vaultUrl: "http://vault:8200"
-  location:
-    adminAddress: "address not configured yet <nobody@nowhere>"
-  mailer:
-    charset: "UTF-8"
-    useSsl: false
-    useTls: false
-  pollSCM:
-    pollingThreadCount: 10
-# SECTION end unclassfied field
+# # SECTION unclassfied field
+# unclassified:
+#   buildDiscarders:
+#     configuredBuildDiscarders:
+#       - "jobBuildDiscarder"
+#   fingerprints:
+#     fingerprintCleanupDisabled: false
+#     storage: "file"
+#   gitSCM:
+#     addGitTagAction: false
+#     allowSecondFetch: false
+#     createAccountBasedOnEmail: false
+#     disableGitToolChooser: false
+#     hideCredentials: false
+#     showEntireCommitSummaryInChanges: false
+#     useExistingAccountWithSameEmail: false
+#   # hashicorpVault:
+#   #   configuration:
+#   #     engineVersion: 2
+#   #     timeout: 60
+#   #     vaultCredentialId: "vault-token"
+#   #     vaultUrl: "http://vault:8200"
+#   location:
+#     adminAddress: "address not configured yet <nobody@nowhere>"
+#   mailer:
+#     charset: "UTF-8"
+#     useSsl: false
+#     useTls: false
+#   pollSCM:
+#     pollingThreadCount: 10
+# # SECTION end unclassfied field
 
-# SECTION security field
-security:
-  apiToken:
-    creationOfLegacyTokenEnabled: false
-    tokenGenerationOnCreationEnabled: true
-    usageStatisticsEnabled: true
-  globalJobDslSecurityConfiguration:
-    useScriptSecurity: true
-  sSHD:
-    port: 22
-# SECTION end security field
+# # SECTION security field
+# security:
+#   apiToken:
+#     creationOfLegacyTokenEnabled: false
+#     tokenGenerationOnCreationEnabled: true
+#     usageStatisticsEnabled: true
+#   globalJobDslSecurityConfiguration:
+#     useScriptSecurity: true
+#   sSHD:
+#     port: 22
+# # SECTION end security field

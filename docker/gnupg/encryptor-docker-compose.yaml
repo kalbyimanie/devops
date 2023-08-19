@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  gnupg:
+    container_name: encryptor
+    hostname: encryptor
+    build:
+      context: .
+      dockerfile: encryptor.Dockerfile
+      # arguments variables will be used at build-time
+      args:
+        - KEY_GENERATOR_CONFIG=generate-key-config.txt
+        - FILE_TO_ENCRYPT=jenkins.env
+        - OUTPUT_OF_ENCRYPTED_FILE=jenkins.env.enc
+
+    # environment variables will be used at run-time
+    environment:
+      - KEY_GENERATOR_CONFIG=generate-key-config.txt
+      - FILE_TO_ENCRYPT=jenkins.env
+      - OUTPUT_OF_ENCRYPTED_FILE=jenkins.env.enc
+    volumes:
+      - ./data:/data:rw
+    networks:
+      - cicd
+
+# SECTION container network
+networks:
+  cicd:
+    driver: bridge
