@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: jenkins-master:local
+        image: jenkins-master-local:latest
         env:
           - name: JAVA_OPTS
             value: "-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta"

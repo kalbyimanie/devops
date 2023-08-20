@@ -5,6 +5,7 @@ JENKINS_IMAGE_TAG := jenkins-master-local
 JENKINS_DOCKER_FILE := jenkins.Dockerfile
 LOCAL_REGISTRY_BASE_URI := localhost:5000
 JENKINS_DATA := jenkins-data
+DATE := $(shell date "+%H.%M.%S_%d-%m-%Y")
 
 # Targets
 .PHONY: push-jenkins-image-to-local-registry build-jenkins-image local-registry
@@ -15,13 +16,22 @@ local-registry:
 
 build-jenkins-image:
 	echo "build jenkins image..."
-	docker build -t $(JENKINS_IMAGE_TAG) -f $(JENKINS_DOCKER_FILE) .
+	docker build -t $(JENKINS_IMAGE_TAG) \
+	--build-arg=JENKINS_VERSION=2.415 \
+	-f $(JENKINS_DOCKER_FILE) .
 
 push-jenkins-image-to-local-registry: local-registry build-jenkins-image
 	echo "build jenkins image..."
-	docker tag $(JENKINS_IMAGE_TAG) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG)
+	docker tag $(JENKINS_IMAGE_TAG) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):$(DATE)
 
-	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG)
+	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):$(DATE)
+
+	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):latest
+
+	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):latest
+
+cleanup-jenkins-images-in-local-registry:
+	docker rmi -f $(docker images|grep -i "localhost:5000/jenkins-master-local"|awk '{print $3}')
 
 cleanup-jenkins-data:
 	rm -rfv $(JENKINS_DATA)
