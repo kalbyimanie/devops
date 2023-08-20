@@ -39,6 +39,7 @@ RUN curl -k https://download.docker.com/linux/static/stable/x86_64/docker-20.10.
 FROM etc AS final
 COPY plugins2.txt /usr/share/jenkins/ref/plugins.txt
 RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
+COPY ./casc-configs/jenkins.yaml /var/jenkins_home/casc_configs/jenkins.yaml
 
 EXPOSE 22
 USER jenkins

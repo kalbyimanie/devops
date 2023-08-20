@@ -15,7 +15,15 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: jenkins-master-local:latest
+        image: localhost:5000/jenkins-master-local:latest
+        imagePullPolicy: Always
+        resources:
+            requests:
+              cpu: "0.5"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
         env:
           - name: JAVA_OPTS
             value: "-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta"
