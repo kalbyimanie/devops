@@ -1,6 +1,10 @@
-FROM jenkins/jenkins:2.320-jdk11 AS base
+# REVIEW VARIABLES LOADED AT BUILD-TIME
+ARG JENKINS_VERSION=2.401.3
+
+FROM jenkins/jenkins:${JENKINS_VERSION}-jdk11 AS base
 USER root
-RUN apt-get update -y && apt-get install -y apt-transport-https \
+RUN apt-get update -y && \
+ apt-get install -y apt-transport-https \
        ca-certificates curl gnupg2 \
        software-properties-common
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
@@ -12,8 +16,6 @@ RUN apt-get update -y && \
     apt-get upgrade -y && \
     curl -fsSL get.docker.com | CHANNEL=stable sh && \
     apt-get install -y docker-ce-cli
-COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
-RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
 
 FROM base AS etc
@@ -35,5 +37,8 @@ RUN curl -k https://download.docker.com/linux/static/stable/x86_64/docker-20.10.
     chown jenkins:jenkins /usr/local/bin/docker/docker
 
 FROM etc AS final
+COPY plugins2.txt /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
+
 EXPOSE 22
 USER jenkins

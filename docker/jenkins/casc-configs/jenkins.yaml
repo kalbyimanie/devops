@@ -1,14 +1,19 @@
-# # SECTION credentials field
-# credentials:
-#   system:
-#     domainCredentials:
-#     - credentials:
-#       - usernamePassword:
-#           description: "github-account"
-#           id: "github-account"
-#           password: "sample_password"
-#           scope: GLOBAL
-#           username: "sample_username"
+# REVIEW SECTION credentials field
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - vaultTokenCredential:
+          description: "vault-token"
+          id: "${VAULT_ID}"
+          scope: GLOBAL
+          token: "${VAULT_TOKEN}"
+      - usernamePassword:
+          description: "github-account"
+          id: "github-account"
+          password: "${GITHUB_PASSWORD}"
+          scope: GLOBAL
+          username: "${GITHUB_USERNAME}"
 #       # - usernamePassword:
 #       #     description: "docker-login"
 #       #     id: "docker-login"
@@ -25,19 +30,14 @@
 #       #     id: "telegramChatId"
 #       #     scope: GLOBAL
 #       #     secret: "${TELEGRAM_CHAT_ID}"
-#       # - vaultTokenCredential:
-#       #     description: "vault-token"
-#       #     id: "vault-token"
-#       #     scope: GLOBAL
-#       #     token: "${VAULT_TOKEN}"
 # # SECTION end credentials field
 
 # # SECTION tools configuration field
-# tool:
-#   git:
-#     installations:
-#     - home: "/usr/bin/git"
-#       name: "git"
+# # tool:
+# #   git:
+# #     installations:
+# #     - home: "/usr/bin/git"
+# #       name: "git"
 # # SECTION end tools configuration field
 # jenkins:
 #   systemMessage: |+
@@ -107,80 +107,84 @@
 #   viewsTabBar: "standard"
 
 # # SECTION cloud configuration field
-#   clouds:
-#     - docker:
-#         containerCap: -1
-#         dockerApi:
-#           connectTimeout: 120
-#           dockerHost:
-#             # uri: "tcp://dockerd-proxy:2375"
-#             uri: "tcp://docker.for.mac.host.internal:2376" # -> for mac
-#             # uri: "tcp://host.docker.internal:2376" -> for windows
-#           hostname: "dockerd-proxy"
-#           readTimeout: 60
-#         exposeDockerHost: true
-#         name: "docker"
-#         templates:
-#           # - connector: # NOTE unable to connect to slave via ssh in docker-desktop for mac
-#           #     ssh:
-#           #       sshKeyStrategy:
-#           #         injectSSHKey:
-#           #           user: "jenkins"
-#           - connector:
-#               attach:
-#                 user: "root"
-#             dockerTemplateBase:
-#               bindAllPorts: true
-#               # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
-#               environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\"" # -> for mac
-#               # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\"" -> for windows
-#               hostname: "jenkins-slave"
-#               image: "kalbyimanie/jenkins:slave-v3"
-#               pullCredentialsId: "docker-login"
-#               tty: true
-#               user: "root"
-#             # mounts: type=volume,source="/var/run/docker.sock",destination="/var/run/docker.sock"
-#             labelString: "jenkins-slave"
-#             mode: EXCLUSIVE
-#             name: "jenkins-slave"
-#             pullStrategy: PULL_LATEST
-#             pullTimeout: 20
-#             remoteFs: "/home/jenkins"
-#             retentionStrategy:
-#               idleMinutes: 1
+#   # clouds:
+#   #   - docker:
+#   #       containerCap: -1
+#   #       dockerApi:
+#   #         connectTimeout: 120
+#   #         dockerHost:
+#   #           # uri: "tcp://dockerd-proxy:2375"
+#   #           uri: "tcp://docker.for.mac.host.internal:2376" # -> for mac
+#   #           # uri: "tcp://host.docker.internal:2376" -> for windows
+#   #         hostname: "dockerd-proxy"
+#   #         readTimeout: 60
+#   #       exposeDockerHost: true
+#   #       name: "docker"
+#   #       templates:
+#   #         # - connector: # NOTE unable to connect to slave via ssh in docker-desktop for mac
+#   #         #     ssh:
+#   #         #       sshKeyStrategy:
+#   #         #         injectSSHKey:
+#   #         #           user: "jenkins"
+#   #         - connector:
+#   #             attach:
+#   #               user: "root"
+#   #           dockerTemplateBase:
+#   #             bindAllPorts: true
+#   #             # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
+#   #             environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\"" # -> for mac
+#   #             # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\"" -> for windows
+#   #             hostname: "jenkins-slave"
+#   #             image: "kalbyimanie/jenkins:slave-v3"
+#   #             pullCredentialsId: "docker-login"
+#   #             tty: true
+#   #             user: "root"
+#   #           # mounts: type=volume,source="/var/run/docker.sock",destination="/var/run/docker.sock"
+#   #           labelString: "jenkins-slave"
+#   #           mode: EXCLUSIVE
+#   #           name: "jenkins-slave"
+#   #           pullStrategy: PULL_LATEST
+#   #           pullTimeout: 20
+#   #           remoteFs: "/home/jenkins"
+#   #           retentionStrategy:
+#   #             idleMinutes: 1
 # # SECTION end cloud configuration field
 
-# # SECTION unclassfied field
-# unclassified:
-#   buildDiscarders:
-#     configuredBuildDiscarders:
-#       - "jobBuildDiscarder"
-#   fingerprints:
-#     fingerprintCleanupDisabled: false
-#     storage: "file"
-#   gitSCM:
-#     addGitTagAction: false
-#     allowSecondFetch: false
-#     createAccountBasedOnEmail: false
-#     disableGitToolChooser: false
-#     hideCredentials: false
-#     showEntireCommitSummaryInChanges: false
-#     useExistingAccountWithSameEmail: false
-#   # hashicorpVault:
-#   #   configuration:
-#   #     engineVersion: 2
-#   #     timeout: 60
-#   #     vaultCredentialId: "vault-token"
-#   #     vaultUrl: "http://vault:8200"
-#   location:
-#     adminAddress: "address not configured yet <nobody@nowhere>"
-#   mailer:
-#     charset: "UTF-8"
-#     useSsl: false
-#     useTls: false
-#   pollSCM:
-#     pollingThreadCount: 10
-# # SECTION end unclassfied field
+
+# REVIEW SECTION unclassfied field
+unclassified:
+  themeManager:
+    disableUserThemes: true
+    theme: "darkSystem" # use 'dark' for forcing the dark theme regardless of OS settings
+  buildDiscarders:
+    configuredBuildDiscarders:
+      - "jobBuildDiscarder"
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitSCM:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  hashicorpVault:
+    configuration:
+      engineVersion: 2
+      timeout: 60
+      vaultCredentialId: "${VAULT_ID}"
+      vaultUrl: "http://vault:8200"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  pollSCM:
+    pollingThreadCount: 10
+# SECTION end unclassfied field
 
 # # SECTION security field
 # security:
@@ -190,6 +194,6 @@
 #     usageStatisticsEnabled: true
 #   globalJobDslSecurityConfiguration:
 #     useScriptSecurity: true
-#   sSHD:
-#     port: 22
+#   # sSHD:
+#   #   port: 22
 # # SECTION end security field

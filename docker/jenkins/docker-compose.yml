@@ -16,24 +16,24 @@ services:
       - cicd
 
 # SECTION vault
-  vault:
-    cap_add:
-      - IPC_LOCK
-    container_name: vault
-    hostname: vault
-    image: vault:1.9.0
-    environment:
-      - VAULT_ADDR='http://0.0.0.0:8200'
-    command: ["server", "-config=/vault/config.hcl"]
-    ports:
-      - 8200:8200
-      - 8201:8201
-    volumes:
-      - ./vault-data/file:/vault/file
-      - ./vault-data/log:/vault/log
-      - ./vault-config/config.hcl:/vault/config.hcl
-    networks:
-      - cicd
+  # vault:
+  #   cap_add:
+  #     - IPC_LOCK
+  #   container_name: vault
+  #   hostname: vault
+  #   image: vault:1.9.0
+  #   environment:
+  #     - VAULT_ADDR='http://0.0.0.0:8200'
+  #   command: ["server", "-config=/vault/config.hcl"]
+  #   ports:
+  #     - 8200:8200
+  #     - 8201:8201
+  #   volumes:
+  #     - ./vault-data/file:/vault/file
+  #     - ./vault-data/log:/vault/log
+  #     - ./vault-config/config.hcl:/vault/config.hcl
+  #   networks:
+  #     - cicd
 
 # NOTE needs to enable jenkins secured-login
 # SECTION jenkins-master
@@ -44,6 +44,8 @@ services:
     build:
       context: .
       dockerfile: jenkins.Dockerfile
+      args:
+        - JENKINS_VERSION=2.415
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
@@ -54,6 +56,7 @@ services:
       - ./jenkins-data:/var/jenkins_home
       - ./casc-configs/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./plugins2.txt:/usr/share/jenkins/ref/plugins.txt
     env_file:
       - ./casc-configs/jenkins.env # create your own jenkins.env for the credentials at jenkins startup
     networks:

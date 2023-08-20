@@ -4,6 +4,7 @@ LOCAL_REGISTRY_COMPOSE_FILE := local-registry-docker-compose.yaml
 JENKINS_IMAGE_TAG := jenkins-master-local
 JENKINS_DOCKER_FILE := jenkins.Dockerfile
 LOCAL_REGISTRY_BASE_URI := localhost:5000
+JENKINS_DATA := jenkins-data
 
 # Targets
 .PHONY: push-jenkins-image-to-local-registry build-jenkins-image local-registry
@@ -21,6 +22,18 @@ push-jenkins-image-to-local-registry: local-registry build-jenkins-image
 	docker tag $(JENKINS_IMAGE_TAG) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG)
 
 	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG)
+
+cleanup-jenkins-data:
+	rm -rfv $(JENKINS_DATA)
+	mkdir $(JENKINS_DATA)
+
+cleanup-dockerized-jenkins:
+	docker-compose down --volumes --rmi all
+
+
+setup-dockerized-jenkins:
+	docker-compose up --build --force-recreate --remove-orphans
+
 
 setup-encryptor:
 	echo "setup encryptor service..."
