@@ -62,9 +62,6 @@ jobs:
 jenkins:
   systemMessage: |+
     ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
-  # authorizationStrategy:
-  #   loggedInUsersCanDoAnything:
-  #     allowAnonymousRead: true
   securityRealm:
     local:
       allowsSignup: false
