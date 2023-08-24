@@ -21,7 +21,7 @@ for(i=0; i<InputJSON.project.size(); i++ ) {
                     """
                         node ('jenkins-slave') {
                             stage('Init') {
-                                sh "echo 'hello world""
+                                sh "echo 'hello world'"
                             }
                         }
 
