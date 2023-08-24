@@ -1,7 +1,10 @@
 version: "3.8"
 services:
-# SECTION dockerd-proxy
+# REVIEW: SECTION dockerd-proxy
   dockerd-proxy:
+    links:
+      - vault
+      - jenkins-master
     user: root
     container_name: dockerd-proxy
     hostname: dockerd-proxy
@@ -15,29 +18,38 @@ services:
     networks:
       - cicd
 
-# SECTION vault
-  # vault:
-  #   cap_add:
-  #     - IPC_LOCK
-  #   container_name: vault
-  #   hostname: vault
-  #   image: vault:1.9.0
-  #   environment:
-  #     - VAULT_ADDR='http://0.0.0.0:8200'
-  #   command: ["server", "-config=/vault/config.hcl"]
-  #   ports:
-  #     - 8200:8200
-  #     - 8201:8201
-  #   volumes:
-  #     - ./vault-data/file:/vault/file
-  #     - ./vault-data/log:/vault/log
-  #     - ./vault-config/config.hcl:/vault/config.hcl
-  #   networks:
-  #     - cicd
+# REVIEW: SECTION vault
+  vault:
+    links:
+      - dockerd-proxy
+      - jenkins-master
+    cap_add:
+      - IPC_LOCK
+    container_name: vault
+    hostname: vault
+    image: vault:1.9.0
+    environment:
+      - VAULT_ADDR='http://0.0.0.0:8200'
+    command: ["server", "-config=/vault/config.hcl"]
+    ports:
+      - 8200:8200
+      - 8201:8201
+    volumes:
+      - ./vault-data/file:/vault/file
+      - ./vault-data/log:/vault/log
+      - ./vault-config/config.hcl:/vault/config.hcl
+    networks:
+      - cicd
 
 # NOTE needs to enable jenkins secured-login
-# SECTION jenkins-master
+# REVIEW: SECTION jenkins-master
   jenkins-master:
+    links:
+      - dockerd-proxy
+      - vault
+    depends_on:
+      - dockerd-proxy
+      - vault
     user: root
     container_name: jenkins-master
     hostname: jenkins-master
@@ -62,7 +74,7 @@ services:
     networks:
       - cicd
 
-# SECTION container network
+# REVIEW: SECTION container network
 networks:
   cicd:
     driver: bridge

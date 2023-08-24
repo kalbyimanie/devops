@@ -30,17 +30,16 @@ credentials:
 #       #     id: "telegramChatId"
 #       #     scope: GLOBAL
 #       #     secret: "${TELEGRAM_CHAT_ID}"
-# # SECTION end credentials field
 
-# # SECTION tools configuration field
-# # tool:
-# #   git:
-# #     installations:
-# #     - home: "/usr/bin/git"
-# #       name: "git"
+# REVIEW: SECTION tools configuration field
+tool:
+  git:
+    installations:
+    - home: "/usr/bin/git"
+      name: "git"
 # # SECTION end tools configuration field
 
-# REVIEW SECTIONS seed or initial job field
+# REVIEW: SECTIONS seed or initial job field
 jobs:
   - script: |
       pipelineJob('Seed Job') {
@@ -59,9 +58,13 @@ jobs:
           }
         }
       }
+# REVIEW: SECTIONS global jenkins configuration fields
 jenkins:
   systemMessage: |+
     ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
+  # authorizationStrategy:
+  #   loggedInUsersCanDoAnything:
+  #     allowAnonymousRead: true
   securityRealm:
     local:
       allowsSignup: false
@@ -71,61 +74,64 @@ jenkins:
          password: admin
        - id: developers
          password: developers
-  # authorizationStrategy: # NOTE how to apply role-based auth [https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/role-strategy-auth]
-  #   roleBased:
-  #     roles:
-  #       global:
-  #         - name: admin
-  #           description: "Jenkins administrators"
-  #           permissions:
-  #             - "Overall/Administer"
-  #           assignments:
-  #             - "admin"
-  #         - name: "developer"
-  #           description: "Read-only users for developer"
-  #           permissions:
-  #             - "Overall/Read"
-  #             - "Job/Read"
-  #           assignments:
-  #             - "authenticated"
-  #             - "developers"
-#   agentProtocols:
-#   - "JNLP4-connect"
-#   - "Ping"
-#   crumbIssuer:
-#     standard:
-#       excludeClientIPFromCrumb: false
-#   disableRememberMe: false
-#   globalNodeProperties:
-#   - envVars:
-#       env:
-#       - key: "DOCKER_HOST"
-#         # value: "tcp://dockerd-proxy:2375"
-#         value: "tcp://docker.for.mac.host.internal:2376"
-#   labelAtoms:
-#     - name: "jenkins-slave"
-#     - name: "master"
-#   markupFormatter: "plainText"
-#   mode: NORMAL
-#   myViewsTabBar: "standard"
-#   numExecutors: 2
-#   primaryView:
-#     all:
-#       name: "all"
-#   projectNamingStrategy: "standard"
-#   quietPeriod: 5
-#   remotingSecurity:
-#     enabled: false
-#   scmCheckoutRetryCount: 0
-#   slaveAgentPort: 50000
-#   updateCenter:
-#     sites:
-#     - id: "default"
-#       url: "https://updates.jenkins.io/update-center.json"
-#   views:
-#     - all:
-#         name: "all"
-#   viewsTabBar: "standard"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: true
+      # NOTE how to apply role-based auth [https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/role-strategy-auth]
+      # roleBased:
+      #   roles:
+      #     global:
+      #       - name: admin
+      #         description: "Jenkins administrators"
+      #         permissions:
+      #           - "Overall/Administer"
+      #         assignments:
+      #           - "admin"
+      #       - name: "developer"
+      #         description: "Read-only users for developer"
+      #         permissions:
+      #           - "Overall/Read"
+      #           - "Job/Read"
+      #         assignments:
+      #           - "authenticated"
+      #           - "developers"
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: "DOCKER_HOST"
+        # value: "tcp://dockerd-proxy:2375"
+        value: "tcp://docker.for.mac.host.internal:2376"
+  labelAtoms:
+    - name: "jenkins-slave"
+    - name: "master"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: false
+  scmCheckoutRetryCount: 0
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+    - all:
+        name: "all"
+  viewsTabBar: "standard"
 
 # REVIEW: SECTION cloud configuration field
   clouds:
