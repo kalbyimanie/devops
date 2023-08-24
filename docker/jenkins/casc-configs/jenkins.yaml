@@ -212,14 +212,14 @@ unclassified:
     pollingThreadCount: 10
 # SECTION end unclassfied field
 
-# # SECTION security field
-# security:
-#   apiToken:
-#     creationOfLegacyTokenEnabled: false
-#     tokenGenerationOnCreationEnabled: true
-#     usageStatisticsEnabled: true
-#   globalJobDslSecurityConfiguration:
-#     useScriptSecurity: true
-#   # sSHD:
-#   #   port: 22
-# # SECTION end security field
+# REVIEW: SECTION security field
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: true
+    usageStatisticsEnabled: true
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+  sSHD:
+    port: 22
+# REVIEW: SECTION end security field

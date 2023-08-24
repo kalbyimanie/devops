@@ -1,8 +1,7 @@
 // NOTE: import json library
 import groovy.json.JsonSlurper
 // NOTE: loading the json file
-def inputFile = readFileFromWorkspace("docker/jenkins/pipelines/env/sandbox/
-pipelines/config.json")
+def inputFile = readFileFromWorkspace("docker/jenkins/pipelines/env/sandbox/pipelines/config.json")
 // NOTE: parsing json file into Groovy data structures (objects)
 def InputJSON = new JsonSlurper().parseText(inputFile)
 def project_env = "SANDBOX"
@@ -20,7 +19,7 @@ for(i=0; i<InputJSON.project.size(); i++ ) {
                 sandbox()
                 script(
                     """
-                        node (master) {
+                        node (jenkins-slave) {
                             stage('Init') {
                                 sh "echo "hello world""
                             }
