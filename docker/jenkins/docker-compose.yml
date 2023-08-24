@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-# REVIEW: SECTION dockerd-proxy
+# !!! IMPORTANT !!!: SECTION dockerd-proxy
   dockerd-proxy:
     user: root
     container_name: dockerd-proxy
@@ -15,7 +15,7 @@ services:
     networks:
       - cicd
 
-# REVIEW: SECTION vault
+# !!! IMPORTANT !!!: SECTION vault
   vault:
     links:
       - dockerd-proxy
@@ -38,7 +38,7 @@ services:
       - cicd
 
 # NOTE needs to enable jenkins secured-login
-# REVIEW: SECTION jenkins-master
+# !!! IMPORTANT !!!: SECTION jenkins-master
   jenkins-master:
     links:
       - dockerd-proxy
@@ -53,7 +53,6 @@ services:
       context: .
       dockerfile: jenkins.Dockerfile
       args:
-        # - JENKINS_VERSION=2.415
         - JENKINS_VERSION=2.420
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
@@ -67,11 +66,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./plugins2.txt:/usr/share/jenkins/ref/plugins.txt
     env_file:
-      - ./casc-configs/jenkins.env # create your own jenkins.env for the credentials at jenkins startup
+      - ./casc-configs/jenkins.env # NOTE create your own jenkins.env for the credentials at jenkins startup
     networks:
       - cicd
 
-# REVIEW: SECTION container network
+# !!! IMPORTANT !!!: SECTION container network
 networks:
   cicd:
     driver: bridge

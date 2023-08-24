@@ -224,7 +224,7 @@ unclassified:
     pollingThreadCount: 10
 # !!! IMPORTANT !!! SECTION end unclassfied field
 
-# !!! IMPORTANT !!!: SECTION security field
+# !!! IMPORTANT !!! SECTION security field
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false
