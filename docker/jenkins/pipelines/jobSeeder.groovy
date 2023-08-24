@@ -1,6 +1,6 @@
-node('master') {
+node('jenkins-slave') {
   try {
-    notifyBuild('STARTED')
+    // notifyBuild('STARTED')
     stage('Checkout SCM') {
       checkout scm
     }

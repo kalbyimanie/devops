@@ -127,49 +127,54 @@ jenkins:
 #         name: "all"
 #   viewsTabBar: "standard"
 
-# # SECTION cloud configuration field
-#   # clouds:
-#   #   - docker:
-#   #       containerCap: -1
-#   #       dockerApi:
-#   #         connectTimeout: 120
-#   #         dockerHost:
-#   #           # uri: "tcp://dockerd-proxy:2375"
-#   #           uri: "tcp://docker.for.mac.host.internal:2376" # -> for mac
-#   #           # uri: "tcp://host.docker.internal:2376" -> for windows
-#   #         hostname: "dockerd-proxy"
-#   #         readTimeout: 60
-#   #       exposeDockerHost: true
-#   #       name: "docker"
-#   #       templates:
-#   #         # - connector: # NOTE unable to connect to slave via ssh in docker-desktop for mac
-#   #         #     ssh:
-#   #         #       sshKeyStrategy:
-#   #         #         injectSSHKey:
-#   #         #           user: "jenkins"
-#   #         - connector:
-#   #             attach:
-#   #               user: "root"
-#   #           dockerTemplateBase:
-#   #             bindAllPorts: true
-#   #             # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
-#   #             environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\"" # -> for mac
-#   #             # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\"" -> for windows
-#   #             hostname: "jenkins-slave"
-#   #             image: "kalbyimanie/jenkins:slave-v3"
-#   #             pullCredentialsId: "docker-login"
-#   #             tty: true
-#   #             user: "root"
-#   #           # mounts: type=volume,source="/var/run/docker.sock",destination="/var/run/docker.sock"
-#   #           labelString: "jenkins-slave"
-#   #           mode: EXCLUSIVE
-#   #           name: "jenkins-slave"
-#   #           pullStrategy: PULL_LATEST
-#   #           pullTimeout: 20
-#   #           remoteFs: "/home/jenkins"
-#   #           retentionStrategy:
-#   #             idleMinutes: 1
-# # SECTION end cloud configuration field
+# REVIEW: SECTION cloud configuration field
+  clouds:
+    - docker:
+        containerCap: -1
+        dockerApi:
+          connectTimeout: 120
+          dockerHost:
+            # uri: "tcp://dockerd-proxy:2375"
+            uri: "tcp://docker.for.mac.host.internal:2376" # -> for mac
+            # uri: "tcp://host.docker.internal:2376" -> for windows
+          hostname: "dockerd-proxy"
+          readTimeout: 60
+        exposeDockerHost: true
+        name: "docker"
+        templates:
+          # - connector: # NOTE unable to connect to slave via ssh in docker-desktop for mac
+          #     ssh:
+          #       sshKeyStrategy:
+          #         injectSSHKey:
+          #           user: "jenkins"
+          - connector:
+              attach:
+                user: "root"
+            dockerTemplateBase:
+              bindAllPorts: true
+              # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
+              ##### NOTE for mac #####
+              environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
+              ##### NOTE for mac #########
+              ############################
+              ##### NOTE for windows #####
+              # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\""
+              ##### NOTE for windows #####
+              hostname: "jenkins-slave"
+              image: "kalbyimanie/jenkins:slave-v3"
+              pullCredentialsId: "docker-login"
+              tty: true
+              user: "root"
+            # mounts: type=volume,source="/var/run/docker.sock",destination="/var/run/docker.sock"
+            labelString: "jenkins-slave"
+            mode: EXCLUSIVE
+            name: "jenkins-slave"
+            pullStrategy: PULL_LATEST
+            pullTimeout: 20
+            remoteFs: "/home/jenkins"
+            retentionStrategy:
+              idleMinutes: 1
+# REVIEW: SECTION end cloud configuration field
 
 
 # REVIEW SECTION unclassfied field
