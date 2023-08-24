@@ -19,9 +19,9 @@ for(i=0; i<InputJSON.project.size(); i++ ) {
                 sandbox()
                 script(
                     """
-                        node (jenkins-slave) {
+                        node ('jenkins-slave') {
                             stage('Init') {
-                                sh "echo "hello world""
+                                sh "echo 'hello world""
                             }
                         }
 
