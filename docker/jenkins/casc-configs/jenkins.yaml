@@ -1,4 +1,4 @@
-# REVIEW SECTION credentials field
+# !!! IMPORTANT !!!: SECTION credentials field
 credentials:
   system:
     domainCredentials:
@@ -31,15 +31,15 @@ credentials:
 #       #     scope: GLOBAL
 #       #     secret: "${TELEGRAM_CHAT_ID}"
 
-# REVIEW: SECTION tools configuration field
+# !!! IMPORTANT !!!: SECTION tools configuration field
 tool:
   git:
     installations:
     - home: "/usr/bin/git"
       name: "git"
-# # SECTION end tools configuration field
+# !!! IMPORTANT !!!: SECTION end tools configuration field
 
-# REVIEW: SECTIONS seed or initial job field
+# !!! IMPORTANT !!!: SECTIONS seed or initial job field
 jobs:
   - script: |
       pipelineJob('Seed Job') {
@@ -58,7 +58,7 @@ jobs:
           }
         }
       }
-# REVIEW: SECTIONS global jenkins configuration fields
+# !!! IMPORTANT !!!: SECTIONS global jenkins configuration fields
 jenkins:
   systemMessage: |+
     ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
@@ -72,11 +72,11 @@ jenkins:
        - id: developers
          password: developers
   authorizationStrategy:
-    #### REVIEW: SECTION loggedInUsersCanDoAnything
+    #### !!! IMPORTANT !!!: SECTION loggedInUsersCanDoAnything
     # loggedInUsersCanDoAnything:
     #   allowAnonymousRead: true
-    ###############################################
-    #### REVIEW: SECTION roleBased
+    #### !!! IMPORTANT !!!: SECTION end loggedInUsersCanDoAnything
+    #### !!! IMPORTANT !!!: SECTION roleBased
     roleBased:
       roles:
         global:
@@ -100,6 +100,7 @@ jenkins:
               - "Job/Read"
             entries:
               - group: "authenticated"
+    #### !!! IMPORTANT !!!: SECTION end roleBased
   agentProtocols:
   - "JNLP4-connect"
   - "Ping"
@@ -138,7 +139,7 @@ jenkins:
         name: "all"
   viewsTabBar: "standard"
 
-# REVIEW: SECTION cloud configuration field
+# !!! IMPORTANT !!!: SECTION cloud configuration field
   clouds:
     - docker:
         containerCap: -1
@@ -185,10 +186,10 @@ jenkins:
             remoteFs: "/home/jenkins"
             retentionStrategy:
               idleMinutes: 1
-# REVIEW: SECTION end cloud configuration field
+# !!! IMPORTANT !!!: SECTION end cloud configuration field
 
 
-# REVIEW SECTION unclassfied field
+# !!! IMPORTANT !!! SECTION unclassfied field
 unclassified:
   themeManager:
     disableUserThemes: true
@@ -221,9 +222,9 @@ unclassified:
     useTls: false
   pollSCM:
     pollingThreadCount: 10
-# SECTION end unclassfied field
+# !!! IMPORTANT !!! SECTION end unclassfied field
 
-# REVIEW: SECTION security field
+# !!! IMPORTANT !!!: SECTION security field
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false
@@ -233,4 +234,4 @@ security:
     useScriptSecurity: false
   sSHD:
     port: 22
-# REVIEW: SECTION end security field
+# !!! IMPORTANT !!!: SECTION end security field

@@ -2,9 +2,6 @@ version: "3.8"
 services:
 # REVIEW: SECTION dockerd-proxy
   dockerd-proxy:
-    links:
-      - vault
-      - jenkins-master
     user: root
     container_name: dockerd-proxy
     hostname: dockerd-proxy
@@ -22,7 +19,6 @@ services:
   vault:
     links:
       - dockerd-proxy
-      - jenkins-master
     cap_add:
       - IPC_LOCK
     container_name: vault
@@ -57,7 +53,8 @@ services:
       context: .
       dockerfile: jenkins.Dockerfile
       args:
-        - JENKINS_VERSION=2.415
+        # - JENKINS_VERSION=2.415
+        - JENKINS_VERSION=2.420
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
