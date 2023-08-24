@@ -72,26 +72,34 @@ jenkins:
        - id: developers
          password: developers
   authorizationStrategy:
-    loggedInUsersCanDoAnything:
-      allowAnonymousRead: true
-      # NOTE how to apply role-based auth [https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/role-strategy-auth]
-      # roleBased:
-      #   roles:
-      #     global:
-      #       - name: admin
-      #         description: "Jenkins administrators"
-      #         permissions:
-      #           - "Overall/Administer"
-      #         assignments:
-      #           - "admin"
-      #       - name: "developer"
-      #         description: "Read-only users for developer"
-      #         permissions:
-      #           - "Overall/Read"
-      #           - "Job/Read"
-      #         assignments:
-      #           - "authenticated"
-      #           - "developers"
+    #### REVIEW: SECTION loggedInUsersCanDoAnything
+    # loggedInUsersCanDoAnything:
+    #   allowAnonymousRead: true
+    ###############################################
+    #### REVIEW: SECTION roleBased
+    roleBased:
+      roles:
+        global:
+          - name: "admin"
+            description: "Jenkins administrators"
+            permissions:
+              - "Overall/Administer"
+            entries:
+              - user: "admin"
+          - name: "developer"
+            description: "Developer"
+            permissions:
+              - "Overall/Read"
+              - "Job/Read"
+            entries:
+              - user: "developer"
+          - name: "readonly"
+            description: "Read-only users"
+            permissions:
+              - "Overall/Read"
+              - "Job/Read"
+            entries:
+              - group: "authenticated"
   agentProtocols:
   - "JNLP4-connect"
   - "Ping"
