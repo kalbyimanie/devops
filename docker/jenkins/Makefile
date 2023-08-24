@@ -10,10 +10,12 @@ DATE := $(shell date "+%H.%M.%S_%d-%m-%Y")
 # Targets
 .PHONY: push-jenkins-image-to-local-registry build-jenkins-image local-registry
 
+# NOTE: LOCAL REGISTRY SECTION
 local-registry:
 	echo "setting up local-registry..."
 	docker-compose -f $(LOCAL_REGISTRY_COMPOSE_FILE) up -d --remove-orphans --force-recreate
 
+# NOTE: JENKINS SECTION
 build-jenkins-image:
 	echo "build jenkins image..."
 	docker build -t $(JENKINS_IMAGE_TAG) \
@@ -44,7 +46,7 @@ cleanup-dockerized-jenkins:
 setup-dockerized-jenkins:
 	docker-compose up --build --force-recreate --remove-orphans
 
-
+# NOTE: ENC/DEC SECTION
 setup-encryptor:
 	echo "setup encryptor service..."
 	cd ../gnupg && \

@@ -39,35 +39,56 @@ credentials:
 # #     - home: "/usr/bin/git"
 # #       name: "git"
 # # SECTION end tools configuration field
-# jenkins:
-#   systemMessage: |+
-#     ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
-#   securityRealm:
-#     local:
-#       allowsSignup: false
-#       enableCaptcha: false
-#       users:
-#        - id: admin
-#          password: admin
-#        - id: developers
-#          password: developers
-#   authorizationStrategy: # REVIEW how to apply role-based auth [https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/role-strategy-auth]
-#     roleBased:
-#       roles:
-#         global:
-#           - name: admin
-#             description: "Jenkins administrators"
-#             permissions:
-#               - "Overall/Administer"
-#             assignments:
-#               - "admin"
-#           - name: "developer"
-#             description: "Read-only users for developer"
-#             permissions:
-#               - "Overall/Read"
-#               - "Job/Read"
-#             assignments:
-#               - "authenticated"
+
+# REVIEW SECTIONS seed or initial job field
+jobs:
+  - script: |
+      pipelineJob('Seed Job') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/kalbyimanie/devops.git')
+                  // credentials('github-tiket')
+                  scriptPath('docker/jenkins/pipelines/jobSeeder.groovy')
+                }
+                  branch('*/master')
+              }
+            }
+          }
+        }
+      }
+jenkins:
+  systemMessage: |+
+    ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+       - id: admin
+         password: admin
+       - id: developers
+         password: developers
+  # authorizationStrategy: # NOTE how to apply role-based auth [https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/role-strategy-auth]
+  #   roleBased:
+  #     roles:
+  #       global:
+  #         - name: admin
+  #           description: "Jenkins administrators"
+  #           permissions:
+  #             - "Overall/Administer"
+  #           assignments:
+  #             - "admin"
+  #         - name: "developer"
+  #           description: "Read-only users for developer"
+  #           permissions:
+  #             - "Overall/Read"
+  #             - "Job/Read"
+  #           assignments:
+  #             - "authenticated"
+  #             - "developers"
 #   agentProtocols:
 #   - "JNLP4-connect"
 #   - "Ping"
