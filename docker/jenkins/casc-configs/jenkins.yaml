@@ -185,7 +185,7 @@ jenkins:
             pullTimeout: 20
             remoteFs: "/home/jenkins"
             retentionStrategy:
-              idleMinutes: 1
+              idleMinutes: 10
 # !!! IMPORTANT !!!: SECTION end cloud configuration field
 
 
