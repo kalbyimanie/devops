@@ -8,7 +8,7 @@ def project_env = "DEV"
 
 for(i=0; i<InputJSON.project.size(); i++ ) {
     def project_name = InputJSON.project[i].project_name
-
+    // !!! IMPORTANT !!! sample linear job
     pipelineJob("${project_env}/${project_name}") {
         configure {
             (it / 'concurrentBuild').setValue('false')
@@ -30,7 +30,9 @@ for(i=0; i<InputJSON.project.size(); i++ ) {
             }
         }
     }
-    pipelineJob("${project_env}/sample-parallel-job") {
+    // !!! IMPORTANT !!! END OF sample linear job
+    // !!! IMPORTANT !!! sample parallel job
+    pipelineJob("${project_env}/SAMPLE-PARALLEL-JOB") {
         configure {
             (it / 'concurrentBuild').setValue('false')
         }
@@ -62,4 +64,5 @@ for(i=0; i<InputJSON.project.size(); i++ ) {
             }
         }
     }
+    // !!! IMPORTANT !!! END OF sample parallel job
 }
