@@ -29,7 +29,7 @@ for(i=0; i<InputJSON.project.size(); i++ ) {
                 )
             }
         }
-    },
+    }
     pipelineJob("${project_env}/sample-parallel-job") {
         configure {
             (it / 'concurrentBuild').setValue('false')
