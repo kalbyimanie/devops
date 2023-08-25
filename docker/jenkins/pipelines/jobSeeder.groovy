@@ -7,8 +7,8 @@ node('jenkins-slave') {
 
     stage('Create a Project') {
         jobDsl targets: [
-          'docker/jenkins/pipelines/env/sandbox/folders/*.groovy',
-          'docker/jenkins/pipelines/env/sandbox/pipelines/*.groovy',
+          'docker/jenkins/pipelines/env/*/folders/*.groovy',
+          'docker/jenkins/pipelines/env/*/pipelines/*.groovy',
         ].join('\n'),
         removedJobAction: 'IGNORE',
         removedViewAction: 'IGNORE',
