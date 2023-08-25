@@ -29,5 +29,37 @@ for(i=0; i<InputJSON.project.size(); i++ ) {
                 )
             }
         }
+    },
+    pipelineJob("${project_env}/sample-parallel-job") {
+        configure {
+            (it / 'concurrentBuild').setValue('false')
+        }
+
+        definition {
+            cps {
+                sandbox()
+                script(
+                    """
+                        stage('parallel') {
+                            parallel slave1: {
+                                node ('jenkins-slave') {
+                                    stage('Init') {
+                                        sh "echo 'hello world'"
+                                    }
+                                }
+                            },
+                            slave2: {
+                                node ('jenkins-slave') {
+                                    stage('Init') {
+                                        sh "echo 'hello world'"
+                                    }
+                                }
+                            }
+                        }
+
+                    """.stripIndent()
+                )
+            }
+        }
     }
 }
