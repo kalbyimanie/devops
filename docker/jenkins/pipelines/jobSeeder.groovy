@@ -10,8 +10,10 @@ node('jenkins-slave') {
           'docker/jenkins/pipelines/env/*/folders/*.groovy',
           'docker/jenkins/pipelines/env/*/pipelines/*.groovy',
         ].join('\n'),
-        removedJobAction: 'IGNORE',
-        removedViewAction: 'IGNORE',
+        // removedJobAction: 'IGNORE',
+        // removedViewAction: 'IGNORE',
+        removedJobAction: 'DELETE',
+        removedViewAction: 'DELETE',
         lookupStrategy: 'SEED_JOB'
 
     failFast: true|false
