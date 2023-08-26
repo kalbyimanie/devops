@@ -26,8 +26,12 @@ services:
     image: vault:1.9.0
     command: ["server", "-config=/vault/config.hcl", "-log-level=debug"]
     ports:
-      - 8200:8200
-      - 8201:8201
+      - 8200
+      - 8201
+      # !!! IMPORTANT !!!: [SECTION] EXPOSE PORT TO THE HOST NETWORK
+      # - 8200:8200
+      # - 8201:8201
+      # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
     volumes:
       - ./vault-data/file:/vault/file
       - ./vault-data/log:/vault/log
@@ -56,8 +60,12 @@ services:
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
       - JENKINS_OPTS=--prefix=/jenkins
     ports:
-      - 8080:8080
-      - 50000:50000
+      - 8080
+      - 50000
+      # !!! IMPORTANT !!!: [SECTION] EXPOSE PORT TO THE HOST NETWORK
+      # - 8080:8080
+      # - 50000:50000
+      # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
     volumes:
       - ./jenkins-data:/var/jenkins_home
       - ./casc-configs/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml
