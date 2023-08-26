@@ -71,6 +71,8 @@ jenkins:
          password: admin
        - id: developers
          password: developers
+       - id: guest
+         password: guest
   authorizationStrategy:
     #### !!! IMPORTANT !!!: SECTION loggedInUsersCanDoAnything
     # loggedInUsersCanDoAnything:
@@ -86,15 +88,15 @@ jenkins:
               - "Overall/Administer"
             entries:
               - user: "admin"
-          - name: "developer"
-            description: "Developer"
+          - name: "developers"
+            description: "developers"
             permissions:
               - "Overall/Read"
               - "Job/Read"
             entries:
-              - user: "developer"
-          - name: "readonly"
-            description: "Read-only users"
+              - user: "developers"
+          - name: "guest"
+            description: "guest"
             permissions:
               - "Overall/Read"
               - "Job/Read"
