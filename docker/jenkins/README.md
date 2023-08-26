@@ -1,4 +1,4 @@
-### How to encrypt jenkins.env using gnupg
+### [ localhost ] How to encrypt jenkins.env using gnupg
 
 1. create jenkins.env inside `docker/gnupg/data` directory
 2. edit `jenkins.env` accordingly
@@ -12,10 +12,12 @@ The above command will generate th following files under `docker/gnupg/data` dir
 - **jenkins.env**
 - **jekins.env.enc**
 
-you can import .public.key and .private.key files using `gpg --pinentry-mode=loopback --batch --import .*.key` on your local laptop,
+### [ localhost ] How to decrypt jenkins.env using gnupg
 
-then to decrypt `jenkins.env.enc`, you can run the following command :
+1. import `.public.key` and `.private.key` files by running the following command :
+
+`gpg --pinentry-mode=loopback --batch --import .*.key`
+
+2. to decrypt `jenkins.env.enc`, you can run the following command :
 
 `decrypt_gpg_files.sh jenkins.env jenkins.env.enc generate-key-config.txt`
-
-### How to decrypt jenkins.env using gnupg
