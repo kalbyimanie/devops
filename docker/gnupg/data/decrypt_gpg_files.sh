@@ -6,8 +6,11 @@ OUTPUT_DECRYPTED_FILE=$2
 INPUT_ENCRYPTED_FILE=$3
 
 decrypt_file() {
+  echo -e "cleaning up decrypted files\n"
+  rm -f *.dec
+
   PASSPHRASE="$(grep -i "passphrase" $1 |awk '-F:' '{print $2}'|sed '/^$/d')"
-  gpg --pinentry-mode=loopback --batch --passphrase $PASSPHRASE --output $2 --decrypt $3
+  gpg --trust-model always --pinentry-mode=loopback --batch --passphrase $PASSPHRASE --output $2 --decrypt $3
 }
 
 import_keys() {

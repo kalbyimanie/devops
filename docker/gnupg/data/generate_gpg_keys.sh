@@ -2,6 +2,7 @@
 GPG_HOME_PATH="/root/.gnupg/"
 
 KEY_GENERATOR_CONFIG=$1
+USE_EXISTING_KEY=$2
 
 generate_keys() {
 
@@ -27,7 +28,25 @@ generate_keys() {
 
 
 main(){
-    generate_keys $KEY_GENERATOR_CONFIG
+
+    case $USE_EXISTING_KEY in
+
+        no)
+            echo "generating new keys..."
+            generate_keys $KEY_GENERATOR_CONFIG
+        ;;
+
+        yes)
+            echo "skipping generating new keys..."
+            cp -pfv /opt/.*.key /root
+        ;;
+
+        *)
+            echo "RECOGNIZABLE ARG -> yes or no"
+            exit 1
+        ;;
+
+    esac
 }
 
 main "$@"

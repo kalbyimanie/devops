@@ -7,6 +7,8 @@ LOCAL_REGISTRY_BASE_URI := localhost:5000
 JENKINS_DATA := jenkins-data
 DATE := $(shell date "+%H.%M.%S_%d-%m-%Y")
 
+USE_EXISTING_KEY := $(shell cat ../gnupg/encryptor-docker-compose.yaml| grep -i 'USE_EXISTING_KEY'|grep -vi '\#'|awk -F'\=' '{print $$2}'|uniq|sed '/^$$/d')
+
 # Targets
 .PHONY: push-jenkins-image-to-local-registry build-jenkins-image local-registry
 
@@ -57,11 +59,13 @@ setup-encryptor:
 
 setup-decryptor:
 	$(info SETUP DECRYPTOR SERVICE...)
+	$(info USE_EXISTING_KEY=$(USE_EXISTING_KEY))
 	cd ../gnupg && \
 	docker build -t gnu-decryptor:base \
 	--build-arg=KEY_GENERATOR_CONFIG=generate-key-config.txt \
 	--build-arg=FILE_TO_ENCRYPT=jenkins.env \
 	--build-arg=OUTPUT_OF_ENCRYPTED_FILE=jenkins.env.enc \
+	--build-arg=USE_EXISTING_KEY=$(USE_EXISTING_KEY) \
 	-f encryptor.Dockerfile . && \
 	docker-compose -f decryptor-docker-compose.yaml up --build --force-recreate --remove-orphans
 

@@ -4,8 +4,10 @@ GPG_HOME_PATH="/root/.gnupg/"
 KEY_GENERATOR_CONFIG=$1
 OUTPUT_ENCRYPTED_FILE=$2
 PLAIN_TEXT_FILE=$3
+USE_EXISTING_KEY=$4
 
 encrypt_file() {
+
     echo -e "cleaning up encrypted files\n"
     rm -f *.enc
 
@@ -18,7 +20,7 @@ encrypt_file() {
 
     PASSWORD="$(grep -i "passphrase" $1 |awk '-F:' '{print $2}'|sed '/^$/d')"
 
-    gpg --pinentry-mode=loopback --batch --passphrase "'$PASSWORD'" --encrypt -r $KEY -o "$2" "$3"
+    gpg --trust-model always --pinentry-mode=loopback --batch --passphrase "'$PASSWORD'" --encrypt -r $KEY -o "$2" "$3"
 }
 
 copy_gpg_keys() {
@@ -29,9 +31,28 @@ copy_gpg_keys() {
 }
 
 main(){
-    encrypt_file "$KEY_GENERATOR_CONFIG" "$OUTPUT_ENCRYPTED_FILE" "$PLAIN_TEXT_FILE"
 
-    copy_gpg_keys
+    case $USE_EXISTING_KEY in
+
+        no)
+            encrypt_file "$KEY_GENERATOR_CONFIG" "$OUTPUT_ENCRYPTED_FILE" "$PLAIN_TEXT_FILE"
+            copy_gpg_keys
+        ;;
+
+        yes)
+            echo "encrypt using existing keys..."
+            encrypt_file "$KEY_GENERATOR_CONFIG" "$OUTPUT_ENCRYPTED_FILE" "$PLAIN_TEXT_FILE"
+        ;;
+
+        *)
+            echo "RECOGNIZABLE ARG -> yes or no"
+            exit 1
+        ;;
+
+    esac
+
+
+
 }
 
 main "$@"
