@@ -6,8 +6,9 @@ services:
     build:
       context: .
       dockerfile: decryptor.Dockerfile
-    # environment variables will be used at run-time
+    # NOTE: environment variables will be used at run-time
     environment:
+      # !!! IMPORTANT !!! <REQUIRED FIELDS>
       - KEY_GENERATOR_CONFIG=generate-key-config.txt
       - OUTPUT_DECRYPTED_FILE=jenkins.env.dec
       - INPUT_ENCRYPTED_FILE=jenkins.env.enc

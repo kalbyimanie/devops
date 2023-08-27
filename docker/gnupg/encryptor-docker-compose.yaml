@@ -8,6 +8,7 @@ services:
       dockerfile: encryptor.Dockerfile
       # NOTE: arguments variables will be used at build-time
       args:
+        # !!! IMPORTANT !!! <REQUIRED FIELDS>
         - KEY_GENERATOR_CONFIG=generate-key-config.txt
         - FILE_TO_ENCRYPT=jenkins.env
         - OUTPUT_OF_ENCRYPTED_FILE=jenkins.env.enc
@@ -16,6 +17,7 @@ services:
 
     # NOTE: environment variables will be used at run-time
     environment:
+      # !!! IMPORTANT !!! <REQUIRED FIELDS>
       - KEY_GENERATOR_CONFIG=generate-key-config.txt
       - FILE_TO_ENCRYPT=jenkins.env
       - OUTPUT_OF_ENCRYPTED_FILE=jenkins.env.enc
