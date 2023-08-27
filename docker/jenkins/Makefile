@@ -45,10 +45,15 @@ cleanup-jenkins-data:
 	mkdir $(JENKINS_DATA)
 
 cleanup-dockerized-jenkins:
+	$(info CLEAN UP DOCKERIZED JENKINS...)
 	docker-compose down --volumes --rmi all
 
 
 setup-dockerized-jenkins:
+	$(info SETUP DOCKERIZED JENKINS...)
+	cd scripts && \
+	bash copy_jenkins_env.sh && \
+	cd ../ && \
 	docker-compose up --build --force-recreate --remove-orphans
 
 # NOTE: ENC/DEC SECTION
