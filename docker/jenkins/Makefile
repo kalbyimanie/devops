@@ -15,7 +15,7 @@ USE_EXISTING_KEY := $(shell cat ../gnupg/encryptor-docker-compose.yaml| grep -i 
 # NOTE: LOCAL REGISTRY SECTION
 local-registry:
 	$(info SETUP LOCAL REGISTRY...)
-	docker-compose -f $(LOCAL_REGISTRY_COMPOSE_FILE) up -d --remove-orphans --force-recreate
+	docker-compose -f $(LOCAL_REGISTRY_COMPOSE_FILE) up -d
 
 # NOTE: JENKINS SECTION
 build-jenkins-image:
@@ -49,18 +49,18 @@ cleanup-dockerized-jenkins:
 	docker-compose down --volumes --rmi all
 
 
-setup-dockerized-jenkins:
+setup-dockerized-jenkins: local-registry
 	$(info SETUP DOCKERIZED JENKINS...)
 	cd scripts && \
 	bash copy_jenkins_env.sh && \
 	cd ../ && \
-	docker-compose up --build --force-recreate --remove-orphans
+	docker-compose up --build
 
 # NOTE: ENC/DEC SECTION
 setup-encryptor:
 	$(info SETUP ENCRYPTOR SERVICE...)
 	cd ../gnupg && \
-	docker-compose -f encryptor-docker-compose.yaml up --build --force-recreate --remove-orphans
+	docker-compose -f encryptor-docker-compose.yaml up --build
 
 setup-decryptor:
 	$(info SETUP DECRYPTOR SERVICE...)
@@ -72,5 +72,5 @@ setup-decryptor:
 	--build-arg=OUTPUT_OF_ENCRYPTED_FILE=jenkins.env.enc \
 	--build-arg=USE_EXISTING_KEY=$(USE_EXISTING_KEY) \
 	-f encryptor.Dockerfile . && \
-	docker-compose -f decryptor-docker-compose.yaml up --build --force-recreate --remove-orphans
+	docker-compose -f decryptor-docker-compose.yaml up --build
 

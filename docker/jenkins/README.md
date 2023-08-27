@@ -13,10 +13,11 @@ The above command will generate th following files under `docker/gnupg/data` dir
 
 ### [ localhost ] How to decrypt jenkins.env using gnupg
 
-1. import `.public.key` and `.private.key` files by running the following command :
+1. go to `docker/jenkins` directory, then run the following command
+`make setup-decryptor`
 
-`gpg --pinentry-mode=loopback --batch --import .*.key`
+The above command will generate th following files under `docker/gnupg/data` directory :
+- **jekins.env.dec**
 
-2. to decrypt `jenkins.env.enc`, you can run the following command :
 
-`decrypt_gpg_files.sh jenkins.env jenkins.env.enc generate-key-config.txt`
+### [ localhost ] Enable ngrok to test github webook on jenkins

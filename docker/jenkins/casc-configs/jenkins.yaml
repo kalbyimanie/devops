@@ -166,16 +166,21 @@ jenkins:
                 user: "root"
             dockerTemplateBase:
               bindAllPorts: true
+              ##### NOTE for dockerd-proxy #####
               # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
+              ##### NOTE for dockerd-proxy #####
+
               ##### NOTE for mac #####
               environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
               ##### NOTE for mac #########
+
               ############################
               ##### NOTE for windows #####
               # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\""
               ##### NOTE for windows #####
               hostname: "jenkins-slave"
-              image: "kalbyimanie/jenkins:slave-v3"
+              # image: "kalbyimanie/jenkins:slave-v3"
+              image: "localhost:5000/jenkins:slave-v3"
               pullCredentialsId: "docker-login"
               tty: true
               user: "root"
