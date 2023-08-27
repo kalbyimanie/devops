@@ -19,7 +19,7 @@ case "$FLAG" in
 
     *)
         if [[ ! -f "$JENKINS_DECRYPTED_FILE" ]];then
-            echo -en "ERROR: $JENKINS_DECRYPTED_FILE does not exist\n"
+            echo -en "ERROR: $JENKINS_DECRYPTED_FILE file does not exist\n"
             echo -en "Please prepare the file\n"
 
             exit 1
