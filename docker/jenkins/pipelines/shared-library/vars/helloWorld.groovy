@@ -7,7 +7,7 @@ def call(Map args) {
     pipeline {
         stage ('FROM SHARED LIBRARY') {
             sh """
-                echo "${hello} ${world}"
+                echo "${param1} ${param2}"
             """
         }
     }
