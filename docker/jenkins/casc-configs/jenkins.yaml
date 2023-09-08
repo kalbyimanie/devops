@@ -1,124 +1,93 @@
-# !!! IMPORTANT !!!: SECTION credentials field
 credentials:
   system:
     domainCredentials:
     - credentials:
       - vaultTokenCredential:
           description: "vault-token"
-          id: "${VAULT_ID}"
+          id: "vault"
           scope: GLOBAL
-          token: "${VAULT_TOKEN}"
+          token: "{AQAAABAAAAAQgqKN5TBn1mfVFkNDfWOQXQQCob1y+lvxreo+78DpcMc=}"
       - usernamePassword:
           description: "github-account"
           id: "github-account"
-          password: "${GITHUB_PASSWORD}"
+          password: "{AQAAABAAAAAQzQ5f/VQZyCMnVEZCdlItR+pncs4DExFayWK8d9q5P9I=}"
           scope: GLOBAL
-          username: "${GITHUB_USERNAME}"
-#       # - usernamePassword:
-#       #     description: "docker-login"
-#       #     id: "docker-login"
-#       #     username: "${DOCKERHUB_USERNAME}"
-#       #     scope: GLOBAL
-#       #     password: "${DOCKERHUB_PASSWORD}"
-#       # - string:
-#       #     description: "telegramToken"
-#       #     id: "telegramToken"
-#       #     scope: GLOBAL
-#       #     secret: "${TELEGRAM_TOKEN}"
-#       # - string:
-#       #     description: "telegramChatId"
-#       #     id: "telegramChatId"
-#       #     scope: GLOBAL
-#       #     secret: "${TELEGRAM_CHAT_ID}"
-
-# !!! IMPORTANT !!!: SECTION tools configuration field
-tool:
-  git:
-    installations:
-    - home: "/usr/bin/git"
-      name: "git"
-# !!! IMPORTANT !!!: SECTION end tools configuration field
-
-# !!! IMPORTANT !!!: SECTIONS seed or initial job field
-jobs:
-  - script: |
-      pipelineJob('Seed Job') {
-        definition {
-          cpsScm {
-            scm {
-              git {
-                remote {
-                  url('https://github.com/kalbyimanie/devops.git')
-                  // credentials('github-tiket')
-                  scriptPath('docker/jenkins/pipelines/jobSeeder.groovy')
-                }
-                  branch('*/master')
-              }
-            }
-          }
-        }
-      }
-# !!! IMPORTANT !!!: SECTIONS global jenkins configuration fields
+          username: "username"
 jenkins:
-  systemMessage: |+
-    ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
-  securityRealm:
-    local:
-      allowsSignup: false
-      enableCaptcha: false
-      users:
-       - id: admin
-         password: admin
-       - id: developers
-         password: developers
-       - id: guest
-         password: guest
-  authorizationStrategy:
-    #### !!! IMPORTANT !!!: SECTION loggedInUsersCanDoAnything
-    # loggedInUsersCanDoAnything:
-    #   allowAnonymousRead: true
-    #### !!! IMPORTANT !!!: SECTION end loggedInUsersCanDoAnything
-    #### !!! IMPORTANT !!!: SECTION roleBased
-    roleBased:
-      roles:
-        global:
-          - name: "admin"
-            description: "Jenkins administrators"
-            permissions:
-              - "Overall/Administer"
-            entries:
-              - user: "admin"
-          - name: "developers"
-            description: "developers"
-            permissions:
-              - "Overall/Read"
-              - "Job/Read"
-            entries:
-              - user: "developers"
-          - name: "guest"
-            description: "guest"
-            permissions:
-              - "Overall/Read"
-              - "Job/Read"
-            entries:
-              - group: "authenticated"
-    #### !!! IMPORTANT !!!: SECTION end roleBased
   agentProtocols:
   - "JNLP4-connect"
   - "Ping"
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+        - description: "Jenkins administrators"
+          entries:
+          - user: "admin"
+          name: "admin"
+          pattern: ".*"
+          permissions:
+          - "Overall/Administer"
+        - description: "developers"
+          entries:
+          - user: "developers"
+          name: "developers"
+          pattern: ".*"
+          permissions:
+          - "Overall/Read"
+          - "Job/Read"
+        - description: "guest"
+          entries:
+          - group: "authenticated"
+          name: "guest"
+          pattern: ".*"
+          permissions:
+          - "Overall/Read"
+          - "Job/Read"
+  clouds:
+  - docker:
+      containerCap: -1
+      dockerApi:
+        connectTimeout: 120
+        dockerHost:
+          uri: "tcp://docker.for.mac.host.internal:2376"
+        hostname: "dockerd-proxy"
+        readTimeout: 60
+      exposeDockerHost: true
+      name: "docker"
+      templates:
+      - connector:
+          attach:
+            user: "root"
+        dockerTemplateBase:
+          bindAllPorts: true
+          environment:
+          - "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
+          environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
+          hostname: "jenkins-slave"
+          image: "localhost:5000/jenkins:slave-v3"
+          pullCredentialsId: "docker-login"
+          tty: true
+          user: "root"
+        labelString: "jenkins-slave"
+        mode: EXCLUSIVE
+        name: "jenkins-slave"
+        pullTimeout: 20
+        remoteFs: "/home/jenkins"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
+  disabledAdministrativeMonitors:
+  - "hudson.util.DoubleLaunchChecker"
   globalNodeProperties:
   - envVars:
       env:
       - key: "DOCKER_HOST"
-        # value: "tcp://dockerd-proxy:2375"
         value: "tcp://docker.for.mac.host.internal:2376"
   labelAtoms:
-    - name: "jenkins-slave"
-    - name: "master"
+  - name: "built-in"
+  - name: "jenkins-slave"
   markupFormatter: "plainText"
   mode: NORMAL
   myViewsTabBar: "standard"
@@ -129,85 +98,184 @@ jenkins:
   projectNamingStrategy: "standard"
   quietPeriod: 5
   remotingSecurity:
-    enabled: false
+    enabled: true
   scmCheckoutRetryCount: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+      - id: "admin"
+        name: "admin"
+        properties:
+        - "apiToken"
+        - "mailer"
+        - "favorite"
+        - "myView"
+        - preferredProvider:
+            providerId: "default"
+        - "slack"
+        - "theme"
+        - "timezone"
+        - "experimentalFlags"
+      - id: "developers"
+        name: "developers"
+        properties:
+        - "apiToken"
+        - "mailer"
+        - "favorite"
+        - "myView"
+        - preferredProvider:
+            providerId: "default"
+        - "slack"
+        - "theme"
+        - "timezone"
+        - "experimentalFlags"
+      - id: "guest"
+        name: "guest"
+        properties:
+        - "apiToken"
+        - "mailer"
+        - "favorite"
+        - "myView"
+        - preferredProvider:
+            providerId: "default"
+        - "slack"
+        - "theme"
+        - "timezone"
+        - "experimentalFlags"
   slaveAgentPort: 50000
+  systemMessage: "### Jenkins configured automatically by Jenkins Configuration as\
+    \ Code plugin ###\r\n"
   updateCenter:
     sites:
     - id: "default"
       url: "https://updates.jenkins.io/update-center.json"
   views:
-    - all:
-        name: "all"
+  - all:
+      name: "all"
   viewsTabBar: "standard"
-
-# !!! IMPORTANT !!!: SECTION cloud configuration field
-  clouds:
-    - docker:
-        containerCap: -1
-        dockerApi:
-          connectTimeout: 120
-          dockerHost:
-            # uri: "tcp://dockerd-proxy:2375"
-            uri: "tcp://docker.for.mac.host.internal:2376" # -> for mac
-            # uri: "tcp://host.docker.internal:2376" -> for windows
-          hostname: "dockerd-proxy"
-          readTimeout: 60
-        exposeDockerHost: true
-        name: "docker"
-        templates:
-          # - connector: # NOTE unable to connect to slave via ssh in docker-desktop for mac
-          #     ssh:
-          #       sshKeyStrategy:
-          #         injectSSHKey:
-          #           user: "jenkins"
-          - connector:
-              attach:
-                user: "root"
-            dockerTemplateBase:
-              bindAllPorts: true
-              ##### NOTE for dockerd-proxy #####
-              # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
-              ##### NOTE for dockerd-proxy #####
-
-              ##### NOTE for mac #####
-              environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
-              ##### NOTE for mac #########
-
-              ############################
-              ##### NOTE for windows #####
-              # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\""
-              ##### NOTE for windows #####
-              hostname: "jenkins-slave"
-              # image: "kalbyimanie/jenkins:slave-v3"
-              image: "localhost:5000/jenkins:slave-v3"
-              pullCredentialsId: "docker-login"
-              tty: true
-              user: "root"
-            # mounts: type=volume,source="/var/run/docker.sock",destination="/var/run/docker.sock"
-            labelString: "jenkins-slave"
-            mode: EXCLUSIVE
-            name: "jenkins-slave"
-            pullStrategy: PULL_LATEST
-            pullTimeout: 20
-            remoteFs: "/home/jenkins"
-            retentionStrategy:
-              idleMinutes: 10
-# !!! IMPORTANT !!!: SECTION end cloud configuration field
-
-
-# !!! IMPORTANT !!! SECTION unclassfied field
+globalCredentialsConfiguration:
+  configuration:
+    providerFilter: "none"
+    typeFilter: "none"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: true
+    usageStatisticsEnabled: true
+  extendedSecuritySettings:
+    disableLoginAutocomplete: true
+    enableXssProtectionHeader: true
+  gitHooks:
+    allowedOnAgents: false
+    allowedOnController: false
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "knownHostsFileVerificationStrategy"
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+  sSHD:
+    port: 22
+  scriptApproval:
+    approvedSignatures:
+    - "method groovy.lang.GroovyObject invokeMethod java.lang.String java.lang.Object"
 unclassified:
-  themeManager:
-    disableUserThemes: true
-    theme: "darkSystem" # use 'dark' for forcing the dark theme regardless of OS settings
+  badgePlugin:
+    disableFormatHTML: false
   buildDiscarders:
     configuredBuildDiscarders:
-      - "jobBuildDiscarder"
+    - "jobBuildDiscarder"
+  buildStepOperation:
+    enabled: false
+  buildUserVars:
+    allBuilds: false
+  cacheConfig:
+    cacheGetJobs: false
+    cacheGetJobsMinutes: 0
+  diskUsageProjectActionFactory:
+    checkWorkspaceOnAgent: false
+    historyLength: 183
+    showGraph: true
+    timeoutWorkspace: 5
+  dockerSettings:
+    cloudOrder: "asIs"
   fingerprints:
     fingerprintCleanupDisabled: false
     storage: "file"
-  gitSCM:
+  gitHubConfiguration:
+    apiRateLimitChecker: ThrottleForNormalize
+  gitHubPluginConfig:
+    hookUrl: "http://localhost/jenkins/github-webhook/"
+  githubPullRequests:
+    actualiseOnFactory: false
+  globalConfigurationImpl:
+    allResults: true
+    enabled: true
+    notificationTimeout: 15000
+    queryTimeout: 30
+  globalLibraries:
+    libraries:
+    - defaultVersion: "master"
+      name: "helloWorld"
+      retriever:
+        modernSCM:
+          libraryPath: "docker/jenkins/pipelines/shared-library/"
+          scm:
+            git:
+              id: "de5cb04f-a351-4f24-bbc8-52cff06daa9b"
+              remote: "https://github.com/kalbyimanie/devops"
+              traits:
+              - "gitBranchDiscovery"
+  globalTimeOutConfiguration:
+    operations:
+    - "abortOperation"
+    overwriteable: false
+  hashicorpVault:
+    configuration:
+      engineVersion: 2
+      timeout: 60
+      vaultCredentialId: "vault"
+      vaultUrl: "http://vault:8200"
+  jobConfigHistory:
+    excludePattern: "queue\\.xml|nodeMonitors\\.xml|UpdateCenter\\.xml|global-build-stats|LockableResourcesManager\\\
+      .xml|MilestoneStep\\.xml|cloudbees-disk-usage-simple\\.xml"
+    saveModuleConfiguration: false
+    showBuildBadges: "always"
+    showChangeReasonCommentWindow: true
+    skipDuplicateHistory: true
+  junitTestResultStorage:
+    storage: "file"
+  locale:
+    ignoreAcceptLanguage: false
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://localhost/jenkins/"
+  login-theme-plugin:
+    useDefaultTheme: true
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  mavenModuleSet:
+    localRepository: "default"
+  nextBuilds:
+    dateFormat: "dd/MM/yyyy HH:mm z"
+    displayMode: 1
+    filterByView: true
+    showParameterizedWidget: false
+    showPossibleWidget: false
+  pollSCM:
+    pollingThreadCount: 10
+  prioritySorterConfiguration:
+    onlyAdminsMayEditPriorityConfiguration: false
+    strategy:
+      absoluteStrategy:
+        defaultPriority: 3
+        numberOfPriorities: 5
+  scheduleBuild:
+    defaultScheduleTime: "10:00:00 PM"
+    timeZone: "Asia/Jakarta"
+  scmGit:
     addGitTagAction: false
     allowSecondFetch: false
     createAccountBasedOnEmail: false
@@ -215,30 +283,35 @@ unclassified:
     hideCredentials: false
     showEntireCommitSummaryInChanges: false
     useExistingAccountWithSameEmail: false
-  hashicorpVault:
-    configuration:
-      engineVersion: 2
-      timeout: 60
-      vaultCredentialId: "${VAULT_ID}"
-      vaultUrl: "http://vault:8200"
-  location:
-    adminAddress: "address not configured yet <nobody@nowhere>"
-  mailer:
-    charset: "UTF-8"
-    useSsl: false
-    useTls: false
-  pollSCM:
-    pollingThreadCount: 10
-# !!! IMPORTANT !!! SECTION end unclassfied field
-
-# !!! IMPORTANT !!! SECTION security field
-security:
-  apiToken:
-    creationOfLegacyTokenEnabled: false
-    tokenGenerationOnCreationEnabled: true
-    usageStatisticsEnabled: true
-  globalJobDslSecurityConfiguration:
-    useScriptSecurity: false
-  sSHD:
-    port: 22
-# !!! IMPORTANT !!!: SECTION end security field
+  slackNotifier:
+    botUser: false
+    sendAsText: false
+  statisticsConfiguration:
+    buildInfo: true
+    buildStepInfo: true
+    projectInfo: true
+    queueInfo: true
+    scmCheckoutInfo: true
+    shouldPublishToAwsSnsQueue: false
+    shouldSendApiHttpRequests: false
+    shouldSendToLogback: false
+  telegramBotGlobalConfiguration:
+    approvalType: ALL
+    shouldLogToConsole: false
+  themeManager:
+    disableUserThemes: true
+    theme: "darkSystem"
+  timestamper:
+    allPipelines: false
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
+    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+  whitelist:
+    enabled: false
+tool:
+  git:
+    installations:
+    - home: "/usr/bin/git"
+      name: "git"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"

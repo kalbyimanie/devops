@@ -1,0 +1,244 @@
+# !!! IMPORTANT !!!: SECTION credentials field
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - vaultTokenCredential:
+          description: "vault-token"
+          id: "${VAULT_ID}"
+          scope: GLOBAL
+          token: "${VAULT_TOKEN}"
+      - usernamePassword:
+          description: "github-account"
+          id: "github-account"
+          password: "${GITHUB_PASSWORD}"
+          scope: GLOBAL
+          username: "${GITHUB_USERNAME}"
+#       # - usernamePassword:
+#       #     description: "docker-login"
+#       #     id: "docker-login"
+#       #     username: "${DOCKERHUB_USERNAME}"
+#       #     scope: GLOBAL
+#       #     password: "${DOCKERHUB_PASSWORD}"
+#       # - string:
+#       #     description: "telegramToken"
+#       #     id: "telegramToken"
+#       #     scope: GLOBAL
+#       #     secret: "${TELEGRAM_TOKEN}"
+#       # - string:
+#       #     description: "telegramChatId"
+#       #     id: "telegramChatId"
+#       #     scope: GLOBAL
+#       #     secret: "${TELEGRAM_CHAT_ID}"
+
+# !!! IMPORTANT !!!: SECTION tools configuration field
+tool:
+  git:
+    installations:
+    - home: "/usr/bin/git"
+      name: "git"
+# !!! IMPORTANT !!!: SECTION end tools configuration field
+
+# !!! IMPORTANT !!!: SECTIONS seed or initial job field
+jobs:
+  - script: |
+      pipelineJob('Seed Job') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/kalbyimanie/devops.git')
+                  // credentials('github-tiket')
+                  scriptPath('docker/jenkins/pipelines/jobSeeder.groovy')
+                }
+                  branch('*/master')
+              }
+            }
+          }
+        }
+      }
+# !!! IMPORTANT !!!: SECTIONS global jenkins configuration fields
+jenkins:
+  systemMessage: |+
+    ### Jenkins configured automatically by Jenkins Configuration as Code plugin ###
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+       - id: admin
+         password: admin
+       - id: developers
+         password: developers
+       - id: guest
+         password: guest
+  authorizationStrategy:
+    #### !!! IMPORTANT !!!: SECTION loggedInUsersCanDoAnything
+    # loggedInUsersCanDoAnything:
+    #   allowAnonymousRead: true
+    #### !!! IMPORTANT !!!: SECTION end loggedInUsersCanDoAnything
+    #### !!! IMPORTANT !!!: SECTION roleBased
+    roleBased:
+      roles:
+        global:
+          - name: "admin"
+            description: "Jenkins administrators"
+            permissions:
+              - "Overall/Administer"
+            entries:
+              - user: "admin"
+          - name: "developers"
+            description: "developers"
+            permissions:
+              - "Overall/Read"
+              - "Job/Read"
+            entries:
+              - user: "developers"
+          - name: "guest"
+            description: "guest"
+            permissions:
+              - "Overall/Read"
+              - "Job/Read"
+            entries:
+              - group: "authenticated"
+    #### !!! IMPORTANT !!!: SECTION end roleBased
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: "DOCKER_HOST"
+        # value: "tcp://dockerd-proxy:2375"
+        value: "tcp://docker.for.mac.host.internal:2376"
+  labelAtoms:
+    - name: "jenkins-slave"
+    - name: "master"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: false
+  scmCheckoutRetryCount: 0
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+    - all:
+        name: "all"
+  viewsTabBar: "standard"
+
+# !!! IMPORTANT !!!: SECTION cloud configuration field
+  clouds:
+    - docker:
+        containerCap: -1
+        dockerApi:
+          connectTimeout: 120
+          dockerHost:
+            # uri: "tcp://dockerd-proxy:2375"
+            uri: "tcp://docker.for.mac.host.internal:2376" # -> for mac
+            # uri: "tcp://host.docker.internal:2376" -> for windows
+          hostname: "dockerd-proxy"
+          readTimeout: 60
+        exposeDockerHost: true
+        name: "docker"
+        templates:
+          # - connector: # NOTE unable to connect to slave via ssh in docker-desktop for mac
+          #     ssh:
+          #       sshKeyStrategy:
+          #         injectSSHKey:
+          #           user: "jenkins"
+          - connector:
+              attach:
+                user: "root"
+            dockerTemplateBase:
+              bindAllPorts: true
+              ##### NOTE for dockerd-proxy #####
+              # environmentsString: "DOCKER_HOST=\"tcp://dockerd-proxy:2375\""
+              ##### NOTE for dockerd-proxy #####
+
+              ##### NOTE for mac #####
+              environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
+              ##### NOTE for mac #########
+
+              ############################
+              ##### NOTE for windows #####
+              # environmentsString: "DOCKER_HOST=\"tcp://host.docker.internal:2376\""
+              ##### NOTE for windows #####
+              hostname: "jenkins-slave"
+              # image: "kalbyimanie/jenkins:slave-v3"
+              image: "localhost:5000/jenkins:slave-v3"
+              pullCredentialsId: "docker-login"
+              tty: true
+              user: "root"
+            # mounts: type=volume,source="/var/run/docker.sock",destination="/var/run/docker.sock"
+            labelString: "jenkins-slave"
+            mode: EXCLUSIVE
+            name: "jenkins-slave"
+            pullStrategy: PULL_LATEST
+            pullTimeout: 20
+            remoteFs: "/home/jenkins"
+            retentionStrategy:
+              idleMinutes: 10
+# !!! IMPORTANT !!!: SECTION end cloud configuration field
+
+
+# !!! IMPORTANT !!! SECTION unclassfied field
+unclassified:
+  themeManager:
+    disableUserThemes: true
+    theme: "darkSystem" # use 'dark' for forcing the dark theme regardless of OS settings
+  buildDiscarders:
+    configuredBuildDiscarders:
+      - "jobBuildDiscarder"
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitSCM:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  hashicorpVault:
+    configuration:
+      engineVersion: 2
+      timeout: 60
+      vaultCredentialId: "${VAULT_ID}"
+      vaultUrl: "http://vault:8200"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  pollSCM:
+    pollingThreadCount: 10
+# !!! IMPORTANT !!! SECTION end unclassfied field
+
+# !!! IMPORTANT !!! SECTION security field
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: true
+    usageStatisticsEnabled: true
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+  sSHD:
+    port: 22
+# !!! IMPORTANT !!!: SECTION end security field
