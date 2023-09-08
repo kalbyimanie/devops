@@ -283,9 +283,6 @@ unclassified:
     hideCredentials: false
     showEntireCommitSummaryInChanges: false
     useExistingAccountWithSameEmail: false
-  slackNotifier:
-    botUser: false
-    sendAsText: false
   statisticsConfiguration:
     buildInfo: true
     buildStepInfo: true

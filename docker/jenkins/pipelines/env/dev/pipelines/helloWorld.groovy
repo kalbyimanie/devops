@@ -65,4 +65,36 @@ for(i=0; i<InputJSON.project.size(); i++ ) {
         }
     }
     // !!! IMPORTANT !!! END OF sample parallel job
+
+    // !!! IMPORTANT !!! shared library job
+    pipelineJob("${project_env}/SAMPLE-SHARED-LIBRARY-JOB") {
+        configure {
+            (it / 'concurrentBuild').setValue('false')
+        }
+
+        definition {
+            cps {
+                sandbox()
+                script(
+                    """
+                        // import shared lib
+                        @Library('helloWorld@master')_
+
+                        def params = [
+                            param1: "hello",
+                            param2: "world"
+                        ]
+
+                        node ('jenkins-slave') {
+                            stage('Init') {
+                                sh "echo 'hello world'"
+                            }
+                            helloWorld(params)
+                        }
+                    """.stripIndent()
+                )
+            }
+        }
+    }
+    // !!! IMPORTANT !!! END OF shared library job
 }
