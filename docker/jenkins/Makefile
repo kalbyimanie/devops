@@ -2,6 +2,7 @@
 LOCAL_REGISTRY_COMPOSE_FILE := local-registry-docker-compose.yaml
 
 JENKINS_IMAGE_TAG := jenkins-master-local
+JENKINS_SLAVE_IMAGE_TAG := jenkins-slave-local
 JENKINS_DOCKER_FILE := jenkins.Dockerfile
 LOCAL_REGISTRY_BASE_URI := localhost:5000
 JENKINS_DATA := jenkins-data
@@ -15,16 +16,28 @@ USE_EXISTING_KEY := $(shell cat ../gnupg/encryptor-docker-compose.yaml| grep -i 
 # NOTE: LOCAL REGISTRY SECTION
 local-registry:
 	$(info SETUP LOCAL REGISTRY...)
-	docker-compose -f $(LOCAL_REGISTRY_COMPOSE_FILE) up -d
+	docker-compose -f $(LOCAL_REGISTRY_COMPOSE_FILE) up --force-recreate -d
 
 # NOTE: JENKINS SECTION
+build-jenkins-slave-image:
+	$(info PULL AND TAG JENKINS SLAVE IMAGE...)
+	docker pull kalbyimanie/jenkins:slave-v3
+	docker tag kalbyimanie/jenkins:slave-v3 $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE)
+
+	$(info PUSH JENKINS SLAVE IMAGE TO LOCAL REGISTRY...)
+	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE)
+
+	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):latest
+
+	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):latest
+
 build-jenkins-image:
 	$(info BUILD JENKINS IMAGE...)
 	docker build -t $(JENKINS_IMAGE_TAG) \
 	--build-arg=JENKINS_VERSION=2.415 \
 	-f $(JENKINS_DOCKER_FILE) .
 
-push-jenkins-image-to-local-registry: local-registry build-jenkins-image
+push-jenkins-image-to-local-registry: local-registry build-jenkins-image build-jenkins-slave-image
 	$(info TAG JENKINS IMAGE...)
 	docker tag $(JENKINS_IMAGE_TAG) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):$(DATE)
 
@@ -49,7 +62,7 @@ cleanup-dockerized-jenkins:
 	docker-compose down --volumes --rmi all
 
 
-setup-dockerized-jenkins: local-registry
+setup-dockerized-jenkins: local-registry build-jenkins-slave-image
 	$(info SETUP DOCKERIZED JENKINS...)
 	cd scripts && \
 	bash copy_jenkins_env.sh && \

@@ -65,8 +65,7 @@ jenkins:
           - "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
           environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
           hostname: "jenkins-slave"
-          image: "localhost:5000/jenkins:slave-v3"
-          pullCredentialsId: "docker-login"
+          image: "localhost:5000/jenkins-slave-local:latest"
           tty: true
           user: "root"
         labelString: "jenkins-slave"
