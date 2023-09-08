@@ -16,16 +16,24 @@ def call(Map args) {
         //     }
         // }
 
-        stages {
-            stage ('[shared library]—init stage') {
-                steps {
-                    script {
-                        """
-                            sh "echo ${hello}"
-                        """
-                    }
-                }
+        steps {
+            script {
+                """
+                    sh "echo ${hello}"
+                """
             }
         }
+
+        // stages {
+        //     stage ('[shared library]—init stage') {
+        //         steps {
+        //             script {
+        //                 """
+        //                     sh "echo ${hello}"
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
