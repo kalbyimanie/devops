@@ -15,9 +15,9 @@ def call(Map args) {
         //             """
         //     }
         // }
-        stage ('abc') {
+        stage ('FROM SHARED LIBRARY') {
             sh """
-                 echo ${hello}
+                 echo "${hello}"
                """
 
             // steps {
