@@ -16,14 +16,17 @@ def call(Map args) {
         //     }
         // }
         stage ('abc') {
+            sh """
+                 echo ${hello}
+               """
 
-            steps {
-                script {
-                    """
-                        sh "echo ${hello}"
-                    """
-                }
-            }
+            // steps {
+            //     script {
+            //         """
+            //             sh "echo ${hello}"
+            //         """
+            //     }
+            // }
         }
 
         // stages {
