@@ -54,7 +54,7 @@ services:
       context: .
       dockerfile: jenkins.Dockerfile
       args:
-        - JENKINS_VERSION=2.422
+        - JENKINS_VERSION=2.428
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml

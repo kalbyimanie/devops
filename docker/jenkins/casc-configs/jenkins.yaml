@@ -294,9 +294,9 @@ unclassified:
   telegramBotGlobalConfiguration:
     approvalType: ALL
     shouldLogToConsole: false
-  themeManager:
-    disableUserThemes: true
-    theme: "darkSystem"
+  # themeManager:
+  #   disableUserThemes: true
+  #   theme: "darkSystem"
   timestamper:
     allPipelines: false
     elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
