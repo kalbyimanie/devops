@@ -6,8 +6,8 @@ docker/jenkins/sops
 docker/jenkins/vault-data
 docker/jenkins/vault-config/init-token.json
 .ssh_keys
-**/**/*.env
-.*.key
+# **/**/*.env
+# .*.key
 **/*.terraform.lock.hcl
 ssh/config
 ssh/scripts
@@ -17,5 +17,5 @@ ssh/scripts
 *.DS_Store
 *.***.DS_Store
 docker/skaffold/**/**
-**/generate-key-config.txt
-**/jenkins.env.dec
+# **/generate-key-config.txt
+# **/jenkins.env.dec

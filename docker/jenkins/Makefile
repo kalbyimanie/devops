@@ -1,10 +1,11 @@
 # Variables
 LOCAL_REGISTRY_COMPOSE_FILE := local-registry-docker-compose.yaml
-
+JENKINS_VERSION := 2.428
 JENKINS_IMAGE_TAG := jenkins-master-local
 JENKINS_SLAVE_IMAGE_TAG := jenkins-slave-local
 JENKINS_DOCKER_FILE := jenkins.Dockerfile
 LOCAL_REGISTRY_BASE_URI := localhost:5000
+DOCKER_HUB_REGISTRY_BASE_URI := kalbyimanie/jenkins
 JENKINS_DATA := jenkins-data
 DATE := $(shell date "+%H.%M.%S_%d-%m-%Y")
 
@@ -34,7 +35,7 @@ build-jenkins-slave-image:
 build-jenkins-image:
 	$(info BUILD JENKINS IMAGE...)
 	docker build -t $(JENKINS_IMAGE_TAG) \
-	--build-arg=JENKINS_VERSION=2.415 \
+	--build-arg=JENKINS_VERSION=$(JENKINS_VERSION) \
 	-f $(JENKINS_DOCKER_FILE) .
 
 push-jenkins-image-to-local-registry: local-registry build-jenkins-image build-jenkins-slave-image
@@ -47,6 +48,17 @@ push-jenkins-image-to-local-registry: local-registry build-jenkins-image build-j
 	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):latest
 
 	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):latest
+
+push-jenkins-image-to-docker-hub: build-jenkins-image build-jenkins-slave-image
+	$(info TAG JENKINS IMAGE...)
+	docker tag $(JENKINS_IMAGE_TAG) $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_IMAGE_TAG)-$(DATE)
+
+	$(info PUSH JENKINS IMAGE TO DOCKER HUB...)
+	docker push $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_IMAGE_TAG)-$(DATE)
+
+	# docker tag $(JENKINS_IMAGE_TAG) $(DOCKER_HUB_REGISTRY_BASE_URI) $(JENKINS_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):latest
+
+	# docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):latest
 
 cleanup-jenkins-images-in-local-registry:
 	$(info CLEAN UP JENKINS IMAGE IN LOCAL REGISTRY...)
