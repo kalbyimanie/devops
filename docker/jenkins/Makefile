@@ -9,7 +9,7 @@ LOCAL_REGISTRY_BASE_URI := localhost:5000
 DOCKER_HUB_REGISTRY_BASE_URI := kalbyimanie/jenkins
 DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI := kalbyimanie/jenkins-master
 JENKINS_DATA := jenkins-data
-DATE := $(shell date "+%H.%M.%S_%d-%m-%Y")
+DATE := $(shell date "+%d-%m-%Y")
 
 USE_EXISTING_KEY := $(shell cat ../gnupg/encryptor-docker-compose.yaml| grep -i 'USE_EXISTING_KEY'|grep -vi '\#'|awk -F'\=' '{print $$2}'|uniq|sed '/^$$/d')
 
@@ -41,12 +41,12 @@ push-new-jenkins-slave-image-to-docker-hub: build-new-jenkins-slave-image
 	$(info TAG JENKINS SLAVE IMAGE...)
 	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_$(DATE)
 
-	docker tag $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_$(DATE) $(DOCKER_HUB_REGISTRY_BASE_URI):jenkins-slave-latest
+	docker tag $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_$(DATE) $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_latest
 
 	$(info PUSH JENKINS SLAVE IMAGE TO DOCKERHUB...)
 	docker push $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_$(DATE)
 
-	docker push $(DOCKER_HUB_REGISTRY_BASE_URI):jenkins-slave-latest
+	docker push $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_latest
 
 build-jenkins-slave-image:
 	$(info PULL AND TAG JENKINS SLAVE IMAGE...)
