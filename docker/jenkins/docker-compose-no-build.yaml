@@ -1,0 +1,98 @@
+version: "3.8"
+services:
+# !!! IMPORTANT !!!: SECTION dockerd-proxy
+  dockerd-proxy:
+    user: root
+    container_name: dockerd-proxy
+    hostname: dockerd-proxy
+    image: alpine/socat
+    ports:
+      - 2376:2375
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: >
+      tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
+    networks:
+      - cicd
+
+# !!! IMPORTANT !!!: SECTION vault
+  vault:
+    links:
+      - dockerd-proxy
+    cap_add:
+      - IPC_LOCK
+    container_name: vault
+    hostname: vault
+    image: vault:1.9.0
+    command: ["server", "-config=/vault/config.hcl", "-log-level=debug"]
+    ports:
+      - 8200
+      - 8201
+      # !!! IMPORTANT !!!: [SECTION] EXPOSE PORT TO THE HOST NETWORK
+      # - 8200:8200
+      # - 8201:8201
+      # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
+    volumes:
+      - ./vault-data/file:/vault/file
+      - ./vault-data/log:/vault/log
+      - ./vault-config/config.hcl:/vault/config.hcl
+    networks:
+      - cicd
+
+# !!! IMPORTANT !!!: SECTION jenkins-master
+  jenkins-master:
+    links:
+      - dockerd-proxy
+      - vault
+    depends_on:
+      - dockerd-proxy
+      - vault
+    user: root
+    container_name: jenkins-master
+    hostname: jenkins-master
+    image: kalbyimanie/jenkins-master:latest
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
+      - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
+      - JENKINS_OPTS=--prefix=/jenkins
+    ports:
+      - 8080
+      - 50000
+      # !!! IMPORTANT !!!: [SECTION] EXPOSE PORT TO THE HOST NETWORK
+      # - 8080:8080
+      # - 50000:50000
+      # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
+    volumes:
+      - ./jenkins-data:/var/jenkins_home
+      - ./casc-configs/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./plugins2.txt:/usr/share/jenkins/ref/plugins.txt
+    env_file:
+      - ./casc-configs/jenkins.env # NOTE create your own jenkins.env for the credentials at jenkins startup
+    networks:
+      - cicd
+
+# !!! IMPORTANT !!!: SECTION nginx
+  nginx:
+    depends_on:
+      - dockerd-proxy
+      - vault
+      - jenkins-master
+    user: root
+    container_name: nginx
+    hostname: nginx
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx-config/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - cicd
+
+
+# !!! IMPORTANT !!!: SECTION container network
+networks:
+  cicd:
+    driver: bridge

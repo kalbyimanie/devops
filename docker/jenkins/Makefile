@@ -4,6 +4,7 @@ JENKINS_VERSION := 2.428
 JENKINS_IMAGE_TAG := jenkins-master-local-version-$(JENKINS_VERSION)
 JENKINS_SLAVE_IMAGE_TAG := jenkins-slave-local
 JENKINS_DOCKER_FILE := jenkins.Dockerfile
+JENKINS_SLAVE_DOCKER_FILE := jenkins-slave.Dockerfile
 LOCAL_REGISTRY_BASE_URI := localhost:5000
 DOCKER_HUB_REGISTRY_BASE_URI := kalbyimanie/jenkins
 DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI := kalbyimanie/jenkins-master
@@ -22,15 +23,40 @@ local-registry:
 
 # NOTE: JENKINS SECTION
 build-new-jenkins-slave-image:
+
+	$(info BUILD JENKINS SLAVE IMAGE...)
+	docker build -t $(JENKINS_SLAVE_IMAGE_TAG):$(DATE) -t latest \
+	-f $(JENKINS_SLAVE_DOCKER_FILE) .
+
+	$(info TAG JENKINS SLAVE IMAGE...)
+	docker tag $(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE)
+
+	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):latest
+
+	$(info PUSH JENKINS SLAVE IMAGE TO LOCAL REGISTRY...)
+	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):latest
+
+push-new-jenkins-slave-image-to-docker-hub: build-new-jenkins-slave-image
+
+	$(info TAG JENKINS SLAVE IMAGE...)
+	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_$(DATE)
+
+	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_latest
+
+	$(info PUSH JENKINS SLAVE IMAGE TO DOCKERHUB...)
+	docker push $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_$(DATE)
+
+	docker push $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_latest
+
 build-jenkins-slave-image:
 	$(info PULL AND TAG JENKINS SLAVE IMAGE...)
 	docker pull kalbyimanie/jenkins:slave-v3
 	docker tag kalbyimanie/jenkins:slave-v3 $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE)
 
+	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):latest
+
 	$(info PUSH JENKINS SLAVE IMAGE TO LOCAL REGISTRY...)
 	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE)
-
-	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):latest
 
 	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):latest
 
@@ -73,6 +99,9 @@ cleanup-dockerized-jenkins:
 	$(info CLEAN UP DOCKERIZED JENKINS...)
 	docker-compose down --volumes --rmi all
 
+
+setup-dockerized-jenkins-no-build: local-registry
+	docker-compose -f docker-compose-no-build.yaml up
 
 setup-dockerized-jenkins: local-registry build-jenkins-slave-image
 	$(info SETUP DOCKERIZED JENKINS...)
