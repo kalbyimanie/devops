@@ -155,3 +155,15 @@ DEBU[0002] Mapping digest sha256:7edeeb07b45d6e4e2a29ed54f79320e1903bf5c8a48081c
 INFO[0002] Pushing image to localhost:5000/ubuntu-from-kaniko:v3
 INFO[0002] Pushed localhost:5000/ubuntu-from-kaniko@sha256:c6afac4c7bbc0752a4a1e2fb0d8b9cf3276197be81387db899f001608accd2ae
 ```
+
+### How to check the list of images that have been pushed to the local repository
+You can execute the following command to list the pushed images in the local repository :
+```
+curl -X GET http://localhost:5000/v2/<image_name>/tags/list
+```
+Modify the `<image_name>` to the image name that you have provided during the build process.
+
+Example of successful output :
+```
+{"name":"ubuntu-from-kaniko","tags":["v3","v2","v1"]}
+```
