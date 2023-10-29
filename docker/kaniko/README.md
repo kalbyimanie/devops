@@ -1,4 +1,4 @@
-### How to build docker image using kaniko
+### How to build docker image using kaniko on your local machine
 
 #### Prerequisites
 You need to setup the following before proceeding :
