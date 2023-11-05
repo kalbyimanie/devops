@@ -1,0 +1,3 @@
+creation_rules:
+  - path_regex: \.*<GET THE UID NAME USING gpg --list-keys>*
+  - pgp: <GET THE KEY FINGER PRINT USING gpg --list-keys>

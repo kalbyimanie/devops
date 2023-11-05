@@ -12,11 +12,17 @@ EOF
 gpg --list-keys "<Name-Email>" \
 | grep pub -A 1 | grep -v pub
 
-3. encrypt sensitive fields in the file
+3. encrypt sensitive fields in the file using imperative command
 sops --encrypt --in-place --pgp <fingerprint> file_name
+
+|3|. encrypt sensitive fields in the file using sops config file
+sops --config ./<path-to-sops-config-file>.yaml -e <path/to/file/to/encrypt>
 
 4. decrypt on the same machine
 sops --decrypt --in-place file_name
+
+|4|. decrypt on the same machine using sops config file
+sops --config ./<path-to-sops-config-file>.yaml -d <path/to/file/to/encrypt>
 
 
 4.1 decrypt from another machine
