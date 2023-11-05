@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-client
+  namespace: postgresql-client
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql-client
+  template:
+    metadata:
+      labels:
+        app: postgresql-client
+    spec:
+      containers:
+        - name: postgresql-client
+          image: kalbyimanie/common:postgresql-client
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c", "tail -f /dev/null"]
+          env:
+            - name: HOST
+              value: postgresql-service
+            - name: PORT
+              value: "5432"
+            - name: USER
+              value: <user>
+            - name: PASSWORD
+              value: <password>
+          resources:
+            requests:
+              cpu: 10m
+              memory: 5Mi
+            limits:
+              cpu: 10m
+              memory: 5Mi
+          volumeMounts:
+          - name: postgresql-client-data
+            mountPath: /postgresql-client
+      volumes:
+      - name: postgresql-client-data
+        persistentVolumeClaim:
+          claimName: postgresql-client-pvc
+      tolerations:
+      - key: "on-demand"
+        operator: "Equal"
+        value: "true"
+        effect: "PreferNoSchedule"

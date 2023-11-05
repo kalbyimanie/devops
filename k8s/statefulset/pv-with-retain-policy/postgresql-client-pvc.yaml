@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    service_group: postgresql-client
+  name: postgresql-client-pvc
+  namespace: postgresql-client
+spec:
+  # storageClassName: postgresql-client-storage-class
+  storageClassName: standard
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
