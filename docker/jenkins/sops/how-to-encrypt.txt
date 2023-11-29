@@ -32,7 +32,7 @@ sops --config ./<path-to-sops-config-file>.yaml -d <path/to/file/to/encrypt>
 
   4.1.2 copy the public.key and private.key to another machine
 
-  4.1.3 on another machine
+  4.1.3 on another machine, import the private and public keys
         gpg --import path/to/public.key
         gpg --allow-secret-key-import --import path/to/private.key
 

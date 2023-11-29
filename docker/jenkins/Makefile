@@ -103,7 +103,7 @@ cleanup-dockerized-jenkins:
 setup-dockerized-jenkins-no-build: local-registry
 	docker-compose -f docker-compose-no-build.yaml up
 
-setup-dockerized-jenkins: local-registry build-jenkins-slave-image
+setup-dockerized-jenkins: local-registry build-new-jenkins-slave-image
 	$(info SETUP DOCKERIZED JENKINS...)
 	cd scripts && \
 	bash copy_jenkins_env.sh && \
