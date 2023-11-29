@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+# !!! IMPORTANT !!!: SECTION dockerd-proxy
+  mongodb:
+    user: root
+    container_name: mongodb
+    hostname: mongodb
+    image: mongo:5.0.22
+    environment:
+      MONGO_INITDB_DATABASE: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_ROOT_USERNAME: admin
+    ports:
+      - 27017:27017
+    volumes:
+      - ./admin-user.js:/docker-entrypoint-initdb.d/admin-user.js
+      - ./mongod.conf:/etc/mongod.conf:rw
+      - ./mongodb-data:/data/db
+    command: >
+      mongod --config /etc/mongod.conf --auth
+    networks:
+      - cicd
+
+# !!! IMPORTANT !!!: SECTION container network
+networks:
+  cicd:
+    driver: bridge
