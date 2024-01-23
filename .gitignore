@@ -7,7 +7,6 @@ docker/jenkins/vault-config/init-token.json
 .ssh_keys
 # **/**/*.env
 .*.key
-docker/gnupg/data/.*.key
 **/*.terraform.lock.hcl
 ssh/config
 ssh/scripts
