@@ -6,7 +6,7 @@ docker/jenkins/vault-data
 docker/jenkins/vault-config/init-token.json
 .ssh_keys
 # **/**/*.env
-# .*.key
+.*.key
 **/*.terraform.lock.hcl
 ssh/config
 ssh/scripts
