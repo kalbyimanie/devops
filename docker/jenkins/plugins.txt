@@ -53,9 +53,6 @@ github-pullrequest:0.7.2
 dark-theme:524.vd675b_22b_30cb_
 pipeline-graph-view:409.v98f212e980b_4
 display-url-api:2.209.v582ed814ff2f
-kubernetes:4306.vc91e951ea_eb_d
-kubernetes-client-api:6.10.0-240.v57880ce8b_0b_2
-kubernetes-credentials-provider:1.273.v15e69b_55ea_8e
 pipeline-input-step:513.v7eb_fe7e2c0fc
 pipeline-model-definition:2.2221.vc657003fb_d93
 ionicons-api:74.v93d5eb_813d5f

@@ -17,4 +17,5 @@ ssh/scripts
 *.***.DS_Store
 docker/skaffold/**/**
 # **/generate-key-config.txt
-# **/jenkins.env.dec
+docker/gnupg/data/jenkins.env.dec
+docker/gnupg/data/jenkins.env.dec

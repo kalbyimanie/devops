@@ -1,3 +1,13 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - usernamePassword:
+          description: "sample-github-account"
+          id: "sample-github-account"
+          password: "{AQAAABAAAAAg+9nEB7qqsysWLGi0GYsbDeBjsWUIZ/5IjwhSPrVhdU4nE2tOjYNurjmiNUihkR/Y}"
+          scope: GLOBAL
+          username: "sample-github-account"
 jenkins:
   authorizationStrategy: "loggedInUsersCanDoAnything"
   clouds:
@@ -71,6 +81,7 @@ jenkins:
       users:
       - id: "admin"
         name: "admin" # pass: admin
+        password: "admin"
         properties:
         - "apiToken"
         - "consoleUrlProvider"
@@ -78,7 +89,6 @@ jenkins:
         - "myView"
         - preferredProvider:
             providerId: "default"
-        - "slack"
         - theme:
             theme: "noOp"
         - "timezone"
@@ -107,12 +117,13 @@ appearance:
   monitorConfiguration:
     columns: 2
   pipelineGraphView:
-    showGraphOnBuildPage: false
-    showGraphOnJobPage: false
+    showGraphOnBuildPage: true
+    showGraphOnJobPage: true
   prism:
-    theme: PRISM
+    theme: SOLARIZED_LIGHT
   themeManager:
     disableUserThemes: false
+    theme: "noOp"
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false
@@ -203,9 +214,6 @@ unclassified:
     hideCredentials: false
     showEntireCommitSummaryInChanges: false
     useExistingAccountWithSameEmail: false
-  slackNotifier:
-    botUser: false
-    sendAsText: false
   telegramBotGlobalConfiguration:
     shouldLogToConsole: true
   timestamper:

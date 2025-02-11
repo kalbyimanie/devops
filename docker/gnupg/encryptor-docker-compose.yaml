@@ -12,8 +12,8 @@ services:
         - KEY_GENERATOR_CONFIG=generate-key-config.txt
         - FILE_TO_ENCRYPT=jenkins.env
         - OUTPUT_OF_ENCRYPTED_FILE=jenkins.env.enc
-        # - USE_EXISTING_KEY=no
-        - USE_EXISTING_KEY=yes
+        - USE_EXISTING_KEY=no
+        # - USE_EXISTING_KEY=yes
 
     # NOTE: environment variables will be used at run-time
     environment:
@@ -21,8 +21,8 @@ services:
       - KEY_GENERATOR_CONFIG=generate-key-config.txt
       - FILE_TO_ENCRYPT=jenkins.env
       - OUTPUT_OF_ENCRYPTED_FILE=jenkins.env.enc
-      # - USE_EXISTING_KEY=no
-      - USE_EXISTING_KEY=yes
+      - USE_EXISTING_KEY=no
+      # - USE_EXISTING_KEY=yes
     # NOTE: uncomment the following line for debugging mode
     # command: ["/bin/bash", "-c", "tail -f /dev/null"]
     volumes:
