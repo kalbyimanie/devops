@@ -1,6 +1,7 @@
 # Variables
 LOCAL_REGISTRY_COMPOSE_FILE := local-registry-docker-compose.yaml
-JENKINS_VERSION := 2.428
+# JENKINS_VERSION := 2.428
+JENKINS_VERSION := 2.492.1-lts-jdk17
 JENKINS_IMAGE_TAG := jenkins-master-local-version-$(JENKINS_VERSION)
 JENKINS_SLAVE_IMAGE_TAG := jenkins-slave-local
 JENKINS_DOCKER_FILE := jenkins.Dockerfile

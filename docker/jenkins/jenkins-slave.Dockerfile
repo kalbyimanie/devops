@@ -1,9 +1,9 @@
-FROM ubuntu:23.04 AS base
+FROM ubuntu:24.04 AS base
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y
 
 FROM base AS pkgs
-RUN apt-get install -y openjdk-11-jre-headless \
+RUN apt-get install -y openjdk-17-jre-headless \
                        openssh-server \
                        curl \
                        vim \
