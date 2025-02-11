@@ -1,58 +1,14 @@
-credentials:
-  system:
-    domainCredentials:
-    - credentials:
-      - vaultTokenCredential:
-          description: "vault-token"
-          id: "vault"
-          scope: GLOBAL
-          token: "{AQAAABAAAAAQgqKN5TBn1mfVFkNDfWOQXQQCob1y+lvxreo+78DpcMc=}"
-      - usernamePassword:
-          description: "github-account"
-          id: "github-account"
-          password: "{AQAAABAAAAAQzQ5f/VQZyCMnVEZCdlItR+pncs4DExFayWK8d9q5P9I=}"
-          scope: GLOBAL
-          username: "username"
 jenkins:
-  agentProtocols:
-  - "JNLP4-connect"
-  - "Ping"
-  authorizationStrategy:
-    roleBased:
-      roles:
-        global:
-        - description: "Jenkins administrators"
-          entries:
-          - user: "admin"
-          name: "admin"
-          pattern: ".*"
-          permissions:
-          - "Overall/Administer"
-        - description: "developers"
-          entries:
-          - user: "developers"
-          name: "developers"
-          pattern: ".*"
-          permissions:
-          - "Overall/Read"
-          - "Job/Read"
-        - description: "guest"
-          entries:
-          - group: "authenticated"
-          name: "guest"
-          pattern: ".*"
-          permissions:
-          - "Overall/Read"
-          - "Job/Read"
+  authorizationStrategy: "loggedInUsersCanDoAnything"
   clouds:
   - docker:
       containerCap: -1
       dockerApi:
-        connectTimeout: 120
+        connectTimeout: 60
         dockerHost:
           uri: "tcp://docker.for.mac.host.internal:2376"
-        hostname: "dockerd-proxy"
         readTimeout: 60
+      errorDuration: 10
       exposeDockerHost: true
       name: "docker"
       templates:
@@ -61,35 +17,44 @@ jenkins:
             user: "root"
         dockerTemplateBase:
           bindAllPorts: true
+          cpuPeriod: 0
+          cpuQuota: 0
           environment:
           - "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
           environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
           hostname: "jenkins-slave"
-          image: "localhost:5000/jenkins-slave-local:latest"
-          tty: true
+          image: "kalbyimanie/jenkins:jenkins-slave-local_latest"
+          privileged: true
           user: "root"
+        instanceCapStr: "1"
         labelString: "jenkins-slave"
-        mode: EXCLUSIVE
         name: "jenkins-slave"
-        pullTimeout: 20
+        pullTimeout: 300
         remoteFs: "/home/jenkins"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
-  disabledAdministrativeMonitors:
-  - "hudson.util.DoubleLaunchChecker"
-  globalNodeProperties:
-  - envVars:
-      env:
-      - key: "DOCKER_HOST"
-        value: "tcp://docker.for.mac.host.internal:2376"
   labelAtoms:
   - name: "built-in"
   - name: "jenkins-slave"
   markupFormatter: "plainText"
   mode: NORMAL
   myViewsTabBar: "standard"
+  nodeMonitors:
+  - "architecture"
+  - "clock"
+  - diskSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "swapSpace"
+  - tmpSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - jvmVersion:
+      comparisonMode: RUNTIME_GREATER_OR_EQUAL_MASTER_BYTECODE
+  - "remotingVersion"
+  - "responseTime"
   numExecutors: 2
   primaryView:
     all:
@@ -105,47 +70,22 @@ jenkins:
       enableCaptcha: false
       users:
       - id: "admin"
-        name: "admin"
+        name: "admin" # pass: admin
         properties:
         - "apiToken"
-        - "mailer"
+        - "consoleUrlProvider"
         - "favorite"
         - "myView"
         - preferredProvider:
             providerId: "default"
         - "slack"
-        - "theme"
+        - theme:
+            theme: "noOp"
         - "timezone"
         - "experimentalFlags"
-      - id: "developers"
-        name: "developers"
-        properties:
-        - "apiToken"
-        - "mailer"
-        - "favorite"
-        - "myView"
-        - preferredProvider:
-            providerId: "default"
-        - "slack"
-        - "theme"
-        - "timezone"
-        - "experimentalFlags"
-      - id: "guest"
-        name: "guest"
-        properties:
-        - "apiToken"
-        - "mailer"
-        - "favorite"
-        - "myView"
-        - preferredProvider:
-            providerId: "default"
-        - "slack"
-        - "theme"
-        - "timezone"
-        - "experimentalFlags"
+        - mailer:
+            emailAddress: "admin@sample.com"
   slaveAgentPort: 50000
-  systemMessage: "### Jenkins configured automatically by Jenkins Configuration as\
-    \ Code plugin ###\r\n"
   updateCenter:
     sites:
     - id: "default"
@@ -158,29 +98,40 @@ globalCredentialsConfiguration:
   configuration:
     providerFilter: "none"
     typeFilter: "none"
+appearance:
+  locale:
+    ignoreAcceptLanguage: false
+    systemLocale: "USE_BROWSER_LOCALE"
+  loginTheme:
+    useDefaultTheme: true
+  monitorConfiguration:
+    columns: 2
+  pipelineGraphView:
+    showGraphOnBuildPage: false
+    showGraphOnJobPage: false
+  prism:
+    theme: PRISM
+  themeManager:
+    disableUserThemes: false
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false
-    tokenGenerationOnCreationEnabled: true
+    tokenGenerationOnCreationEnabled: false
     usageStatisticsEnabled: true
-  extendedSecuritySettings:
-    disableLoginAutocomplete: true
-    enableXssProtectionHeader: true
+  cps:
+    hideSandbox: false
   gitHooks:
-    allowedOnAgents: false
+    allowedOnAgents: true
     allowedOnController: false
   gitHostKeyVerificationConfiguration:
     sshHostKeyVerificationStrategy: "knownHostsFileVerificationStrategy"
   globalJobDslSecurityConfiguration:
-    useScriptSecurity: false
+    useScriptSecurity: true
   sSHD:
-    port: 22
+    port: -1
   scriptApproval:
-    approvedSignatures:
-    - "method groovy.lang.GroovyObject invokeMethod java.lang.String java.lang.Object"
+    forceSandbox: false
 unclassified:
-  badgePlugin:
-    disableFormatHTML: false
   buildDiscarders:
     configuredBuildDiscarders:
     - "jobBuildDiscarder"
@@ -188,16 +139,11 @@ unclassified:
     enabled: false
   buildUserVars:
     allBuilds: false
-  cacheConfig:
-    cacheGetJobs: false
-    cacheGetJobsMinutes: 0
   diskUsageProjectActionFactory:
     checkWorkspaceOnAgent: false
     historyLength: 183
     showGraph: true
     timeoutWorkspace: 5
-  dockerSettings:
-    cloudOrder: "asIs"
   fingerprints:
     fingerprintCleanupDisabled: false
     storage: "file"
@@ -212,29 +158,10 @@ unclassified:
     enabled: true
     notificationTimeout: 15000
     queryTimeout: 30
-  globalLibraries:
-    libraries:
-    - defaultVersion: "master"
-      name: "helloWorld"
-      retriever:
-        modernSCM:
-          libraryPath: "docker/jenkins/pipelines/shared-library/"
-          scm:
-            git:
-              id: "de5cb04f-a351-4f24-bbc8-52cff06daa9b"
-              remote: "https://github.com/kalbyimanie/devops"
-              traits:
-              - "gitBranchDiscovery"
   globalTimeOutConfiguration:
     operations:
     - "abortOperation"
     overwriteable: false
-  hashicorpVault:
-    configuration:
-      engineVersion: 2
-      timeout: 60
-      vaultCredentialId: "vault"
-      vaultUrl: "http://vault:8200"
   jobConfigHistory:
     excludePattern: "queue\\.xml|nodeMonitors\\.xml|UpdateCenter\\.xml|global-build-stats|LockableResourcesManager\\\
       .xml|MilestoneStep\\.xml|cloudbees-disk-usage-simple\\.xml"
@@ -244,13 +171,8 @@ unclassified:
     skipDuplicateHistory: true
   junitTestResultStorage:
     storage: "file"
-  locale:
-    ignoreAcceptLanguage: false
   location:
     adminAddress: "address not configured yet <nobody@nowhere>"
-    url: "http://localhost/jenkins/"
-  login-theme-plugin:
-    useDefaultTheme: true
   mailer:
     charset: "UTF-8"
     useSsl: false
@@ -258,8 +180,6 @@ unclassified:
   mavenModuleSet:
     localRepository: "default"
   nextBuilds:
-    dateFormat: "dd/MM/yyyy HH:mm z"
-    displayMode: 1
     filterByView: true
     showParameterizedWidget: false
     showPossibleWidget: false
@@ -272,7 +192,8 @@ unclassified:
         defaultPriority: 3
         numberOfPriorities: 5
   scheduleBuild:
-    defaultScheduleTime: "10:00:00 PM"
+    defaultScheduleTime: "22:00:00"
+    defaultStartTime: "22:00:00"
     timeZone: "Asia/Jakarta"
   scmGit:
     addGitTagAction: false
@@ -282,21 +203,11 @@ unclassified:
     hideCredentials: false
     showEntireCommitSummaryInChanges: false
     useExistingAccountWithSameEmail: false
-  statisticsConfiguration:
-    buildInfo: true
-    buildStepInfo: true
-    projectInfo: true
-    queueInfo: true
-    scmCheckoutInfo: true
-    shouldPublishToAwsSnsQueue: false
-    shouldSendApiHttpRequests: false
-    shouldSendToLogback: false
+  slackNotifier:
+    botUser: false
+    sendAsText: false
   telegramBotGlobalConfiguration:
-    approvalType: ALL
-    shouldLogToConsole: false
-  # themeManager:
-  #   disableUserThemes: true
-  #   theme: "darkSystem"
+    shouldLogToConsole: true
   timestamper:
     allPipelines: false
     elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
@@ -306,8 +217,8 @@ unclassified:
 tool:
   git:
     installations:
-    - home: "/usr/bin/git"
-      name: "git"
+    - home: "git"
+      name: "Default"
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
