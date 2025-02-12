@@ -63,9 +63,11 @@ services:
       # - 50000:50000
       # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
     volumes:
+      - ./jenkins-data:/var/jenkins_home/
       - ./casc-configs/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # - ./plugins.txt:/usr/share/jenkins/ref/plugins.txt
+      - ./casc-configs/setupSeeder.groovy:/var/jenkins_home/casc_configs/setupSeeder.groovy:ro
+      - ./casc-configs/jobSeeder.groovy:/var/jenkins_home/casc_configs/jobSeeder.groovy:ro
     networks:
       - cicd
 
