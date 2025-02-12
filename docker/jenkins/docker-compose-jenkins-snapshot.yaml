@@ -50,11 +50,7 @@ services:
     user: root
     container_name: jenkins-master
     hostname: jenkins-master
-    build:
-      context: .
-      dockerfile: jenkins.Dockerfile
-      args:
-        - JENKINS_VERSION=2.492.1-lts-jdk17
+    image: kalbyimanie/jenkins-master:jenkins-2.492.1-lts-jdk17-ready-to-use
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
@@ -67,14 +63,9 @@ services:
       # - 50000:50000
       # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
     volumes:
-      - ./jenkins-data:/var/jenkins_home
       - ./casc-configs/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./plugins.txt:/usr/share/jenkins/ref/plugins.txt
-      - ./casc-configs/setupSeeder.groovy:/var/jenkins_home/casc_configs/setupSeeder.groovy:ro
-      - ./casc-configs/jobSeeder.groovy:/var/jenkins_home/casc_configs/jobSeeder.groovy:ro
-    env_file:
-      - ./casc-configs/jenkins.env # NOTE create your own jenkins.env for the credentials at jenkins startup
+      # - ./plugins.txt:/usr/share/jenkins/ref/plugins.txt
     networks:
       - cicd
 

@@ -137,10 +137,15 @@ security:
   gitHostKeyVerificationConfiguration:
     sshHostKeyVerificationStrategy: "knownHostsFileVerificationStrategy"
   globalJobDslSecurityConfiguration:
-    useScriptSecurity: true
+    useScriptSecurity: false
   sSHD:
     port: -1
   scriptApproval:
+    approvedScriptHashes:
+    - "SHA512:5175936241f94df39bc064301acc13299dfd28a1dba8e85afb5fe3f4c19cb64c889e8ce33a51442dd76dc37c3d9216462930aed2f78e97c17805e9ca5cb1bfb5"
+    - "SHA512:d4ae75989aa2144e1278449d96d27fbd5d0e1101ee47a48c51fc4c8a7d17a17b2d4bbe227592674fa82754463434a6396ec1e423ccb7e67a14ee132229869389"
+    - "SHA512:e195b82e66c618a90bc8fcded8988290972d2ef569717d1193688dd31f9c0d0670644238d76d7ce464b413d5c1515895dc0f9ff04301f4c3c3c1a07b604ec572"
+    - "SHA512:e7314d36f304cfcbfbb0bfc7f250fc84d0b06a020a6bdf9b98d416b07a3ac6df5dc19eecd6e4da63082185eb12ece3a71ff7931dc635aa5d2c733a21ac5958b7"
     forceSandbox: false
 unclassified:
   buildDiscarders:
@@ -230,3 +235,6 @@ tool:
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
+
+jobs:
+  - file: /var/jenkins_home/casc_configs/setupSeeder.groovy
