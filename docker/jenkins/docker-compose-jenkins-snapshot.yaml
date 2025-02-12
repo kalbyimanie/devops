@@ -90,6 +90,32 @@ services:
     networks:
       - cicd
 
+  consul:
+    cap_add:
+      - IPC_LOCK
+    container_name: consul
+    hostname: consul
+    image: hashicorp/consul:1.20
+    command:
+      - agent
+      - -server
+      - -ui
+      - -node=server-1
+      - -bootstrap-expect=1
+      - -client=0.0.0.0
+    ports:
+      # - 8500
+      # - 8600/udp
+      # !!! IMPORTANT !!!: [SECTION] EXPOSE PORT TO THE HOST NETWORK
+      - 8500:8500
+      - 8600:8600/udp
+      # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
+    volumes:
+      - ./consul-data/data:/consul/data
+      - ./consul-data/config:/consul/config
+    networks:
+      - cicd
+
 
 # !!! IMPORTANT !!!: SECTION container network
 networks:

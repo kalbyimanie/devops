@@ -27,6 +27,7 @@ jenkins:
             user: "root"
         dockerTemplateBase:
           bindAllPorts: true
+          bindPorts: "50000/tcp"
           cpuPeriod: 0
           cpuQuota: 0
           environment:
@@ -34,6 +35,7 @@ jenkins:
           environmentsString: "DOCKER_HOST=\"tcp://docker.for.mac.host.internal:2376\""
           hostname: "jenkins-slave"
           image: "kalbyimanie/jenkins:jenkins-slave-local_latest"
+          network: "jenkins_cicd"
           privileged: true
           user: "root"
         instanceCapStr: "1"
