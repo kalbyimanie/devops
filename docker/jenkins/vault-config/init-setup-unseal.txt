@@ -1,0 +1,46 @@
+(step 1)
+docker exec -it vault sh
+
+
+/ # vault status
+Key                Value
+---                -----
+Seal Type          shamir
+Initialized        false
+Sealed             true
+Total Shares       0
+Threshold          0
+Unseal Progress    0/0
+Unseal Nonce       n/a
+Version            1.9.0
+Storage Type       file
+HA Enabled         false
+
+(step 2)
+/ # vault operator init
+Unseal Key 1: zh1mWEXPp3vVjarAxrQxb66+91PdEIuGwQIzqXts/E85
+Unseal Key 2: Bzk24Pk86jMvyBYnBVNQQT65wjdd9DzbSs1edc0BaKlw
+Unseal Key 3: aNJdG5DhPH6qAhBjoIXwxgoK46J9WPP7EpR0zvx6VBPo
+Unseal Key 4: T5bHvCxFECdR1UwOJR5VaosCVkEmjM8TEsyAGhR+QarR
+Unseal Key 5: QLAA+vMu5n4vN8iOn07V36F0GPYLntQcTXfSEK6dnIuq
+
+Initial Root Token: s.N6o6VBc2Uki2eTotumaMJ05k
+
+
+(step 3)
+- you can unseal from the UI by providing 3 given keys above
+
+(step 4)
+- login using root token
+
+Vault initialized with 5 key shares and a key threshold of 3. Please securely
+distribute the key shares printed above. When the Vault is re-sealed,
+restarted, or stopped, you must supply at least 3 of these keys to unseal it
+before it can start servicing requests.
+
+Vault does not store the generated master key. Without at least 3 keys to
+reconstruct the master key, Vault will remain permanently sealed!
+
+It is possible to generate new unseal keys, provided you have a quorum of
+existing unseal keys shares. See "vault operator rekey" for more information.
+/ #

@@ -105,7 +105,7 @@ setup-dockerized-jenkins-no-build: local-registry
 	docker-compose -f docker-compose-no-build.yaml up
 
 setup-dockerized-jenkins-snapshot: local-registry
-	docker-compose -f docker-compose-jenkins-snapshot.yaml up
+	docker-compose -f docker-compose-jenkins-snapshot.yaml up --remove-orphans --force-recreate
 
 setup-dockerized-jenkins: local-registry build-new-jenkins-slave-image
 	$(info SETUP DOCKERIZED JENKINS...)

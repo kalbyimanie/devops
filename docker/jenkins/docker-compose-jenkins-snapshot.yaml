@@ -36,6 +36,10 @@ services:
       - ./vault-data/file:/vault/file
       - ./vault-data/log:/vault/log
       - ./vault-config/config.hcl:/vault/config.hcl
+      # - ./vault-config/vault-cert.pem:/vault/vault-cert.pem
+      # - ./vault-config/vault-key.pem:/vault/vault-key.pem
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
     networks:
       - cicd
 
@@ -77,6 +81,7 @@ services:
       - dockerd-proxy
       - vault
       - jenkins-master
+      - consul
     user: root
     container_name: nginx
     hostname: nginx
@@ -91,6 +96,8 @@ services:
       - cicd
 
   consul:
+    links:
+      - dockerd-proxy
     cap_add:
       - IPC_LOCK
     container_name: consul
@@ -103,16 +110,20 @@ services:
       - -node=server-1
       - -bootstrap-expect=1
       - -client=0.0.0.0
+      - -ui-content-path=/consul
+      - -config-file=/consul/config.hcl
+      - -auto-reload-config
+
     ports:
-      # - 8500
-      # - 8600/udp
+      - "8500"
+      - "8600/udp"
       # !!! IMPORTANT !!!: [SECTION] EXPOSE PORT TO THE HOST NETWORK
-      - 8500:8500
-      - 8600:8600/udp
+      # - 8500:8500
+      # - 8600:8600/udp
       # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
     volumes:
       - ./consul-data/data:/consul/data
-      - ./consul-data/config:/consul/config
+      - ./consul-data/config/config.hcl:/consul/config.hcl
     networks:
       - cicd
 
