@@ -134,6 +134,8 @@ services:
     image: registry:2.7
     ports:
       - 5000:5000
+    networks:
+      - cicd
 
 # !!! IMPORTANT !!!: SECTION container network
 networks:
