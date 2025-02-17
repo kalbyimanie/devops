@@ -1,0 +1,242 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - usernamePassword:
+          description: "sample-github-account"
+          id: "sample-github-account"
+          password: "{AQAAABAAAAAg+9nEB7qqsysWLGi0GYsbDeBjsWUIZ/5IjwhSPrVhdU4nE2tOjYNurjmiNUihkR/Y}"
+          scope: GLOBAL
+          username: "sample-github-account"
+jenkins:
+  authorizationStrategy: "loggedInUsersCanDoAnything"
+  clouds:
+  - docker:
+      containerCap: -1
+      dockerApi:
+        connectTimeout: 60
+        dockerHost:
+          uri: "tcp://172.17.0.1:2376"
+        readTimeout: 60
+      errorDuration: 10
+      exposeDockerHost: true
+      name: "docker"
+      templates:
+      - connector:
+          attach:
+            user: "root"
+        dockerTemplateBase:
+          bindAllPorts: true
+          bindPorts: "50000/tcp"
+          cpuPeriod: 0
+          cpuQuota: 0
+          environment:
+          - "DOCKER_HOST=\"tcp://172.17.0.1:2376\""
+          environmentsString: "DOCKER_HOST=\"tcp://172.17.0.1:2376\""
+          hostname: "jenkins-slave"
+          image: "kalbyimanie/jenkins:jenkins-slave-local_for_linux_latest"
+          network: "jenkins_cicd"
+          privileged: true
+          user: "root"
+        instanceCapStr: "1"
+        labelString: "jenkins-slave"
+        name: "jenkins-slave"
+        pullTimeout: 300
+        remoteFs: "/home/jenkins"
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  labelAtoms:
+  - name: "built-in"
+  - name: "jenkins-slave"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  nodeMonitors:
+  - "architecture"
+  - "clock"
+  - diskSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "swapSpace"
+  - tmpSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - jvmVersion:
+      comparisonMode: RUNTIME_GREATER_OR_EQUAL_MASTER_BYTECODE
+  - "remotingVersion"
+  - "responseTime"
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: true
+  scmCheckoutRetryCount: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+      - id: "admin"
+        name: "admin" # pass: admin
+        password: "admin"
+        properties:
+        - "apiToken"
+        - "consoleUrlProvider"
+        - "favorite"
+        - "myView"
+        - preferredProvider:
+            providerId: "default"
+        - theme:
+            theme: "noOp"
+        - "timezone"
+        - "experimentalFlags"
+        - mailer:
+            emailAddress: "admin@sample.com"
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+globalCredentialsConfiguration:
+  configuration:
+    providerFilter: "none"
+    typeFilter: "none"
+appearance:
+  locale:
+    ignoreAcceptLanguage: false
+    systemLocale: "USE_BROWSER_LOCALE"
+  loginTheme:
+    useDefaultTheme: true
+  monitorConfiguration:
+    columns: 2
+  pipelineGraphView:
+    showGraphOnBuildPage: true
+    showGraphOnJobPage: true
+  prism:
+    theme: SOLARIZED_LIGHT
+  themeManager:
+    disableUserThemes: false
+    theme: "noOp"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  cps:
+    hideSandbox: false
+  gitHooks:
+    allowedOnAgents: true
+    allowedOnController: false
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "knownHostsFileVerificationStrategy"
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+  sSHD:
+    port: -1
+  scriptApproval:
+    approvedScriptHashes:
+    - "SHA512:5175936241f94df39bc064301acc13299dfd28a1dba8e85afb5fe3f4c19cb64c889e8ce33a51442dd76dc37c3d9216462930aed2f78e97c17805e9ca5cb1bfb5"
+    - "SHA512:d4ae75989aa2144e1278449d96d27fbd5d0e1101ee47a48c51fc4c8a7d17a17b2d4bbe227592674fa82754463434a6396ec1e423ccb7e67a14ee132229869389"
+    - "SHA512:e195b82e66c618a90bc8fcded8988290972d2ef569717d1193688dd31f9c0d0670644238d76d7ce464b413d5c1515895dc0f9ff04301f4c3c3c1a07b604ec572"
+    - "SHA512:e7314d36f304cfcbfbb0bfc7f250fc84d0b06a020a6bdf9b98d416b07a3ac6df5dc19eecd6e4da63082185eb12ece3a71ff7931dc635aa5d2c733a21ac5958b7"
+    forceSandbox: false
+unclassified:
+  buildDiscarders:
+    configuredBuildDiscarders:
+    - "jobBuildDiscarder"
+  buildStepOperation:
+    enabled: false
+  buildUserVars:
+    allBuilds: false
+  diskUsageProjectActionFactory:
+    checkWorkspaceOnAgent: false
+    historyLength: 183
+    showGraph: true
+    timeoutWorkspace: 5
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitHubConfiguration:
+    apiRateLimitChecker: ThrottleForNormalize
+  gitHubPluginConfig:
+    hookUrl: "http://localhost/jenkins/github-webhook/"
+  githubPullRequests:
+    actualiseOnFactory: false
+  globalConfigurationImpl:
+    allResults: true
+    enabled: true
+    notificationTimeout: 15000
+    queryTimeout: 30
+  globalTimeOutConfiguration:
+    operations:
+    - "abortOperation"
+    overwriteable: false
+  jobConfigHistory:
+    excludePattern: "queue\\.xml|nodeMonitors\\.xml|UpdateCenter\\.xml|global-build-stats|LockableResourcesManager\\\
+      .xml|MilestoneStep\\.xml|cloudbees-disk-usage-simple\\.xml"
+    saveModuleConfiguration: false
+    showBuildBadges: "always"
+    showChangeReasonCommentWindow: true
+    skipDuplicateHistory: true
+  junitTestResultStorage:
+    storage: "file"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  mavenModuleSet:
+    localRepository: "default"
+  nextBuilds:
+    filterByView: true
+    showParameterizedWidget: false
+    showPossibleWidget: false
+  pollSCM:
+    pollingThreadCount: 10
+  prioritySorterConfiguration:
+    onlyAdminsMayEditPriorityConfiguration: false
+    strategy:
+      absoluteStrategy:
+        defaultPriority: 3
+        numberOfPriorities: 5
+  scheduleBuild:
+    defaultScheduleTime: "22:00:00"
+    defaultStartTime: "22:00:00"
+    timeZone: "Asia/Jakarta"
+  scmGit:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  telegramBotGlobalConfiguration:
+    shouldLogToConsole: true
+  timestamper:
+    allPipelines: false
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
+    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+  whitelist:
+    enabled: false
+tool:
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
+
+jobs:
+  - file: /var/jenkins_home/casc_configs/setupSeeder.groovy

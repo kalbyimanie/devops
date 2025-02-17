@@ -1,0 +1,17 @@
+[Unit]
+Description=Docker Compose Infra Service
+Documentation=https://docs.docker.com/compose/
+After=network.target docker.service
+
+[Service]
+WorkingDirectory=/opt/jenkins/devops/docker/jenkins
+ExecStart=docker compose -f docker-compose-jenkins-snapshot-for-linux.yaml up --remove-orphans --force-recreate
+ExecStop=docker compose -f docker-compose-jenkins-snapshot-for-linux.yaml down
+Restart=always
+TimeoutSec=300
+RestartSec=10s
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
