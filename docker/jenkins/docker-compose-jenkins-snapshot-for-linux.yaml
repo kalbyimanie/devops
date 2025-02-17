@@ -127,6 +127,13 @@ services:
     networks:
       - cicd
 
+  local-registry:
+    user: root
+    container_name: local-registry
+    hostname: local-registry
+    image: registry:2.7
+    ports:
+      - 5000:5000
 
 # !!! IMPORTANT !!!: SECTION container network
 networks:
