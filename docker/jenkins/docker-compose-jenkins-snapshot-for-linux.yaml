@@ -1,0 +1,134 @@
+version: "3.8"
+services:
+# !!! IMPORTANT !!!: SECTION dockerd-proxy
+  dockerd-proxy:
+    user: root
+    container_name: dockerd-proxy
+    hostname: dockerd-proxy
+    image: alpine/socat
+    ports:
+      - 2376:2375
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: >
+      tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
+    networks:
+      - cicd
+
+# !!! IMPORTANT !!!: SECTION vault
+  vault:
+    links:
+      - dockerd-proxy
+    cap_add:
+      - IPC_LOCK
+    container_name: vault
+    hostname: vault
+    image: vault:1.9.0
+    command: ["server", "-config=/vault/config.hcl", "-log-level=debug"]
+    ports:
+      - 8200
+      - 8201
+      # !!! IMPORTANT !!!: [SECTION] EXPOSE PORT TO THE HOST NETWORK
+      # - 8200:8200
+      # - 8201:8201
+      # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
+    volumes:
+      - ./vault-data/file:/vault/file
+      - ./vault-data/log:/vault/log
+      - ./vault-config/config.hcl:/vault/config.hcl
+      # - ./vault-config/vault-cert.pem:/vault/vault-cert.pem
+      # - ./vault-config/vault-key.pem:/vault/vault-key.pem
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
+    networks:
+      - cicd
+
+# !!! IMPORTANT !!!: SECTION jenkins-master
+  jenkins-master:
+    links:
+      - dockerd-proxy
+      - vault
+    depends_on:
+      - dockerd-proxy
+      - vault
+    user: root
+    container_name: jenkins-master
+    hostname: jenkins-master
+    image: kalbyimanie/jenkins-master:jenkins-master-for-linux-latest
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=Asia/Jakarta
+      - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
+      - JENKINS_OPTS=--prefix=/jenkins
+    ports:
+      - 8080
+      - 50000
+      # !!! IMPORTANT !!!: [SECTION] EXPOSE PORT TO THE HOST NETWORK
+      # - 8080:8080
+      # - 50000:50000
+      # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
+    volumes:
+      - ./jenkins-data:/var/jenkins_home/
+      - ./casc-configs/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./casc-configs/setupSeeder.groovy:/var/jenkins_home/casc_configs/setupSeeder.groovy:ro
+      - ./casc-configs/jobSeeder.groovy:/var/jenkins_home/casc_configs/jobSeeder.groovy:ro
+    networks:
+      - cicd
+
+# !!! IMPORTANT !!!: SECTION nginx
+  nginx:
+    depends_on:
+      - dockerd-proxy
+      - vault
+      - jenkins-master
+      - consul
+    user: root
+    container_name: nginx
+    hostname: nginx
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx-config/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - cicd
+
+  consul:
+    links:
+      - dockerd-proxy
+    cap_add:
+      - IPC_LOCK
+    container_name: consul
+    hostname: consul
+    image: hashicorp/consul:1.20
+    command:
+      - agent
+      - -server
+      - -ui
+      - -node=server-1
+      - -bootstrap-expect=1
+      - -client=0.0.0.0
+      - -ui-content-path=/consul
+      - -config-file=/consul/config.hcl
+      - -auto-reload-config
+
+    ports:
+      - "8500"
+      - "8600/udp"
+      # !!! IMPORTANT !!!: [SECTION] EXPOSE PORT TO THE HOST NETWORK
+      # - 8500:8500
+      # - 8600:8600/udp
+      # !!! IMPORTANT !!!: [END OF SECTION] EXPOSE PORT TO THE HOST NETWORK
+    volumes:
+      - ./consul-data/data:/consul/data
+      - ./consul-data/config/config.hcl:/consul/config.hcl
+    networks:
+      - cicd
+
+
+# !!! IMPORTANT !!!: SECTION container network
+networks:
+  cicd:
+    driver: bridge

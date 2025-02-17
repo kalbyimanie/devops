@@ -37,6 +37,31 @@ build-new-jenkins-slave-image:
 	$(info PUSH JENKINS SLAVE IMAGE TO LOCAL REGISTRY...)
 	docker push $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):latest
 
+build-new-jenkins-slave-image-for-linux:
+
+	$(info BUILD JENKINS SLAVE IMAGE...)
+	docker build --platform linux/amd64 -t $(JENKINS_SLAVE_IMAGE_TAG):$(DATE) -t latest \
+	-f $(JENKINS_SLAVE_DOCKER_FILE) .
+
+	$(info TAG JENKINS SLAVE IMAGE...)
+	docker tag $(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE)
+
+	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):jenkins-slave-for-linux-latest
+
+
+push-new-jenkins-slave-image-for-linux-to-docker-hub: build-new-jenkins-slave-image-for-linux
+
+	$(info TAG JENKINS SLAVE IMAGE...)
+	docker tag $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_$(DATE)
+
+	docker tag $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_$(DATE) $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_for_linux_latest
+
+	$(info PUSH JENKINS SLAVE IMAGE TO DOCKERHUB...)
+	docker push $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_$(DATE)
+
+	docker push $(DOCKER_HUB_REGISTRY_BASE_URI):$(JENKINS_SLAVE_IMAGE_TAG)_for_linux_latest
+
+
 push-new-jenkins-slave-image-to-docker-hub: build-new-jenkins-slave-image
 
 	$(info TAG JENKINS SLAVE IMAGE...)
@@ -67,6 +92,12 @@ build-jenkins-image:
 	--build-arg=JENKINS_VERSION=$(JENKINS_VERSION) \
 	-f $(JENKINS_DOCKER_FILE) .
 
+build-jenkins-image-for-linux:
+	$(info BUILD JENKINS IMAGE...)
+	docker build --platform linux/amd64 -t $(JENKINS_IMAGE_TAG) -t latest \
+	--build-arg=JENKINS_VERSION=$(JENKINS_VERSION) \
+	-f $(JENKINS_DOCKER_FILE) .
+
 push-jenkins-master-image-to-local-registry: local-registry build-jenkins-image build-jenkins-slave-image
 	$(info TAG JENKINS MASTER IMAGE...)
 	docker tag $(JENKINS_IMAGE_TAG) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_IMAGE_TAG):$(DATE)
@@ -86,6 +117,16 @@ push-jenkins-master-image-to-docker-hub: build-jenkins-image
 	$(info PUSH JENKINS MASTER IMAGE TO DOCKER HUB...)
 	docker push $(DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI):$(JENKINS_IMAGE_TAG)-$(DATE)
 	docker push $(DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI):latest
+
+push-jenkins-master-image-for-linux-to-docker-hub: build-jenkins-image-for-linux
+	$(info TAG JENKINS MASTER IMAGE...)
+	docker tag $(JENKINS_IMAGE_TAG) $(DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI):$(JENKINS_IMAGE_TAG)-$(DATE)
+
+	docker tag $(DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI):$(JENKINS_IMAGE_TAG)-$(DATE) $(DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI):jenkins-master-for-linux-latest
+
+	$(info PUSH JENKINS MASTER IMAGE TO DOCKER HUB...)
+	docker push $(DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI):$(JENKINS_IMAGE_TAG)-$(DATE)
+	docker push $(DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI):jenkins-master-for-linux-latest
 
 cleanup-jenkins-images-in-local-registry:
 	$(info CLEAN UP JENKINS IMAGE IN LOCAL REGISTRY...)
