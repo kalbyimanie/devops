@@ -6,6 +6,7 @@ JENKINS_IMAGE_TAG := jenkins-master-local-version-$(JENKINS_VERSION)
 JENKINS_SLAVE_IMAGE_TAG := jenkins-slave-local
 JENKINS_DOCKER_FILE := jenkins.Dockerfile
 JENKINS_SLAVE_DOCKER_FILE := jenkins-slave.Dockerfile
+JENKINS_SLAVE_FOR_LINUX_DOCKER_FILE := jenkins-slave-for-linux.Dockerfile
 LOCAL_REGISTRY_BASE_URI := localhost:5000
 DOCKER_HUB_REGISTRY_BASE_URI := kalbyimanie/jenkins
 DOCKER_HUB_JENKINS_MASTER_REGISTRY_BASE_URI := kalbyimanie/jenkins-master
@@ -41,7 +42,7 @@ build-new-jenkins-slave-image-for-linux:
 
 	$(info BUILD JENKINS SLAVE IMAGE...)
 	docker build --platform linux/amd64 -t $(JENKINS_SLAVE_IMAGE_TAG):$(DATE) -t latest \
-	-f $(JENKINS_SLAVE_DOCKER_FILE) .
+	-f $(JENKINS_SLAVE_FOR_LINUX_DOCKER_FILE) .
 
 	$(info TAG JENKINS SLAVE IMAGE...)
 	docker tag $(JENKINS_SLAVE_IMAGE_TAG):$(DATE) $(LOCAL_REGISTRY_BASE_URI)/$(JENKINS_SLAVE_IMAGE_TAG):$(DATE)
