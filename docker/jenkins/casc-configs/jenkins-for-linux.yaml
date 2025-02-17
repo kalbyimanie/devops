@@ -24,7 +24,7 @@ jenkins:
       templates:
       - connector:
           attach:
-            user: "root"
+            user: "jenkins"
         dockerTemplateBase:
           bindAllPorts: true
           bindPorts: "50000/tcp"
