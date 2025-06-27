@@ -300,21 +300,35 @@ return {
         local function opts(desc)
           return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
         end
+
         api.config.mappings.default_on_attach(bufnr)
+
+
+        -- Smart open: directories or symlinks expand, files open in vsplit
         local function smart_open()
           local node = api.tree.get_node_under_cursor()
           if not node then return end
           if node.type == "directory" or node.type == "symlink" then
             api.tree.change_root_to_node()
+          elseif node.type == "file" then
+            api.node.open.vertical() -- open file in vertical split
           else
             api.node.open.edit()
           end
         end
+
+
+
         vim.keymap.set("n", "l", smart_open, opts("Smart Open"))
-        vim.keymap.set("n", "<CR>", smart_open, opts("Smart Open"))
+        vim.keymap.set("n", "<CR>", smart_open, opts("Open in VSplit"))
         vim.keymap.set("n", "h", api.tree.change_root_to_parent, opts("Go up"))
         vim.keymap.set("n", "<C-t>", api.tree.change_root_to_parent, opts("Go up"))
         vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
+
+        vim.keymap.set("n", "s", function()
+          local api = require("nvim-tree.api")
+          api.node.open.horizontal()
+        end, opts("Open in horizontal split"))
       end
 
 
