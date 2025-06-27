@@ -119,3 +119,9 @@ vim.keymap.set("n", "<leader>gd", function()
 end, { desc = "Diff current file between branches or history" })
 
 vim.keymap.set("n", "<leader>gq", "<cmd>DiffviewClose<CR>", { desc = "Close Diffview" })
+
+
+
+vim.keymap.set("n", "<leader>mp", function()
+  require("render-markdown").toggle()
+end, { desc = "Toggle Markdown Preview" })

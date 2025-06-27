@@ -615,6 +615,29 @@ return {
 
 
 
+  -- README.md Preview
+
+
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    ft = "markdown",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      -- "echasnovski/mini.nvim", -- or mini.icons
+      -- or use this instead if you're using web-devicons
+      "nvim-tree/nvim-web-devicons"
+    },
+    config = function()
+      require("render-markdown").setup({
+        -- optional: tweak config here
+      })
+    end,
+  },
+
+
+
+
+
   -- Auto format on save (Conform)
   {
     "stevearc/conform.nvim",
