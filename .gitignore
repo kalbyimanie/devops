@@ -19,3 +19,4 @@ docker/skaffold/**/**
 # **/generate-key-config.txt
 docker/gnupg/data/jenkins.env.dec
 docker/gnupg/data/jenkins.env.dec
+*.***.vscode

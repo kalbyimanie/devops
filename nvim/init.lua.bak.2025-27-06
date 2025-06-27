@@ -1,0 +1,615 @@
+vim.g.mapleader = " "
+
+-- Bootstrap packer if not installed
+local ensure_packer = function()
+  local fn = vim.fn
+  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+  if fn.empty(fn.glob(install_path)) > 0 then
+    fn.system({'git', 'clone', '--depth', '1',
+      'https://github.com/wbthomason/packer.nvim', install_path})
+    vim.cmd [[packadd packer.nvim]]
+    return true
+  end
+  return false
+end
+
+local packer_bootstrap = ensure_packer()
+
+-- Autocommand for plugin updates
+vim.cmd([[
+  augroup packer_user_config
+    autocmd!
+    autocmd BufWritePost init.lua source <afile> | PackerSync
+  augroup end
+]])
+
+-- Plugin setup
+require('packer').startup(function(use)
+  use 'wbthomason/packer.nvim'
+  use 'nvim-treesitter/nvim-treesitter'
+  use 'nvim-tree/nvim-tree.lua'
+  -- Packer
+  use 'editorconfig/editorconfig-vim'
+
+
+  use {
+    'nvim-lualine/lualine.nvim',
+    requires = { 'folke/tokyonight.nvim' }
+  }
+
+  use {
+    'rmagatti/auto-session',
+    config = function()
+      local sessions_dir = vim.fn.expand("~/.config/nvim/sessions")
+      -- Ensure trailing slash for auto-session
+      if not sessions_dir:match("/$") then
+        sessions_dir = sessions_dir .. "/"
+      end
+      print("Auto-session config: root_dir = " .. sessions_dir)
+      require("auto-session").setup {
+        root_dir = sessions_dir,
+        log_level = "error",
+        suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/"},
+        session_lens = {
+          load_on_setup = true, -- Initialize on startup (requires Telescope)
+          picker_opts = nil, -- Table passed to Telescope / Snacks to configure the picker. See below for more information
+          mappings = {
+            -- Mode can be a string or a table, e.g. {"i", "n"} for both insert and normal mode
+            delete_session = { "i", "<C-D>" },
+            alternate_session = { "i", "<C-S>" },
+            copy_session = { "i", "<C-Y>" },
+          },
+        },
+        session_control = {
+          control_dir = vim.fn.expand("~/.config/nvim/sessions/"), -- Auto session control dir, for control files, like alternating between two sessions with session-lens
+          -- control_filename = "session_control.json", -- File name of the session control file
+        },
+        -- 👇 Customize session file name
+        auto_session_name = function()
+          -- Use just the name of the current directory
+          return vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+        end,
+
+        vim.keymap.set('n', '<leader>z', function()
+          require('auto-session.session-lens').search_session()
+        end, { desc = "🔍 Search sessions" })
+
+      }
+    end
+  }
+
+
+
+  use {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end
+  }
+
+
+  use {
+    'nvim-pack/nvim-spectre',
+    requires = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      -- Optional config
+      require('spectre').setup()
+    end
+  }
+
+
+
+  use {
+    'olimorris/onedarkpro.nvim',
+    config = function()
+      require('onedarkpro').setup({
+        options = {
+          transparency = true,
+          styles = {
+            comments = "italic",
+            keywords = "bold",
+            functions = "bold",
+            strings = "italic"
+          }
+        }
+      })
+      vim.cmd([[colorscheme onedark_dark]]) -- or 'onedark_dark' / 'onedark_vivid'
+    end
+  }
+
+
+
+
+  use 'kyazdani42/nvim-web-devicons'
+
+  -- LSP, Autocompletion, and Snippets
+  use 'neovim/nvim-lspconfig'
+  use 'williamboman/mason.nvim'
+  use 'williamboman/mason-lspconfig.nvim'
+  use 'hrsh7th/nvim-cmp'
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-path'
+  use 'L3MON4D3/LuaSnip'
+  use 'saadparwaiz1/cmp_luasnip'
+  use 'ray-x/lsp_signature.nvim' -- Maintained fork
+  -- ADDED: Fuzzy Finder / Search Plugin
+  use {
+    'nvim-telescope/telescope.nvim', tag = '0.1.5',
+    requires = { {'nvim-lua/plenary.nvim'} },
+  }
+
+  use {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      require('gitsigns').setup {
+        current_line_blame = true,
+        current_line_blame_opts = {
+          virt_text = true,
+          virt_text_pos = 'eol',  -- 'eol' | 'overlay' | 'right_align'
+          delay = 300,            -- ms
+          ignore_whitespace = false,
+        },
+        current_line_blame_formatter = '<author> • <author_time:%Y-%m-%d> • <summary>',
+      }
+    end
+  }
+
+  use {
+    'kevinhwang91/nvim-ufo',
+    requires = 'kevinhwang91/promise-async',
+    config = function()
+      vim.o.foldcolumn = '1'
+      vim.o.foldlevel = 99
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+
+      -- Set fold expression for UFO
+      vim.o.foldmethod = 'expr'
+      vim.o.foldexpr = 'v:lua.vim.fold.foldexpr()' -- Use UFO's fold expression
+
+      require('ufo').setup({
+        provider_selector = function(_, _, _)
+          return { 'treesitter', 'indent' }
+        end
+      })
+    end
+  }
+
+
+  use {
+    "akinsho/toggleterm.nvim",
+    tag = "*",
+    config = function()
+      require("toggleterm").setup({
+        direction = "float",
+        open_mapping = [[<C-\>]],
+      })
+    end,
+  }
+
+
+
+
+  if packer_bootstrap then
+    require('packer').sync()
+  end
+end)
+
+-- Basic settings
+vim.o.mouse = 'a'
+vim.o.title = true
+vim.o.titlestring = "%F"  -- Full path of current file
+vim.o.termguicolors = true
+vim.o.number = true
+-- vim.o.relativenumber = true
+vim.o.guifont = "FiraCode Nerd Font:h10"
+-- vim.o.guicursor = "n-v-c:block,i:ver25,r:hor20"
+vim.o.guicursor = "n-v-c-i-r:ver25,r:hor25"
+vim.o.equalalways = false
+vim.o.clipboard = 'unnamedplus'
+vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+vim.o.expandtab = true      -- Use spaces instead of tabs
+vim.o.shiftwidth = 2        -- Size of an indent
+vim.o.softtabstop = 2       -- Number of spaces to insert for a <Tab>
+vim.o.tabstop = 2           -- Number
+vim.o.wrap = false
+vim.o.sidescroll = 1           -- Scroll horizontally one column at a time
+vim.o.sidescrolloff = 10
+vim.o.autoindent = true
+vim.o.smartindent = true
+vim.o.ignorecase = true     -- Case-insensitive search by default
+vim.o.smartcase = true      -- Case-sensitive if search has capital letters
+
+
+
+
+
+vim.keymap.set("n", "<leader>gt", function()
+  local cwd = vim.fn.expand("%:p:h") -- Get current file's directory
+
+  local Terminal = require("toggleterm.terminal").Terminal
+
+  Terminal:new({
+    cmd = os.getenv("SHELL"), -- Open your shell (bash, zsh, etc.)
+    dir = cwd,                -- Set working dir to current file's folder
+    hidden = true,
+    direction = "float",      -- Float window
+  }):toggle()
+end, { noremap = true, silent = true, desc = "Open floating terminal for git work" })
+
+
+
+
+vim.keymap.set("n", "<leader>py", function()
+  local file = vim.fn.expand("%:p") -- Get absolute file path
+
+  vim.ui.input({ prompt = "Run args (leave blank for none):" }, function(input)
+    if input == nil then return end -- cancel
+
+    -- Safely wrap args
+    local args = input
+    local cmd = string.format([[bash -c "python3 '%s' %s; echo '\n[Press Enter to exit]'; read"]], file, args)
+
+    require("toggleterm.terminal").Terminal
+      :new({
+        cmd = cmd,
+        hidden = true,
+        direction = "float",
+      })
+      :toggle()
+  end)
+end, { noremap = true, silent = true, desc = "Run Python file with args" })
+
+
+
+
+vim.keymap.set("n", "<leader>xs", function()
+  local file = vim.fn.expand("%:p") -- Get absolute path of current file
+
+  vim.ui.input({ prompt = "Bash args (leave blank for none):" }, function(input)
+    if input == nil then return end
+
+    local args = input
+    local cmd = string.format([[bash -c "bash '%s' %s; echo '\n[Press Enter to exit]'; read"]], file, args)
+
+    require("toggleterm.terminal").Terminal
+      :new({
+        cmd = cmd,
+        hidden = true,
+        direction = "float",
+      })
+      :toggle()
+  end)
+end, { noremap = true, silent = true, desc = "Run Bash script with args" })
+
+
+
+
+
+vim.keymap.set("n", "<leader>km", function()
+  require("telescope.builtin").keymaps()
+end, { desc = "Telescope: Keymaps" })
+
+
+
+vim.keymap.set("n", "<leader>H", function()
+  require("telescope.builtin").command_history()
+end, { noremap = true, silent = true, desc = "Telescope: Command history" })
+
+
+
+
+vim.keymap.set("n", "<leader>cd", function()
+  local node = require("nvim-tree.lib").get_node_at_cursor()
+  if node and node.absolute_path and node.type == "directory" then
+    vim.cmd("cd " .. node.absolute_path)
+    vim.notify("Changed directory to " .. node.absolute_path)
+  else
+    vim.notify("Not a directory", vim.log.levels.WARN)
+  end
+end, { noremap = true, silent = true, desc = "CD into selected dir" })
+
+
+vim.api.nvim_create_user_command("Rconf", function()
+  -- Correctly source init.lua
+  vim.cmd("luafile " .. vim.fn.stdpath("config") .. "/init.lua")
+  vim.cmd("PackerCompile")
+  vim.cmd("PackerSync")
+  print("Config reloaded!")
+end, {})
+
+
+
+
+
+-- Icon plugin setup
+require('nvim-web-devicons').setup {
+  -- Your icon overrides...
+  default = true,
+  override = {
+    ["yml"] = { icon = "", color = "#6c7079", name = "Yaml"},
+    ["yaml"] = { icon = "", color = "#6c7079", name = "Yaml" },
+    ["conf"] = { icon = "", color = "#6c7079", name = "Conf" },
+    ["properties"] = { icon = "", color = "#6c7079", name = "Properties" },
+    ["swp"] = { icon = "", color = "#AC3D3D", name = "Swap" },
+    ["sh"] = { icon = "", color = "#81A1C1", name = "ShellScript" },
+    ["Books"] = { icon = "", color = "#81A1C1", name = "Books" },
+    ["GitHub"] = { icon = "", color = "#81A1C1", name = "GitHub" },
+    [".DS_Store"] = { icon = "", color = "#6c7079", name = "DS_Store" }
+  }
+}
+
+-- Treesitter Configuration
+require'nvim-treesitter.configs'.setup {
+  highlight = { enable = true },
+  ensure_installed = {
+    "lua", "python", "javascript", "typescript", "bash", "json", "yaml",
+    "html", "css", "markdown", "dockerfile", "go", "java", "c", "cpp", "rust", "tsx",
+    "terraform"
+  },
+  auto_install = true,
+}
+
+-- Other plugin setups (lualine, nvim-tree)
+require('lualine').setup {
+  options = {
+    -- theme = 'onedarkpro',
+    icons_enabled = true
+  },
+  sections = {
+    lualine_c = {
+      { 'filename', path = 2 }  -- 👈 path = 2 = full absolute path
+    }
+  }
+}
+
+
+local function my_on_attach(bufnr)
+  local api = require("nvim-tree.api")
+
+  local function opts(desc)
+    return {
+      desc = "nvim-tree: " .. desc,
+      buffer = bufnr,
+      noremap = true,
+      silent = true,
+      nowait = true,
+    }
+  end
+
+  -- Load default mappings
+  api.config.mappings.default_on_attach(bufnr)
+
+  -- Smart open: enter dir or open file
+  local function smart_open()
+    local node = api.tree.get_node_under_cursor()
+    if not node then return end
+
+    if node.type == "directory" or node.type == "symlink" then
+      api.tree.change_root_to_node()
+    else
+      api.node.open.edit()
+    end
+  end
+
+  -- Custom mappings
+  vim.keymap.set("n", "l", smart_open, opts("Smart Open"))
+  vim.keymap.set("n", "<CR>", smart_open, opts("Smart Open"))
+  vim.keymap.set("n", "h", api.tree.change_root_to_parent, opts("Go up"))
+  vim.keymap.set("n", "<C-t>", api.tree.change_root_to_parent, opts("Go up"))
+  vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
+end
+
+
+require("nvim-tree").setup {
+  on_attach = my_on_attach,
+  view = {
+    width = 30,
+    side = 'left',
+  },
+  renderer = { group_empty = true, icons = {
+      glyphs = { default = "", symlink = "", folder = { arrow_closed = "", arrow_open = "", default = "", open = "", empty = "", empty_open = "", symlink = "", symlink_open = "", }, git = { unstaged = "", staged = "S", unmerged = "", renamed = "➜", untracked = "U", deleted = "", ignored = "◌", }, }, }, },
+}
+vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+
+-- =============================================================================
+-- LSP, AUTOCOMPLETION, AND SNIPPETS CONFIGURATION
+-- =============================================================================
+local cmp = require('cmp')
+local luasnip = require('luasnip')
+cmp.setup({
+  snippet = { expand = function(args) luasnip.lsp_expand(args.body) end, },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4), ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(), ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  }),
+  sources = cmp.config.sources({ { name = 'nvim_lsp' }, { name = 'luasnip' }, }, { { name = 'buffer' }, { name = 'path' }, })
+})
+
+
+local api = require("nvim-tree.api")
+
+vim.api.nvim_create_autocmd("BufEnter", {
+    nested = true,
+    callback = function()
+        if (vim.fn.bufname() == "NvimTree_1") then return end
+
+        api.tree.find_file({ buf = vim.fn.bufnr() })
+    end,
+})
+
+
+
+
+require "lsp_signature".setup({
+    bind = true,
+    handler_opts = {
+        border = "rounded"
+    }
+})
+
+local telescope = require("telescope")
+
+
+telescope.setup({
+  defaults = {
+    vimgrep_arguments = {
+      "rg",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--hidden",
+      "--glob", "!**/.git/*",
+      "--glob", "!**/node_modules/*"
+    },
+  },
+  pickers = {
+    find_files = {
+      hidden = true,
+    },
+  },
+})
+
+
+
+
+
+
+
+
+
+
+
+local lspconfig = require('lspconfig')
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local on_attach = function(client, bufnr)
+  local opts = { noremap=true, silent=true, buffer=bufnr }
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+  vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+  vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+  vim.keymap.set('n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
+  vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+  vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+  vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+  vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+end
+
+require('mason').setup()
+require('mason-lspconfig').setup({
+  -- The name of the package in Mason is 'typescript-language-server'.
+  -- The name of the server config in lspconfig is 'typescript_language_server'.
+  -- This is the correct and final setting.
+  ensure_installed = { "lua_ls", "pyright", "terraformls", "typescript_language_server" },
+  handlers = {
+    function(server_name)
+      lspconfig[server_name].setup({ on_attach = on_attach, capabilities = capabilities, })
+    end,
+    ["lua_ls"] = function()
+      lspconfig.lua_ls.setup({
+        on_attach = on_attach, capabilities = capabilities,
+        settings = { Lua = { diagnostics = { globals = { 'vim' } } } }
+      })
+    end,
+  }
+})
+
+
+
+vim.keymap.set("n", "<leader>tt", function()
+  vim.cmd("!truncate -s 0 %")
+  vim.cmd("edit!") -- reload the empty file
+end, { noremap = true, silent = true, desc = "Truncate current file" })
+
+
+
+vim.keymap.set("n", "<leader>e", function()
+  vim.diagnostic.open_float(nil, {
+    border = "rounded",
+    focusable = false,
+    close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+  })
+end, { desc = "Show diagnostic popup" })
+
+
+local builtin = require("telescope.builtin")
+-- Optional keymaps
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope: Find Files' })
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope: Live Grep' })
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope: Find Buffers' })
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope: Help Tags' })
+
+-- Horizontal terminal split
+vim.keymap.set('n', '<leader>th', ':split | terminal<CR>', {
+  desc = 'Terminal (Horizontal)', noremap = true, silent = true
+})
+
+-- Vertical terminal split
+vim.keymap.set('n', '<leader>tv', ':vsplit | terminal<CR>', {
+  desc = 'Terminal (Vertical)', noremap = true, silent = true
+})
+
+-- Resize splits using Alt + arrow keys
+vim.keymap.set('n', '<A-Left>',  ':vertical resize -2<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<A-Right>', ':vertical resize +2<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<A-Up>',    ':resize -2<CR>',           { noremap = true, silent = true })
+vim.keymap.set('n', '<A-Down>',  ':resize +2<CR>',           { noremap = true, silent = true })
+-- Resize splits using Ctrl + Arrow keys
+vim.keymap.set('n', '<C-Left>',  ':vertical resize -2<CR>', { noremap = true, silent = true })  -- Make vertical split narrower
+vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', { noremap = true, silent = true })  -- Make vertical split wider
+vim.keymap.set('n', '<C-Up>',    ':resize -2<CR>',           { noremap = true, silent = true })  -- Make horizontal split shorter
+vim.keymap.set('n', '<C-Down>',  ':resize +2<CR>',           { noremap = true, silent = true })  -- Make horizontal split taller
+
+
+-- Decrease font
+vim.keymap.set('n', '<leader>-', function()
+  local current = tonumber(string.match(vim.o.guifont, 'h(%d+)'))
+  vim.o.guifont = "FiraCode Nerd Font:h" .. (current - 1)
+end, { desc = "Decrease font size" })
+
+-- Increase font
+vim.keymap.set('n', '<leader>=', function()
+  local current = tonumber(string.match(vim.o.guifont, 'h(%d+)'))
+  vim.o.guifont = "FiraCode Nerd Font:h" .. (current + 1)
+end, { desc = "Increase font size" })
+
+
+vim.keymap.set('n', '<leader>r', ':source $MYVIMRC | PackerSync<CR>', { desc = 'Reload Config & Sync Plugins', noremap = true, silent = true })
+
+
+-- Start in insert mode when terminal opens
+vim.cmd [[autocmd TermOpen * startinsert]]
+
+vim.keymap.set('n', '<leader>ss', ':SessionSave<CR>', { desc = "💾 Save session" })
+vim.keymap.set('n', '<leader>sr', ':SessionRestore<CR>', { desc = "🔄 Restore session" })
+vim.keymap.set('n', '<leader>z', '<cmd>SessionSearch<CR>', { desc = "🔍 Search sessions" })
+
+-- Debug command to check auto-session root directory
+vim.keymap.set('n', '<leader>sd', function()
+  local auto_session = require('auto-session')
+  print('Auto-session root dir: ' .. auto_session.get_root_dir())
+end, { desc = "🔍 Show session directory" })
+
+vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', { desc = "Toggle Spectre" })
+
+
+
+-- Press Esc to leave terminal mode
+vim.cmd [[tnoremap <Esc> <C-\><C-n>]]
+
+vim.keymap.set('n', '<leader>=', ':wincmd =<CR>', { desc = 'Equalize window sizes', noremap = true, silent = true })
+
+vim.keymap.set('n', '<leader>sm', ':set mouse=<CR>', { desc = '🖱 Disable mouse (Warp-friendly)' })
+vim.keymap.set('n', '<leader>em', ':set mouse=a<CR>', { desc = '🖱 Enable mouse again' })
