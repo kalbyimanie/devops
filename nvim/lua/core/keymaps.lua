@@ -102,3 +102,20 @@ vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Resize up" })
 vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", { desc = "Resize down" })
 vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Resize left" })
 vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Resize right" })
+
+
+
+vim.keymap.set("n", "<leader>gd", function()
+  local file = vim.fn.expand("%")
+  local input = vim.fn.input("Compare (branch1...branch2, leave blank for history): ")
+
+  if input == nil or input == "" then
+    -- Diff with file history
+    vim.cmd("DiffviewFileHistory " .. file)
+  else
+    -- Diff between branches for current file
+    vim.cmd("DiffviewOpen " .. input .. " -- " .. file)
+  end
+end, { desc = "Diff current file between branches or history" })
+
+vim.keymap.set("n", "<leader>gq", "<cmd>DiffviewClose<CR>", { desc = "Close Diffview" })

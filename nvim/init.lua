@@ -73,4 +73,3 @@ end
 
 -- lsp options
 require("lsp.configs")
-
