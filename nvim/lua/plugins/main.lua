@@ -1,135 +1,139 @@
 -- lua/plugins/main.lua
 
 return {
-    -- UI
+  -- UI
   { "folke/tokyonight.nvim" },
   { "olimorris/onedarkpro.nvim", opts = { options = { transparency = true, styles = { comments = "italic", keywords = "bold", functions = "bold", strings = "italic" } } } },
-  { "nvim-lualine/lualine.nvim", dependencies = { "folke/tokyonight.nvim" }, config = function()
-    require("lualine").setup {
-      options = { icons_enabled = true },
-      sections = {
-        lualine_c = {
-          { "filename", path = 2 }
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "folke/tokyonight.nvim" },
+    config = function()
+      require("lualine").setup {
+        options = { icons_enabled = true },
+        sections = {
+          lualine_c = {
+            { "filename", path = 2 }
+          }
         }
       }
-    }
-  end },
+    end
+  },
   -- Theme
-    {
-      "EdenEast/nightfox.nvim",
-      priority = 1000,
-      config = function()
-        require("nightfox").setup({
-          options = {
-            transparent = true,
-            styles = {
-              comments = "italic",
-              keywords = "bold",
-              functions = "italic,bold",
-            },
+  {
+    "EdenEast/nightfox.nvim",
+    priority = 1000,
+    config = function()
+      require("nightfox").setup({
+        options = {
+          transparent = true,
+          styles = {
+            comments = "italic",
+            keywords = "bold",
+            functions = "italic,bold",
           },
-          groups = {
-            all = {
-              Visual = { bg = "#44475a", style = "bold" },
-              CursorLine = { bg = "#2a2e3f" },
-              CursorLineNr = { fg = "#ffffff", style = "bold" },
-              IncSearch = { bg = "#ffb86c", fg = "#000000" },
-            },
+        },
+        groups = {
+          all = {
+            Visual = { bg = "#44475a", style = "bold" },
+            CursorLine = { bg = "#2a2e3f" },
+            CursorLineNr = { fg = "#ffffff", style = "bold" },
+            IncSearch = { bg = "#ffb86c", fg = "#000000" },
           },
-        })
-        vim.cmd("colorscheme nightfox")
-      end,
+        },
+      })
+      vim.cmd("colorscheme nightfox")
+    end,
+  },
+
+
+  {
+    "ibhagwan/fzf-lua",
+    config = function()
+      require("fzf-lua").setup({
+        winopts = {
+          height = 0.85,
+          width = 0.85,
+          row = 0.15,
+          col = 0.15,
+          border = "rounded",
+          preview = {
+            layout = "vertical",
+          },
+        },
+      })
+
+      vim.keymap.set("n", "<leader>gs", "<cmd>FzfLua git_stash<CR>", { desc = "Git Stash (fzf-lua)" })
+      vim.keymap.set("n", "<leader>gb", "<cmd>FzfLua git_branches<CR>", { desc = "Git Branches (fzf-lua)" })
+      vim.keymap.set("n", "<leader>gc", "<cmd>FzfLua git_commits<CR>", { desc = "Git Commits (fzf-lua)" })
+    end
+  },
+
+
+  {
+    "ahmedkhalf/project.nvim",
+    event = "VimEnter",
+    config = function()
+      require("project_nvim").setup({
+        detection_methods = { "lsp", "pattern" },
+        patterns = { ".git", "Makefile", "package.json", "pyproject.toml" },
+        silent_chdir = true, -- prevents messages when switching dirs
+        manual_mode = false, -- automatically change cwd
+      })
+      require("telescope").load_extension("projects")
+    end,
+  },
+
+
+
+
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",  -- Required
+      "sindrets/diffview.nvim", -- Optional - Diff integration
+      "ibhagwan/fzf-lua",       -- fzf-based picker
     },
-
-
-    {
-      "ibhagwan/fzf-lua",
-      config = function()
-        require("fzf-lua").setup({
-          winopts = {
-            height = 0.85,
-            width = 0.85,
-            row = 0.15,
-            col = 0.15,
-            border = "rounded",
-            preview = {
-              layout = "vertical",
-            },
-          },
-        })
-
-        vim.keymap.set("n", "<leader>gs", "<cmd>FzfLua git_stash<CR>", { desc = "Git Stash (fzf-lua)" })
-        vim.keymap.set("n", "<leader>gb", "<cmd>FzfLua git_branches<CR>", { desc = "Git Branches (fzf-lua)" })
-        vim.keymap.set("n", "<leader>gc", "<cmd>FzfLua git_commits<CR>", { desc = "Git Commits (fzf-lua)" })
-      end
+    cmd = "Neogit",
+    keys = {
+      { "<leader>gg", "<cmd>Neogit<CR>", desc = "Open Neogit" },
     },
-
-
-    {
-      "ahmedkhalf/project.nvim",
-      event = "VimEnter",
-      config = function()
-        require("project_nvim").setup({
-          detection_methods = { "lsp", "pattern" },
-          patterns = { ".git", "Makefile", "package.json", "pyproject.toml" },
-          silent_chdir = true, -- prevents messages when switching dirs
-          manual_mode = false, -- automatically change cwd
-        })
-        require("telescope").load_extension("projects")
-      end,
-    },
-
-
-
-
-    {
-      "NeogitOrg/neogit",
-      dependencies = {
-        "nvim-lua/plenary.nvim",         -- Required
-        "sindrets/diffview.nvim",        -- Optional - Diff integration
-        "ibhagwan/fzf-lua",              -- fzf-based picker
-      },
-      cmd = "Neogit",
-      keys = {
-        { "<leader>gg", "<cmd>Neogit<CR>", desc = "Open Neogit" },
-      },
-      config = function()
-        require("neogit").setup({
-          kind = "split", -- or "vsplit", "tab", "replace"
-          commit_popup = {
-            kind = "vsplit",
-          },
-          preview_buffer = {
-            kind = "split",
-          },
-          integrations = {
-            diffview = true,   -- Use diffview if you like GUI-style diffs
-            telescope = false, -- Disable telescope (you use fzf-lua)
-          },
-          signs = {
-            section = { "", "" },
-            item = { "", "" },
-            hunk = { "", "" },
-          },
-          disable_commit_confirmation = false,
-          disable_builtin_notifications = false,
-          use_magit_keybindings = true, -- Optional: Enable Magit-style keys
-        })
-      end,
-    },
+    config = function()
+      require("neogit").setup({
+        kind = "split", -- or "vsplit", "tab", "replace"
+        commit_popup = {
+          kind = "vsplit",
+        },
+        preview_buffer = {
+          kind = "split",
+        },
+        integrations = {
+          diffview = true,   -- Use diffview if you like GUI-style diffs
+          telescope = false, -- Disable telescope (you use fzf-lua)
+        },
+        signs = {
+          section = { "", "" },
+          item = { "", "" },
+          hunk = { "", "" },
+        },
+        disable_commit_confirmation = false,
+        disable_builtin_notifications = false,
+        use_magit_keybindings = true, -- Optional: Enable Magit-style keys
+      })
+    end,
+  },
 
 
 
 
 
-    -- Dashboard (Pretty Lazy Home)
-    {
-      "nvimdev/dashboard-nvim",
-      event = "VimEnter",
-      dependencies = { "nvim-tree/nvim-web-devicons" },
-      config = function()
-        -- Transparent highlights for dashboard
-        vim.cmd [[
+  -- Dashboard (Pretty Lazy Home)
+  {
+    "nvimdev/dashboard-nvim",
+    event = "VimEnter",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      -- Transparent highlights for dashboard
+      vim.cmd [[
           highlight DashboardHeader guibg=NONE ctermbg=NONE
           highlight DashboardCenter guibg=NONE ctermbg=NONE
           highlight DashboardFooter guibg=NONE ctermbg=NONE
@@ -138,48 +142,48 @@ return {
           highlight DashboardIcon guibg=NONE ctermbg=NONE
         ]]
 
-        require("dashboard").setup({
-          theme = "doom",
-          config = {
-            header = {
-              "      ██╗      █████╗ ███████╗██╗   ██╗",
-              "      ██║     ██╔══██╗╚══███╔╝╚██╗ ██╔╝",
-              "      ██║     ███████║  ███╔╝  ╚████╔╝ ",
-              "      ██║     ██╔══██║ ███╔╝    ╚██╔╝  ",
-              "      ███████╗██║  ██║███████╗   ██║   ",
-              "      ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ",
-            },
-            center = {
-              { icon = "  ", desc = "New File", action = "enew", key = "n" },
-              { icon = "  ", desc = "Find File", action = "Telescope find_files", key = "f" },
-              { icon = "  ", desc = "Recent Files", action = "Telescope oldfiles", key = "r" },
-              { icon = "  ", desc = "Load Session", action = "lua require('auto-session.session-lens').search_session()", key = "s" },
-              { icon = "  ", desc = "Rename Session", action = "lua require('custom.session_rename').rename_session()", key = "Rs" },
-              { icon = "  ", desc = "Quit Neovim", action = "qa", key = "q" },
-            },
-            footer = { "🔥 Welcome back, coder!" },
+      require("dashboard").setup({
+        theme = "doom",
+        config = {
+          header = {
+            "      ██╗      █████╗ ███████╗██╗   ██╗",
+            "      ██║     ██╔══██╗╚══███╔╝╚██╗ ██╔╝",
+            "      ██║     ███████║  ███╔╝  ╚████╔╝ ",
+            "      ██║     ██╔══██║ ███╔╝    ╚██╔╝  ",
+            "      ███████╗██║  ██║███████╗   ██║   ",
+            "      ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ",
           },
-        })
-      end
-    },
+          center = {
+            { icon = "  ", desc = "New File", action = "enew", key = "n" },
+            { icon = "  ", desc = "Find File", action = "Telescope find_files", key = "f" },
+            { icon = "  ", desc = "Recent Files", action = "Telescope oldfiles", key = "r" },
+            { icon = "  ", desc = "Load Session", action = "lua require('auto-session.session-lens').search_session()", key = "s" },
+            { icon = "  ", desc = "Rename Session", action = "lua require('custom.session_rename').rename_session()", key = "Rs" },
+            { icon = "  ", desc = "Quit Neovim", action = "qa", key = "q" },
+          },
+          footer = { "🔥 Welcome back, coder!" },
+        },
+      })
+    end
+  },
 
 
-    -- Notification UI
-    {
-      "rcarriga/nvim-notify",
-      lazy = false,
-      config = function()
-        local notify = require("notify")
-        notify.setup({
-          background_colour = "#1e1e2e",
-          fps = 60,
-          level = vim.log.levels.INFO,
-          minimum_width = 50,
-          render = "compact", -- try "simple", "minimal", "default", "wrapped-compact"
-          stages = "slide",   -- try "fade", "slide", "fade_in_slide_out", "static"
-          timeout = 5000,
-          top_down = false,
-        })
+  -- Notification UI
+  {
+    "rcarriga/nvim-notify",
+    lazy = false,
+    config = function()
+      local notify = require("notify")
+      notify.setup({
+        background_colour = "#1e1e2e",
+        fps = 60,
+        level = vim.log.levels.INFO,
+        minimum_width = 50,
+        render = "compact", -- try "simple", "minimal", "default", "wrapped-compact"
+        stages = "slide",   -- try "fade", "slide", "fade_in_slide_out", "static"
+        timeout = 5000,
+        top_down = false,
+      })
 
       -- vim.notify = notify
       vim.notify = function(msg, ...)
@@ -187,19 +191,20 @@ return {
           return
         end
         notify(msg, ...)
-        end
-      end,
-    },
+      end
+    end,
+  },
 
--- Rich UI for messages, cmdline, and LSP (Noice)
-    {
-      "folke/noice.nvim",
-      event = "VeryLazy",
-      dependencies = {
-        "MunifTanjim/nui.nvim",
-        "rcarriga/nvim-notify",
-      },
-      opts = {
+  -- Rich UI for messages, cmdline, and LSP (Noice)
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+    config = function()
+      require("noice").setup({
         lsp = {
           progress = {
             enabled = true,
@@ -223,33 +228,66 @@ return {
               winblend = 20,
             },
           },
+          cmdline_popup = {
+            position = {
+              row = "50%",
+              col = "50%",
+            },
+            size = {
+              width = 60,
+              height = "auto",
+            },
+            border = {
+              style = "rounded",
+              padding = { 1, 2 },
+            },
+            win_options = {
+              winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
+            },
+          },
         },
-      },
-    },
+        cmdline = {
+          view = "cmdline_popup",
+        },
+      })
+
+      -- Highlight fixes: force white typing font in cmdline
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        pattern = "*",
+        callback = function()
+          local hl = vim.api.nvim_set_hl
+          hl(0, "NoiceCmdline", { fg = "#ffffff", bg = "NONE" })
+          hl(0, "NoiceCmdlineInput", { fg = "#ffffff", bg = "NONE" })
+          hl(0, "NoiceCmdlinePopup", { fg = "#ffffff", bg = "NONE" })
+          hl(0, "NoiceCmdlinePopupBorder", { fg = "#ffffff", bg = "NONE" })
+          hl(0, "NoiceCmdlinePrompt", { fg = "#ffffff", bg = "NONE" })
+          hl(0, "NoiceCmdlineIcon", { fg = "#ffffff", bg = "NONE" })
+          hl(0, "NoiceCmdlinePopupTitle", { fg = "#ffffff", bg = "NONE" })
+        end,
+      })
+    end,
+  },
 
 
 
-    -- Rename plugin (LSP-based)
-    {
-      "smjonas/inc-rename.nvim",
-      opts = {}
-    },
 
-
-
-
-    -- Highlight word under cursor
-    { "RRethy/vim-illuminate", config = function()
+  -- Highlight word under cursor
+  {
+    "RRethy/vim-illuminate",
+    config = function()
       require("illuminate").configure({
         delay = 200,
         filetypes_denylist = { "NvimTree", "TelescopePrompt" },
       })
-      end
-    },
+    end
+  },
 
 
-    -- Tree / File Explorer
-    { "nvim-tree/nvim-tree.lua", dependencies = { "nvim-tree/nvim-web-devicons" }, config = function()
+  -- Tree / File Explorer
+  {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
       local function my_on_attach(bufnr)
         local api = require("nvim-tree.api")
         local function opts(desc)
@@ -281,7 +319,7 @@ return {
           highlight_git = true, -- ✅ enable git highlighting
           icons = {
             show = {
-              git = true,       -- ✅ show git icons
+              git = true, -- ✅ show git icons
             },
           },
         },
@@ -292,8 +330,8 @@ return {
         },
         sync_root_with_cwd = true,
         git = {
-          enable = true,        -- ✅ enable git integration
-          ignore = false,       -- ✅ show .gitignored files too
+          enable = true,  -- ✅ enable git integration
+          ignore = false, -- ✅ show .gitignored files too
           timeout = 500,
         },
       })
@@ -301,10 +339,15 @@ return {
 
 
       vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true, silent = true })
-    end },
+    end
+  },
 
-    -- Telescope
-    { "nvim-telescope/telescope.nvim", tag = "0.1.5", dependencies = { "nvim-lua/plenary.nvim" }, config = function()
+  -- Telescope
+  {
+    "nvim-telescope/telescope.nvim",
+    tag = "0.1.5",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
       local telescope = require("telescope")
       telescope.setup({
         defaults = {
@@ -317,10 +360,14 @@ return {
         },
         pickers = { find_files = { hidden = true } }
       })
-    end },
+    end
+  },
 
-    -- Treesitter
-    { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", config = function()
+  -- Treesitter
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    config = function()
       require("nvim-treesitter.configs").setup {
         highlight = { enable = true },
         ensure_installed = {
@@ -329,35 +376,46 @@ return {
         },
         auto_install = true
       }
-    end },
+    end
+  },
 
-    -- Git
-    { "lewis6991/gitsigns.nvim", config = function()
+  -- Git
+  {
+    "lewis6991/gitsigns.nvim",
+    config = function()
       require("gitsigns").setup {
         current_line_blame = true,
         current_line_blame_opts = { virt_text = true, virt_text_pos = "eol", delay = 300, ignore_whitespace = false },
         current_line_blame_formatter = "<author> • <author_time:%Y-%m-%d> • <summary>"
       }
-    end },
+    end
+  },
 
-    -- Comment
-    { "numToStr/Comment.nvim", config = true },
+  -- Comment
+  { "numToStr/Comment.nvim",        config = true },
 
-    -- Spectre
-    { "nvim-pack/nvim-spectre", dependencies = { "nvim-lua/plenary.nvim" }, config = true },
+  -- Spectre
+  { "nvim-pack/nvim-spectre",       dependencies = { "nvim-lua/plenary.nvim" }, config = true },
 
-    -- Icons
-    { "kyazdani42/nvim-web-devicons", config = true },
+  -- Icons
+  { "kyazdani42/nvim-web-devicons", config = true },
 
-    -- ToggleTerm
-    { "akinsho/toggleterm.nvim", version = "*", config = function()
+  -- ToggleTerm
+  {
+    "akinsho/toggleterm.nvim",
+    version = "*",
+    config = function()
       require("toggleterm").setup { direction = "float", open_mapping = [[<C-\>]] }
       vim.cmd [[autocmd TermOpen * startinsert]]
       vim.cmd [[tnoremap <Esc> <C-\><C-n>]]
-    end },
+    end
+  },
 
-    -- UFO folding
-    { "kevinhwang91/nvim-ufo", dependencies = { "kevinhwang91/promise-async" }, config = function()
+  -- UFO folding
+  {
+    "kevinhwang91/nvim-ufo",
+    dependencies = { "kevinhwang91/promise-async" },
+    config = function()
       vim.o.foldcolumn = '1'
       vim.o.foldlevel = 99
       vim.o.foldlevelstart = 99
@@ -367,197 +425,204 @@ return {
       require("ufo").setup({
         provider_selector = function(_, _, _) return { "treesitter", "indent" } end
       })
-    end },
+    end
+  },
 
-    -- LSP / Completion
-    {
-      "hrsh7th/nvim-cmp",
-      dependencies = {
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-        "hrsh7th/cmp-cmdline",
-        "L3MON4D3/LuaSnip",
-        "saadparwaiz1/cmp_luasnip",
-        "onsails/lspkind.nvim"
-      },
-      config = function()
-        local cmp = require("cmp")
-        local luasnip = require("luasnip")
-        local lspkind = require("lspkind")
-        require("luasnip.loaders.from_vscode").lazy_load()
-        require("lspconfig").terraformls.setup({})
-        cmp.setup({
-          snippet = {
-            expand = function(args)
-              luasnip.lsp_expand(args.body)
-            end,
-          },
-          mapping = cmp.mapping.preset.insert({
-            ["<Tab>"] = cmp.mapping.select_next_item(),
-            ["<S-Tab>"] = cmp.mapping.select_prev_item(),
-            ["<C-Space>"] = cmp.mapping.complete(),
-            ["<CR>"] = cmp.mapping.confirm({ select = true }),
+  -- LSP / Completion
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip",
+      "onsails/lspkind.nvim"
+    },
+    config = function()
+      local cmp = require("cmp")
+      local luasnip = require("luasnip")
+      local lspkind = require("lspkind")
+      require("luasnip.loaders.from_vscode").lazy_load()
+      require("lspconfig").terraformls.setup({})
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ["<Tab>"] = cmp.mapping.select_next_item(),
+          ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+        }),
+        formatting = {
+          format = lspkind.cmp_format({
+            mode = "symbol_text",
+            maxwidth = 50,
+            ellipsis_char = "...",
           }),
-          formatting = {
-            format = lspkind.cmp_format({
-              mode = "symbol_text",
-              maxwidth = 50,
-              ellipsis_char = "...",
-            }),
-          },
-          sources = cmp.config.sources({
-            { name = "nvim_lsp" },
-            { name = "luasnip" },
-          }, {
-            { name = "buffer" },
-            { name = "path" },
-          }),
-          window = {
-            completion = cmp.config.window.bordered(),
-            documentation = cmp.config.window.bordered(),
-          },
-        })
-      end
-    },
-    {
-      "neovim/nvim-lspconfig",
-      config = function()
-        require("lspconfig").terraformls.setup({})
-      end
-    },
-    { "williamboman/mason.nvim", config = true },
-    -- { "williamboman/mason-lspconfig.nvim", config = true },
-    {
-      "williamboman/mason-lspconfig.nvim",
-      config = function()
-        require("mason-lspconfig").setup({
-          ensure_installed = {
-            "terraformls", "pyright", "gopls", "rust_analyzer", "ts_ls",
-            "lua_ls", "bashls", "jsonls", "yamlls", "html", "cssls"
-          }
-        })
-      end
-    },
+        },
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+        }, {
+          { name = "buffer" },
+          { name = "path" },
+        }),
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
+      })
+    end
+  },
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      require("lspconfig").terraformls.setup({})
+    end
+  },
+  { "williamboman/mason.nvim",      config = true },
+  -- { "williamboman/mason-lspconfig.nvim", config = true },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          "terraformls", "pyright", "gopls", "rust_analyzer", "ts_ls",
+          "lua_ls", "bashls", "jsonls", "yamlls", "html", "cssls"
+        }
+      })
+    end
+  },
 
-    { "ray-x/lsp_signature.nvim", config = function()
+  {
+    "ray-x/lsp_signature.nvim",
+    config = function()
       require("lsp_signature").setup({ bind = true, handler_opts = { border = "rounded" } })
-    end },
+    end
+  },
 
 
-    -- Session manager
-    { "rmagatti/auto-session", config = function()
+  -- Session manager
+  {
+    "rmagatti/auto-session",
+    config = function()
       require("auto-session").setup({
         log_level = "error",
         auto_session_enable_last_session = false,
         auto_session_use_git_branch = false,
         auto_session_root_dir = vim.fn.stdpath("config") .. "/sessions/",
       })
-    end },
+    end
+  },
 
-    -- EditorConfig
-    { "editorconfig/editorconfig-vim" },
+  -- EditorConfig
+  { "editorconfig/editorconfig-vim" },
 
 
-    {
-      "anuvyklack/windows.nvim",
-      dependencies = {
-        "anuvyklack/middleclass",
-        "anuvyklack/animation.nvim"
-      },
-      config = function()
-        require("windows").setup()
-      end
+  {
+    "anuvyklack/windows.nvim",
+    dependencies = {
+      "anuvyklack/middleclass",
+      "anuvyklack/animation.nvim"
     },
+    config = function()
+      require("windows").setup()
+    end
+  },
 
 
-    {
-      "lewis6991/gitsigns.nvim",
-      event = { "BufReadPre", "BufNewFile" },
-      config = function()
-        require('gitsigns').setup({
-          signs = {
-            add          = { hl = "GitSignsAdd",          text = '┃', numhl = "GitSignsAddNr" },
-            change       = { hl = "GitSignsChange",       text = '┃', numhl = "GitSignsChangeNr" },
-            delete       = { hl = "GitSignsDelete",       text = '_', numhl = "GitSignsDeleteNr" },
-            topdelete    = { hl = "GitSignsDelete",       text = '‾', numhl = "GitSignsDeleteNr" },
-            changedelete = { hl = "GitSignsChange",       text = '~', numhl = "GitSignsChangeNr" },
-            untracked    = { hl = "GitSignsAdd",          text = '┆', numhl = "GitSignsAddNr" },
-          },
-          signs_staged = {
-            add          = { hl = "GitSignsAdd",          text = '┃' },
-            change       = { hl = "GitSignsChange",       text = '┃' },
-            delete       = { hl = "GitSignsDelete",       text = '_' },
-            topdelete    = { hl = "GitSignsDelete",       text = '‾' },
-            changedelete = { hl = "GitSignsChange",       text = '~' },
-            untracked    = { hl = "GitSignsAdd",          text = '┆' },
-          },
-          signs_staged_enable = true,
-          signcolumn = true,
-          numhl      = false,
-          linehl     = false,
-          word_diff  = false,
-          watch_gitdir = {
-            interval = 1000,
-            follow_files = true,
-          },
-          auto_attach = true,
-          attach_to_untracked = false,
-          current_line_blame = true,
-          current_line_blame_opts = {
-            virt_text = true,
-            virt_text_pos = 'eol',
-            delay = 1000,
-            ignore_whitespace = true,
-            virt_text_priority = 100,
-            use_focus = true,
-          },
-          current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
-          sign_priority = 6,
-          update_debounce = 100,
-          max_file_length = 40000,
-          preview_config = {
-            style = 'minimal',
-            relative = 'cursor',
-            row = 0,
-            col = 1,
-            border = 'rounded',
-          },
-        })
-      end
-    },
+  {
+    "lewis6991/gitsigns.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require('gitsigns').setup({
+        signs                        = {
+          add          = { hl = "GitSignsAdd", text = '┃', numhl = "GitSignsAddNr" },
+          change       = { hl = "GitSignsChange", text = '┃', numhl = "GitSignsChangeNr" },
+          delete       = { hl = "GitSignsDelete", text = '_', numhl = "GitSignsDeleteNr" },
+          topdelete    = { hl = "GitSignsDelete", text = '‾', numhl = "GitSignsDeleteNr" },
+          changedelete = { hl = "GitSignsChange", text = '~', numhl = "GitSignsChangeNr" },
+          untracked    = { hl = "GitSignsAdd", text = '┆', numhl = "GitSignsAddNr" },
+        },
+        signs_staged                 = {
+          add          = { hl = "GitSignsAdd", text = '┃' },
+          change       = { hl = "GitSignsChange", text = '┃' },
+          delete       = { hl = "GitSignsDelete", text = '_' },
+          topdelete    = { hl = "GitSignsDelete", text = '‾' },
+          changedelete = { hl = "GitSignsChange", text = '~' },
+          untracked    = { hl = "GitSignsAdd", text = '┆' },
+        },
+        signs_staged_enable          = true,
+        signcolumn                   = true,
+        numhl                        = false,
+        linehl                       = false,
+        word_diff                    = false,
+        watch_gitdir                 = {
+          interval = 1000,
+          follow_files = true,
+        },
+        auto_attach                  = true,
+        attach_to_untracked          = false,
+        current_line_blame           = true,
+        current_line_blame_opts      = {
+          virt_text = true,
+          virt_text_pos = 'eol',
+          delay = 1000,
+          ignore_whitespace = true,
+          virt_text_priority = 100,
+          use_focus = true,
+        },
+        current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
+        sign_priority                = 6,
+        update_debounce              = 100,
+        max_file_length              = 40000,
+        preview_config               = {
+          style = 'minimal',
+          relative = 'cursor',
+          row = 0,
+          col = 1,
+          border = 'rounded',
+        },
+      })
+    end
+  },
 
 
 
-    -- Auto format on save (Conform)
-    {
-      "stevearc/conform.nvim",
-      event = { "BufWritePre" },
-      config = function()
-        require("conform").setup({
-          format_on_save = {
-            timeout_ms = 500,
-            lsp_fallback = true,
-          },
-          formatters_by_ft = {
-            lua = { "stylua" },
-            javascript = { "prettier" },
-            typescript = { "prettier" },
-            json = { "prettier" },
-            yaml = { "prettier" },
-            terraform = { "terraform_fmt" },
-            sh = { "shfmt" },
-            python = { "black" },
-            html = { "prettier" },
-            css = { "prettier" },
-          },
-        })
+  -- Auto format on save (Conform)
+  {
+    "stevearc/conform.nvim",
+    event = { "BufWritePre" },
+    config = function()
+      require("conform").setup({
+        format_on_save = {
+          timeout_ms = 500,
+          lsp_fallback = true,
+        },
+        formatters_by_ft = {
+          lua = { "stylua" },
+          javascript = { "prettier" },
+          typescript = { "prettier" },
+          json = { "prettier" },
+          yaml = { "prettier" },
+          terraform = { "terraform_fmt" },
+          sh = { "shfmt" },
+          python = { "black" },
+          html = { "prettier" },
+          css = { "prettier" },
+        },
+      })
 
-        vim.keymap.set("n", "<leader>f", function()
-          require("conform").format({ async = true, lsp_fallback = true })
-        end, { desc = "Format file" })
-      end,
-    },
+      vim.keymap.set("n", "<leader>f", function()
+        require("conform").format({ async = true, lsp_fallback = true })
+      end, { desc = "Format file" })
+    end,
+  },
 
 
-  }
+}
