@@ -20,4 +20,5 @@ docker/skaffold/**/**
 docker/gnupg/data/jenkins.env.dec
 docker/gnupg/data/jenkins.env.dec
 *.***.vscode
-devops/nvim/sessions/**
+nvim/sessions/*
+!nvim/sessions/.gitkeep
