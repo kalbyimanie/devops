@@ -139,15 +139,14 @@ return {
     event = "VimEnter",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      -- Transparent highlights for dashboard
       vim.cmd [[
-          highlight DashboardHeader guibg=NONE ctermbg=NONE
-          highlight DashboardCenter guibg=NONE ctermbg=NONE
-          highlight DashboardFooter guibg=NONE ctermbg=NONE
-          highlight DashboardShortCut guibg=NONE ctermbg=NONE
-          highlight DashboardKey guibg=NONE ctermbg=NONE
-          highlight DashboardIcon guibg=NONE ctermbg=NONE
-        ]]
+      highlight DashboardHeader guibg=NONE ctermbg=NONE
+      highlight DashboardCenter guibg=NONE ctermbg=NONE
+      highlight DashboardFooter guibg=NONE ctermbg=NONE
+      highlight DashboardShortCut guibg=NONE ctermbg=NONE
+      highlight DashboardKey guibg=NONE ctermbg=NONE
+      highlight DashboardIcon guibg=NONE ctermbg=NONE
+    ]]
 
       require("dashboard").setup({
         theme = "doom",
@@ -166,12 +165,21 @@ return {
             { icon = "  ", desc = "Recent Files", action = "Telescope oldfiles", key = "r" },
             { icon = "  ", desc = "Load Session", action = "lua require('auto-session.session-lens').search_session()", key = "s" },
             { icon = "  ", desc = "Rename Session", action = "lua require('custom.session_rename').rename_session()", key = "Rs" },
+            { icon = "  ", desc = "Open Lazy", action = "Lazy", key = "l" },
             { icon = "  ", desc = "Quit Neovim", action = "qa", key = "q" },
           },
-          footer = { "🔥 Welcome back, coder!" },
+          footer = { "☕ Ngopi dulu gak seeeh ?" },
+          layout = {
+            { type = "padding", val = 2 },
+            { type = "group",   val = "header" },
+            { type = "padding", val = 2 },
+            { type = "group",   val = "center" },
+            { type = "padding", val = 2 },
+            { type = "group",   val = "footer" },
+          },
         },
       })
-    end
+    end,
   },
 
 

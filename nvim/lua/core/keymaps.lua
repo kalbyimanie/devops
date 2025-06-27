@@ -106,14 +106,15 @@ vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Resize rig
 
 
 vim.keymap.set("n", "<leader>gd", function()
-  local file = vim.fn.expand("%")
+  local file = vim.fn.expand("%:p") -- use full path
   local input = vim.fn.input("Compare (branch1...branch2, leave blank for history): ")
 
+  -- Load Diffview if it's not already
+  vim.cmd("packadd diffview.nvim")
+
   if input == nil or input == "" then
-    -- Diff with file history
     vim.cmd("DiffviewFileHistory " .. file)
   else
-    -- Diff between branches for current file
     vim.cmd("DiffviewOpen " .. input .. " -- " .. file)
   end
 end, { desc = "Diff current file between branches or history" })
