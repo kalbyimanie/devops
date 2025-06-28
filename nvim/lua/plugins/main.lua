@@ -9,12 +9,97 @@ return {
     dependencies = { "folke/tokyonight.nvim" },
     config = function()
       require("lualine").setup {
-        options = { icons_enabled = true },
+        options = {
+          icons_enabled = true,
+          component_separators = { left = '', right = '' },
+          section_separators = { left = '', right = '' },
+        },
+        always_divide_middle = false,
+        always_show_tabline = false,
+        globalstatus = true,
+        disabled_filetypes = {
+          statusline = { "NvimTree" },
+        },
+        refresh = {
+          statusline = 1000,
+          tabline = 1000,
+          winbar = 1000,
+          refresh_time = 16, -- ~60fps
+          events = {
+            'WinEnter',
+            'BufEnter',
+            'BufWritePost',
+            'SessionLoadPost',
+            'FileChangedShellPost',
+            'VimResized',
+            'Filetype',
+            'CursorMoved',
+            'CursorMovedI',
+            'ModeChanged',
+          },
+        },
+
+
+
         sections = {
+          lualine_a = {
+            'mode',
+            { 'symbols', modified = '[+]' },
+          },
+          lualine_b = { 'branch', 'diff', 'diagnostics' },
           lualine_c = {
-            { "filename", path = 2 }
-          }
-        }
+            { "filename",                                                path = 0 },
+            { function() return require("battery").get_status_line() end },
+          },
+          lualine_x = {
+            'encoding', 'fileformat', 'filetype'
+          },
+          lualine_y = {
+            'progress'
+          },
+          lualine_z = { 'location', 'lsp_status' }
+        },
+
+
+
+        inactive_sections = {
+          lualine_a = {
+            { 'datetime', style = 'us' },
+          },
+          lualine_b = { 'branch', 'diff', 'diagnostics' },
+
+          lualine_c = {
+            { "filename",                                                path = 0 },
+            { function() return require("battery").get_status_line() end },
+          },
+          lualine_x = {
+            'encoding',
+            'fileformat',
+
+            {
+              'filetype',
+              icon_only = false,
+              colored = false,
+              icon = { align = 'left' },
+              fmt = function(name)
+                if name == 'NvimTree' then
+                  return '' -- or return 'Files' if you want a label
+                end
+                return name
+              end,
+            },
+
+          },
+          lualine_y = {
+            'progress'
+          },
+          lualine_z = { 'location', 'lsp_status' }
+        },
+
+        tabline = {},
+        winbar = {},
+        inactive_winbar = {},
+        extensions = { 'symbols-outline' }
       }
     end
   },
@@ -44,6 +129,25 @@ return {
       vim.cmd("colorscheme nightfox")
     end,
   },
+
+
+  {
+    "justinhj/battery.nvim",
+    config = function()
+      require("battery").setup({
+        update_rate_seconds = 30,
+        show_status_when_no_battery = true,
+        show_plugged_icon = true,
+        show_unplugged_icon = true,
+        show_percent = true,
+        vertical_icons = true,
+        multiple_battery_selection = 1,
+      })
+    end,
+
+  },
+
+
 
 
 
