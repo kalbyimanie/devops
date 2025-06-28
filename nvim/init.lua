@@ -3,9 +3,10 @@
 -- Set <leader> before anything else
 vim.g.mapleader = " "
 -- Increase file descriptor limit for Neovim subprocesses
-vim.env.LIMIT_NOFILE = "1048576"
+-- vim.env.LIMIT_NOFILE = "1048576"
 
 vim.o.signcolumn = "yes"
+vim.lsp.set_log_level("error")
 
 
 

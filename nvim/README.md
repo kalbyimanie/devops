@@ -1,5 +1,5 @@
 
-## 🛠️ Neovim Configuration Setup
+## 🛠️ Neovim Configuration Convert to Git Repository
 
 This repository includes a full-featured and modular Neovim setup.  
 To keep it clean and version-controlled, the config is stored inside the `devops/nvim` directory instead of the default `~/.config/nvim`.
@@ -18,3 +18,6 @@ mv ~/.config/nvim ~/path/to/devops/nvim
 
 # Step 2: Create a symlink so Neovim loads from this new location
 ln -s ~/path/to/devops/nvim ~/.config/nvim
+
+
+

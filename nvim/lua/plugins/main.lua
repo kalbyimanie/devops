@@ -46,6 +46,31 @@ return {
   },
 
 
+
+  {
+    "smjonas/inc-rename.nvim",
+    event = "VeryLazy", -- Load this plugin very late
+    config = function()
+      -- This 'config' function is crucial for plugin initialization.
+      require("inc_rename").setup({
+        -- Options from inc-rename.nvim documentation:
+        cmd_name = "IncRename",
+        hl_group = "Substitute",
+        preview_empty_name = true,
+        show_message = true,
+        save_in_cmdline_history = true,
+        input_buffer_type = nil, -- No external input buffer by default
+        post_hook = nil,         -- No post-rename hook by default
+
+        -- This option specifically enables the highlighting of matching words as you type the new name
+        show_current_match = true,
+      })
+    end,
+    keys = {
+      { "n", "<leader>rn", ":IncRename<CR>", desc = "Rename (IncRename)" },
+    }
+  },
+
   {
     "ibhagwan/fzf-lua",
     config = function()
@@ -333,6 +358,7 @@ return {
         },
         presets = {
           bottom_search = true,
+          inc_rename = true,
           command_palette = true,
           long_message_to_split = true,
           lsp_doc_border = true,
@@ -608,25 +634,45 @@ return {
       })
     end
   },
+
+
+  { "williamboman/mason.nvim",           config = true },
+  { "williamboman/mason-lspconfig.nvim", config = true },
   {
-    "neovim/nvim-lspconfig",
-    config = function()
-      require("lspconfig").terraformls.setup({})
-    end
-  },
-  { "williamboman/mason.nvim",      config = true },
-  -- { "williamboman/mason-lspconfig.nvim", config = true },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "terraformls", "pyright", "gopls", "rust_analyzer", "ts_ls",
-          "lua_ls", "bashls", "jsonls", "yamlls", "html", "cssls"
+    "mason-org/mason.nvim",
+    opts = {
+      ui = {
+        icons = {
+          package_installed = "✓",
+          package_pending = "➜",
+          package_uninstalled = "✗"
         }
-      })
-    end
+      }
+    }
   },
+  {
+    "mason-org/mason-lspconfig.nvim",
+    opts = {},
+    dependencies = {
+      { "mason-org/mason.nvim", opts = {} },
+      "neovim/nvim-lspconfig",
+    },
+  },
+
+
+  -- {
+  --   "williamboman/mason-lspconfig.nvim",
+  --   config = function()
+  --     require("mason-lspconfig").setup({
+  --       ensure_installed = {
+  --         "terraformls", "pyright", "gopls", "rust_analyzer", "ts_ls",
+  --         "lua_ls", "bashls", "jsonls", "yamlls", "html", "cssls"
+  --       }
+  --     })
+  --   end
+  -- },
+  --
+  --
 
   {
     "ray-x/lsp_signature.nvim",

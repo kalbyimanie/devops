@@ -59,45 +59,65 @@ vim.api.nvim_create_autocmd("CursorHoldI", {
 })
 
 
+-- Set global diagnostic configuration to show all severities
+vim.diagnostic.config({
+    virtual_text = {
+        -- Show all severities (errors, warnings, info, hints) as virtual text
+        min_severity = vim.diagnostic.severity.HINT, -- IMPORTANT: Set to HINT to see all messages
+        spacing = 4,
+        prefix = "●",
+        update_in_insert = true, -- Update diagnostics while in insert mode
+    },
+    signs = true, -- Show signs in the sign column for diagnostics
+    float = {
+        border = "rounded",
+        focusable = false,
+        -- Show all severities in floating windows (on CursorHold)
+        min_severity = vim.diagnostic.severity.HINT, -- IMPORTANT: Set to HINT to see all messages
+    },
+    underline = true, -- Underline problematic code
+    update_in_insert = true, -- Update diagnostics while in insert mode
+})
+
+
 
 vim.api.nvim_create_autocmd("User", {
-    pattern = "VeryLazy",
-    callback = function()
-      require("lsp.configs")
-    end,
-  })
+  pattern = "VeryLazy",
+  callback = function()
+    require("lsp.configs")
+  end,
+})
 
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "VeryLazy",
-    callback = function()
-      require("core.cmp")
-    end,
-  })
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  callback = function()
+    require("core.cmp")
+  end,
+})
 
-  vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-    callback = function()
-      vim.diagnostic.open_float(nil, {
-        focusable = false,
-        border = "rounded",
-        source = "always",
-        prefix = "● ",
-        scope = "cursor",
-      })
-    end,
-  })
+vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+  callback = function()
+    vim.diagnostic.open_float(nil, {
+      focusable = false,
+      border = "rounded",
+      source = "always",
+      prefix = "● ",
+      scope = "cursor",
+    })
+  end,
+})
 
 
-  vim.filetype.add({
-    extension = {
-      tf = "terraform",
-      tfvars = "terraform",
-    },
-  })
+vim.filetype.add({
+  extension = {
+    tf = "terraform",
+    tfvars = "terraform",
+  },
+})
 
-  vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-    pattern = { "*.tf", "*.tfvars" },
-    callback = function()
-      vim.bo.filetype = "terraform"
-    end,
-  })
-
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = { "*.tf", "*.tfvars" },
+  callback = function()
+    vim.bo.filetype = "terraform"
+  end,
+})
