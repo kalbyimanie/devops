@@ -8,7 +8,10 @@ vim.opt.guifont = "FiraCode Nerd Font:h10"
 vim.opt.guicursor = "n-v-c-i-r:ver25,r:hor25"
 vim.opt.equalalways = false
 vim.opt.clipboard = 'unnamedplus'
-vim.opt.sessionoptions = "buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+-- vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+vim.opt.sessionoptions = ""
+
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 2
 vim.opt.softtabstop = 2
