@@ -610,6 +610,9 @@ return {
 
       require("nvim-tree").setup({
         on_attach = my_on_attach,
+
+        update_cwd = true,
+        respect_buf_cwd = true,
         view = { width = 30, side = "left" },
         renderer = {
           group_empty = true,

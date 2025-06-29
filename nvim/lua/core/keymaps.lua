@@ -133,3 +133,6 @@ vim.keymap.set("n", "<leader>gq", "<cmd>DiffviewClose<CR>", { desc = "Close Diff
 vim.keymap.set("n", "<leader>mp", function()
   require("render-markdown").toggle()
 end, { desc = "Toggle Markdown Preview" })
+
+
+vim.keymap.set("n", "<leader>/", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
