@@ -207,6 +207,35 @@ return {
   },
 
 
+  -- emoji
+  {
+    "Allaman/emoji.nvim",
+    version = "1.0.0", -- optionally pin to a tag
+    -- ft = { "markdown", "text", "gitcommit" }, -- optional filetypes, can be removed for global
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",              -- optional
+      "nvim-telescope/telescope.nvim", -- for telescope integration
+      "ibhagwan/fzf-lua",              -- optional, only needed for vim.ui.select
+    },
+    opts = {
+      enable_cmp_integration = true,
+    },
+    config = function(_, opts)
+      require("emoji").setup(opts)
+
+      -- Load Telescope emoji picker
+      require("telescope").load_extension("emoji")
+
+      -- Map <leader>em to Telescope emoji
+      -- Custom command
+      vim.api.nvim_create_user_command("Emo", function()
+        require("telescope").extensions.emoji.emoji()
+      end, { desc = "Search Emoji" })
+    end,
+  },
+
+
   {
     "ahmedkhalf/project.nvim",
     event = "VimEnter",
