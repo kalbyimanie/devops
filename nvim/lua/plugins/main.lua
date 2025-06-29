@@ -4,6 +4,8 @@ return {
   -- UI
   { "folke/tokyonight.nvim" },
   { "olimorris/onedarkpro.nvim", opts = { options = { transparency = true, styles = { comments = "italic", keywords = "bold", functions = "bold", strings = "italic" } } } },
+
+
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { "folke/tokyonight.nvim" },
@@ -15,7 +17,7 @@ return {
           section_separators = { left = '', right = '' },
           ignore_focus = { "NvimTree" },
           disabled_filetypes = {
-            statusline = { "NvimTree" }, -- disables active AND inactive statusline
+            statusline = { "NvimTree" },
             winbar = { "NvimTree" },
           },
         },
@@ -26,7 +28,7 @@ return {
           statusline = 1000,
           tabline = 1000,
           winbar = 1000,
-          refresh_time = 16, -- ~60fps
+          refresh_time = 16,
           events = {
             'WinEnter',
             'BufEnter',
@@ -41,8 +43,7 @@ return {
           },
         },
 
-
-
+        -- Bottom bar sections (added here)
         sections = {
           lualine_a = {
             'mode',
@@ -54,7 +55,6 @@ return {
             -- { function() return require("battery").get_status_line() end },
           },
           lualine_x = {
-            -- 'encoding', 'fileformat', 'filetype'
             'filetype'
           },
           lualine_y = {
@@ -63,56 +63,56 @@ return {
           lualine_z = { 'location', 'lsp_status' }
         },
 
-
-
         inactive_sections = {
           lualine_a = {
-            { 'datetime', style = '%Y-%m-%d' },
+            { 'symbols', modified = '[+]' },
           },
-          lualine_b = {
-            'branch',
-            -- 'diff',
-            'diagnostics'
-          },
-
+          lualine_b = { 'branch', 'diff', 'diagnostics' },
           lualine_c = {
-            { "filename",                                                path = 0 },
-            { function() return require("battery").get_status_line() end },
+            { "filename", path = 0 },
+            -- { function() return require("battery").get_status_line() end },
           },
           lualine_x = {
-            -- 'encoding',
-            -- 'fileformat',
-
-            -- {
-            --   'filetype',
-            --   icon_only = false,
-            --   colored = false,
-            --   icon = { align = 'left' },
-            --   fmt = function(name)
-            --     if name == 'NvimTree' then
-            --       return '' -- or return 'Files' if you want a label
-            --     end
-            --     return name
-            --   end,
-            -- },
-
+            'filetype'
           },
           lualine_y = {
-            -- 'progress'
+            'progress'
           },
-          lualine_z = {
-            -- 'location',
-            -- 'lsp_status'
-          }
+          lualine_z = { 'location', 'lsp_status' }
         },
 
+        -- ✅ Top bar sections (added here)
+        winbar = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = {
+            { "filename",                                                path = 1 },
+            { function() return require("battery").get_status_line() end },
+          },
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = { { 'datetime', style = '%Y-%m-%d' } },
+        },
+        inactive_winbar = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = {
+            { "filename",                                                path = 1 },
+            { function() return require("battery").get_status_line() end },
+          },
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = { { 'datetime', style = '%Y-%m-%d' } },
+        },
         tabline = {},
-        winbar = {},
-        inactive_winbar = {},
         extensions = {}
       }
     end
   },
+
+
+
+
   -- Theme
   {
     "EdenEast/nightfox.nvim",
@@ -156,7 +156,6 @@ return {
     end,
 
   },
-
 
 
 
