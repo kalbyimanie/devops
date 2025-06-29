@@ -43,7 +43,7 @@ return {
           },
         },
 
-        -- Bottom bar sections (added here)
+        -- ⬇️ Bottom bar sections (added here)
         sections = {
           lualine_a = {
             'mode',
@@ -81,7 +81,7 @@ return {
           lualine_z = { 'location', 'lsp_status' }
         },
 
-        -- ✅ Top bar sections (added here)
+        -- ⬆️ Top bar sections (added here)
         winbar = {
           lualine_a = {},
           lualine_b = {},
