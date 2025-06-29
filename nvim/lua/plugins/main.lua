@@ -13,13 +13,15 @@ return {
           icons_enabled = true,
           component_separators = { left = '', right = '' },
           section_separators = { left = '', right = '' },
+          ignore_focus = { "NvimTree" },
+          disabled_filetypes = {
+            statusline = { "NvimTree" }, -- disables active AND inactive statusline
+            winbar = { "NvimTree" },
+          },
         },
         always_divide_middle = false,
-        always_show_tabline = false,
+        always_show_tabline = true,
         globalstatus = true,
-        disabled_filetypes = {
-          statusline = { "NvimTree" },
-        },
         refresh = {
           statusline = 1000,
           tabline = 1000,
@@ -48,11 +50,12 @@ return {
           },
           lualine_b = { 'branch', 'diff', 'diagnostics' },
           lualine_c = {
-            { "filename",                                                path = 0 },
-            { function() return require("battery").get_status_line() end },
+            { "filename", path = 0 },
+            -- { function() return require("battery").get_status_line() end },
           },
           lualine_x = {
-            'encoding', 'fileformat', 'filetype'
+            -- 'encoding', 'fileformat', 'filetype'
+            'filetype'
           },
           lualine_y = {
             'progress'
@@ -64,42 +67,49 @@ return {
 
         inactive_sections = {
           lualine_a = {
-            { 'datetime', style = 'us' },
+            { 'datetime', style = '%Y-%m-%d' },
           },
-          lualine_b = { 'branch', 'diff', 'diagnostics' },
+          lualine_b = {
+            'branch',
+            -- 'diff',
+            'diagnostics'
+          },
 
           lualine_c = {
             { "filename",                                                path = 0 },
             { function() return require("battery").get_status_line() end },
           },
           lualine_x = {
-            'encoding',
-            'fileformat',
+            -- 'encoding',
+            -- 'fileformat',
 
-            {
-              'filetype',
-              icon_only = false,
-              colored = false,
-              icon = { align = 'left' },
-              fmt = function(name)
-                if name == 'NvimTree' then
-                  return '' -- or return 'Files' if you want a label
-                end
-                return name
-              end,
-            },
+            -- {
+            --   'filetype',
+            --   icon_only = false,
+            --   colored = false,
+            --   icon = { align = 'left' },
+            --   fmt = function(name)
+            --     if name == 'NvimTree' then
+            --       return '' -- or return 'Files' if you want a label
+            --     end
+            --     return name
+            --   end,
+            -- },
 
           },
           lualine_y = {
-            'progress'
+            -- 'progress'
           },
-          lualine_z = { 'location', 'lsp_status' }
+          lualine_z = {
+            -- 'location',
+            -- 'lsp_status'
+          }
         },
 
         tabline = {},
         winbar = {},
         inactive_winbar = {},
-        extensions = { 'symbols-outline' }
+        extensions = {}
       }
     end
   },
